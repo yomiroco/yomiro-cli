@@ -30,9 +30,13 @@ jobs:
         env:
           - name: dev
             base_url: https://api.dev.yomiro.io
+            optional: false
           - name: prod
             base_url: https://api.yomiro.io
+            # Prod isn't live yet; once it is, flip to false.
+            optional: true
     runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.env.optional }}
     steps:
       - name: Resolve tag
         id: tag
