@@ -34,7 +34,7 @@ func formatFromCmd(cmd *cobra.Command) string {
 // so cobra surfaces them with exit code 1.
 func RenderResponse(cmd *cobra.Command, resp any) error {
 	rv := reflect.ValueOf(resp)
-	if rv.Kind() == reflect.Ptr {
+	if rv.Kind() == reflect.Pointer {
 		rv = rv.Elem()
 	}
 	if rv.Kind() != reflect.Struct {

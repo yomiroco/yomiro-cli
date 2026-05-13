@@ -31,7 +31,7 @@ import (
 // they're meant to use them — auth flows through the bearer header.
 func DefineQueryFlags(cmd *cobra.Command, params any) {
 	rv := reflect.ValueOf(params)
-	if rv.Kind() != reflect.Ptr || rv.Elem().Kind() != reflect.Struct {
+	if rv.Kind() != reflect.Pointer || rv.Elem().Kind() != reflect.Struct {
 		return
 	}
 	rv = rv.Elem()

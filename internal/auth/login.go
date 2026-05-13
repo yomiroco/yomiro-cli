@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"os"
@@ -16,6 +18,7 @@ import (
 func newLoginCmd() *cobra.Command {
 	var apiURL, domain, clientID, audience string
 	var scopes []string
+	var debugJWT bool
 	cmd := &cobra.Command{
 		Use:   "login",
 		Short: "Authenticate via Auth0 device-code flow and mint an API key",
@@ -46,6 +49,21 @@ or replaced with a higher-privilege set in the platform UI.`,
 			jwt, err := dc.PollUntilDone(start.DeviceCode, start.Interval, start.ExpiresIn)
 			if err != nil {
 				return fmt.Errorf("poll: %w", err)
+			}
+
+			if debugJWT {
+				if claims, perr := decodeJWTClaims(jwt); perr == nil {
+					fmt.Fprintf(out, "\n  --debug-jwt: Auth0 access token claims:\n%s\n", claims)
+				} else {
+					fmt.Fprintf(out, "\n  --debug-jwt: couldn't decode token: %v\n", perr)
+				}
+				// Write the raw JWT to a temp file so the operator can replay
+				// validation locally without copy-pasting a sensitive token.
+				path := fmt.Sprintf("/tmp/yomiro-debug-jwt-%d.txt", time.Now().Unix())
+				if werr := os.WriteFile(path, []byte(jwt), 0o600); werr == nil {
+					fmt.Fprintf(out, "\n  --debug-jwt: raw token written to %s (mode 0600, delete when done)\n", path)
+				}
+				return nil
 			}
 
 			// Announce the scope set the operator is about to grant, so they
@@ -99,7 +117,31 @@ or replaced with a higher-privilege set in the platform UI.`,
 	cmd.Flags().StringVar(&clientID, "auth0-client-id", defaultAuth0ClientID, "Auth0 application client ID")
 	cmd.Flags().StringVar(&audience, "audience", defaultAudience, "Auth0 audience claim")
 	cmd.Flags().StringSliceVar(&scopes, "scopes", defaultCLIScopes, "API key scopes (comma-separated). Defaults are read-only across the wired groups.")
+	cmd.Flags().BoolVar(&debugJWT, "debug-jwt", false, "Print decoded Auth0 access-token claims and exit (no key mint, no credential save)")
 	return cmd
+}
+
+// decodeJWTClaims pretty-prints the payload of a JWT without verifying the
+// signature. Used only by --debug-jwt to surface what Auth0 actually
+// issued (audience, custom claims) when the backend rejects a token.
+func decodeJWTClaims(token string) (string, error) {
+	parts := strings.Split(token, ".")
+	if len(parts) != 3 {
+		return "", fmt.Errorf("not a JWT (expected 3 parts, got %d)", len(parts))
+	}
+	raw, err := base64.RawURLEncoding.DecodeString(parts[1])
+	if err != nil {
+		return "", err
+	}
+	var generic map[string]any
+	if err := json.Unmarshal(raw, &generic); err != nil {
+		return "", err
+	}
+	pretty, err := json.MarshalIndent(generic, "  ", "  ")
+	if err != nil {
+		return "", err
+	}
+	return "  " + string(pretty), nil
 }
 
 // frontendFromAPI guesses the platform frontend URL from the API URL so the
