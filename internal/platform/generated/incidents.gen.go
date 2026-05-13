@@ -28,7 +28,7 @@ func NewIncidentsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 		cmd := &cobra.Command{
 			Use:   "add-note <incidentId>",
 			Short: "Add Incident Note",
-			Long: "Add Incident Note.\n\nRequest body fields:\n  content  string  required  Note text (markdown)\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Add Incident Note.\n\nRequest body fields:\n  content  string  required  Note text (markdown)\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -37,11 +37,17 @@ func NewIncidentsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <incidentId>: %w", err)
+				}
 				var body client.IncidentsAddIncidentNoteJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().IncidentsAddIncidentNoteWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -60,7 +66,7 @@ func NewIncidentsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 		cmd := &cobra.Command{
 			Use:   "create",
 			Short: "Create Incident",
-			Long: "Create Incident.\n\nRequest body fields:\n  description          string  optional\n  location_id          uuid    optional\n  severity             string  optional\n  source_dashboard_id  uuid    optional\n  started_at           string  optional\n  title                string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Incident.\n\nRequest body fields:\n  description          string  optional\n  location_id          uuid    optional\n  severity             string  optional\n  source_dashboard_id  uuid    optional\n  started_at           string  optional\n  title                string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"location_id\": null,\n  \"severity\": null,\n  \"source_dashboard_id\": null,\n  \"started_at\": null,\n  \"title\": \"\"\n}")
@@ -68,9 +74,13 @@ func NewIncidentsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 				}
 				ctx := cmd.Context()
 				var body client.IncidentsCreateIncidentJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().IncidentsCreateIncidentWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -91,9 +101,13 @@ func NewIncidentsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <incidentId>: %w", err)
+				}
 				resp, err := getClient().IncidentsDeleteIncidentWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -110,11 +124,17 @@ func NewIncidentsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <incidentId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <noteId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <noteId>: %w", err)
+				}
 				resp, err := getClient().IncidentsDeleteIncidentNoteWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -131,9 +151,13 @@ func NewIncidentsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <incidentId>: %w", err)
+				}
 				resp, err := getClient().IncidentsGetIncidentWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -150,11 +174,17 @@ func NewIncidentsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <incidentId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <deviceId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceId>: %w", err)
+				}
 				resp, err := getClient().IncidentsLinkDeviceToIncidentWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -171,9 +201,13 @@ func NewIncidentsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <incidentId>: %w", err)
+				}
 				resp, err := getClient().IncidentsListIncidentNotesWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -189,7 +223,9 @@ func NewIncidentsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().IncidentsListIncidentsWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -206,11 +242,17 @@ func NewIncidentsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <incidentId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <deviceId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceId>: %w", err)
+				}
 				resp, err := getClient().IncidentsUnlinkDeviceFromIncidentWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -225,7 +267,7 @@ func NewIncidentsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 		cmd := &cobra.Command{
 			Use:   "update <incidentId>",
 			Short: "Update Incident",
-			Long: "Update Incident.\n\nRequest body fields:\n  description  string  optional\n  ended_at     string  optional\n  location_id  uuid    optional\n  severity     string  optional\n  started_at   string  optional\n  status       string  optional\n  title        string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Incident.\n\nRequest body fields:\n  description  string  optional\n  ended_at     string  optional\n  location_id  uuid    optional\n  severity     string  optional\n  started_at   string  optional\n  status       string  optional\n  title        string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -234,11 +276,17 @@ func NewIncidentsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <incidentId>: %w", err)
+				}
 				var body client.IncidentsUpdateIncidentJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().IncidentsUpdateIncidentWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -257,7 +305,7 @@ func NewIncidentsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 		cmd := &cobra.Command{
 			Use:   "update-note <incidentId> <noteId>",
 			Short: "Update Incident Note",
-			Long: "Update Incident Note.\n\nRequest body fields:\n  content  string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Incident Note.\n\nRequest body fields:\n  content  string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -266,13 +314,21 @@ func NewIncidentsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <incidentId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <noteId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <noteId>: %w", err)
+				}
 				var body client.IncidentsUpdateIncidentNoteJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().IncidentsUpdateIncidentNoteWithResponse(ctx, _arg0, _arg1, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

@@ -30,11 +30,17 @@ func NewInspectionProfilesCmd(getClient func() *client.ClientWithResponses) *cob
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <profileId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <profileId>: %w", err)
+				}
 				resp, err := getClient().InspectionProfilesActivateProfileWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -49,7 +55,7 @@ func NewInspectionProfilesCmd(getClient func() *client.ClientWithResponses) *cob
 		cmd := &cobra.Command{
 			Use:   "capture-golden-image <deviceGroupId> <profileId>",
 			Short: "Capture Golden Image",
-			Long: "Capture Golden Image.\n\nRequest body fields:\n  device_id  uuid  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Capture Golden Image.\n\nRequest body fields:\n  device_id  uuid  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -58,13 +64,21 @@ func NewInspectionProfilesCmd(getClient func() *client.ClientWithResponses) *cob
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <profileId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <profileId>: %w", err)
+				}
 				var body client.InspectionProfilesCaptureGoldenImageJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().InspectionProfilesCaptureGoldenImageWithResponse(ctx, _arg0, _arg1, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -83,7 +97,7 @@ func NewInspectionProfilesCmd(getClient func() *client.ClientWithResponses) *cob
 		cmd := &cobra.Command{
 			Use:   "create-profile <deviceGroupId>",
 			Short: "Create Profile",
-			Long: "Create Profile.\n\nRequest body fields:\n  anomaly_threshold       number   optional  Anomaly score threshold for pass/fail\n  description             string   optional  Optional free text\n  name                    string   required  Display name, e.g. 'Motor Controller Board'\n  part_number             string   optional  Optional SKU/part number\n  revision                string   required  Board revision, e.g. 'v3', 'Rev-B'\n  skip_capture_alignment  boolean  optional  Skip XFeat+LightGlue registration for fixed cameras\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Profile.\n\nRequest body fields:\n  anomaly_threshold       number   optional  Anomaly score threshold for pass/fail\n  description             string   optional  Optional free text\n  name                    string   required  Display name, e.g. 'Motor Controller Board'\n  part_number             string   optional  Optional SKU/part number\n  revision                string   required  Board revision, e.g. 'v3', 'Rev-B'\n  skip_capture_alignment  boolean  optional  Skip XFeat+LightGlue registration for fixed cameras\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -92,11 +106,17 @@ func NewInspectionProfilesCmd(getClient func() *client.ClientWithResponses) *cob
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				var body client.InspectionProfilesCreateProfileJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().InspectionProfilesCreateProfileWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -117,11 +137,17 @@ func NewInspectionProfilesCmd(getClient func() *client.ClientWithResponses) *cob
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <profileId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <profileId>: %w", err)
+				}
 				resp, err := getClient().InspectionProfilesDeactivateProfileWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -138,13 +164,21 @@ func NewInspectionProfilesCmd(getClient func() *client.ClientWithResponses) *cob
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <profileId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <profileId>: %w", err)
+				}
 				_arg2, err := uuid.Parse(args[2])
-				if err != nil { return fmt.Errorf("path arg <imageId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <imageId>: %w", err)
+				}
 				resp, err := getClient().InspectionProfilesDeleteGoldenImageWithResponse(ctx, _arg0, _arg1, _arg2, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -161,11 +195,17 @@ func NewInspectionProfilesCmd(getClient func() *client.ClientWithResponses) *cob
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <profileId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <profileId>: %w", err)
+				}
 				resp, err := getClient().InspectionProfilesDeleteProfileWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -182,11 +222,17 @@ func NewInspectionProfilesCmd(getClient func() *client.ClientWithResponses) *cob
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <profileId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <profileId>: %w", err)
+				}
 				resp, err := getClient().InspectionProfilesGetProfileWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -201,7 +247,7 @@ func NewInspectionProfilesCmd(getClient func() *client.ClientWithResponses) *cob
 		cmd := &cobra.Command{
 			Use:   "inspect-capture <deviceGroupId> <profileId>",
 			Short: "Inspect Capture",
-			Long: "Inspect Capture.\n\nRequest body fields:\n  device_id  uuid  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Inspect Capture.\n\nRequest body fields:\n  device_id  uuid  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -210,13 +256,21 @@ func NewInspectionProfilesCmd(getClient func() *client.ClientWithResponses) *cob
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <profileId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <profileId>: %w", err)
+				}
 				var body client.InspectionProfilesInspectCaptureJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().InspectionProfilesInspectCaptureWithResponse(ctx, _arg0, _arg1, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -237,9 +291,13 @@ func NewInspectionProfilesCmd(getClient func() *client.ClientWithResponses) *cob
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				resp, err := getClient().InspectionProfilesListProfilesWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -254,7 +312,7 @@ func NewInspectionProfilesCmd(getClient func() *client.ClientWithResponses) *cob
 		cmd := &cobra.Command{
 			Use:   "update-profile <deviceGroupId> <profileId>",
 			Short: "Update Profile",
-			Long: "Update Profile.\n\nRequest body fields:\n  anomaly_threshold       number   optional\n  description             string   optional\n  name                    string   optional\n  part_number             string   optional\n  revision                string   optional\n  skip_capture_alignment  boolean  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Profile.\n\nRequest body fields:\n  anomaly_threshold       number   optional\n  description             string   optional\n  name                    string   optional\n  part_number             string   optional\n  revision                string   optional\n  skip_capture_alignment  boolean  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -263,13 +321,21 @@ func NewInspectionProfilesCmd(getClient func() *client.ClientWithResponses) *cob
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <profileId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <profileId>: %w", err)
+				}
 				var body client.InspectionProfilesUpdateProfileJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().InspectionProfilesUpdateProfileWithResponse(ctx, _arg0, _arg1, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

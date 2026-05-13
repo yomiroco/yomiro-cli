@@ -26,7 +26,9 @@ func NewLivekitCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().LivekitGetViewerTokenWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -44,7 +46,9 @@ func NewLivekitCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 				ctx := cmd.Context()
 				_arg0 := args[0]
 				resp, err := getClient().LivekitStartDeviceStreamWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -62,7 +66,9 @@ func NewLivekitCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 				ctx := cmd.Context()
 				_arg0 := args[0]
 				resp, err := getClient().LivekitStopDeviceStreamWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

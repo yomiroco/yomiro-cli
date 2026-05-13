@@ -28,7 +28,7 @@ func NewLocationsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 		cmd := &cobra.Command{
 			Use:   "create",
 			Short: "Create Location",
-			Long: "Create Location.\n\nRequest body fields:\n  description  string  optional\n  level        string  required\n  metadata     object  optional\n  name         string  required\n  parent_id    uuid    optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Location.\n\nRequest body fields:\n  description  string  optional\n  level        string  required\n  metadata     object  optional\n  name         string  required\n  parent_id    uuid    optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"level\": \"\",\n  \"metadata\": null,\n  \"name\": \"\",\n  \"parent_id\": null\n}")
@@ -36,9 +36,13 @@ func NewLocationsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 				}
 				ctx := cmd.Context()
 				var body client.LocationsCreateLocationJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().LocationsCreateLocationWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -59,9 +63,13 @@ func NewLocationsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <locationId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <locationId>: %w", err)
+				}
 				resp, err := getClient().LocationsDeleteLocationWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -78,9 +86,13 @@ func NewLocationsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <locationId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <locationId>: %w", err)
+				}
 				resp, err := getClient().LocationsGetLocationWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -97,9 +109,13 @@ func NewLocationsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <locationId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <locationId>: %w", err)
+				}
 				resp, err := getClient().LocationsGetLocationDevicesWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -116,9 +132,13 @@ func NewLocationsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <locationId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <locationId>: %w", err)
+				}
 				resp, err := getClient().LocationsGetLocationIncidentsWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -134,7 +154,9 @@ func NewLocationsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().LocationsGetLocationTreeWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -150,7 +172,9 @@ func NewLocationsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().LocationsListLocationsWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -165,7 +189,7 @@ func NewLocationsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 		cmd := &cobra.Command{
 			Use:   "update <locationId>",
 			Short: "Update Location",
-			Long: "Update Location.\n\nRequest body fields:\n  description  string  optional\n  metadata     object  optional\n  name         string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Location.\n\nRequest body fields:\n  description  string  optional\n  metadata     object  optional\n  name         string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -174,11 +198,17 @@ func NewLocationsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <locationId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <locationId>: %w", err)
+				}
 				var body client.LocationsUpdateLocationJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().LocationsUpdateLocationWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

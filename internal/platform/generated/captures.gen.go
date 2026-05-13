@@ -28,7 +28,7 @@ func NewCapturesCmd(getClient func() *client.ClientWithResponses) *cobra.Command
 		cmd := &cobra.Command{
 			Use:   "bulk-delete",
 			Short: "Bulk Delete Captures",
-			Long: "Bulk Delete Captures.\n\nRequest body fields:\n  capture_ids  array  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Bulk Delete Captures.\n\nRequest body fields:\n  capture_ids  array  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"capture_ids\": []\n}")
@@ -36,9 +36,13 @@ func NewCapturesCmd(getClient func() *client.ClientWithResponses) *cobra.Command
 				}
 				ctx := cmd.Context()
 				var body client.CapturesBulkDeleteCapturesJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().CapturesBulkDeleteCapturesWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -59,9 +63,13 @@ func NewCapturesCmd(getClient func() *client.ClientWithResponses) *cobra.Command
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <captureId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <captureId>: %w", err)
+				}
 				resp, err := getClient().CapturesDeleteCaptureWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -78,9 +86,13 @@ func NewCapturesCmd(getClient func() *client.ClientWithResponses) *cobra.Command
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <captureId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <captureId>: %w", err)
+				}
 				resp, err := getClient().CapturesGetCaptureWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -97,9 +109,13 @@ func NewCapturesCmd(getClient func() *client.ClientWithResponses) *cobra.Command
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <captureId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <captureId>: %w", err)
+				}
 				resp, err := getClient().CapturesGetCaptureDetectionsWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -115,7 +131,9 @@ func NewCapturesCmd(getClient func() *client.ClientWithResponses) *cobra.Command
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().CapturesListCapturesWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

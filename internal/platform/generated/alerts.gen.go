@@ -30,9 +30,13 @@ func NewAlertsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <eventId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <eventId>: %w", err)
+				}
 				resp, err := getClient().AlertsAcknowledgeAlertEventWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -47,7 +51,7 @@ func NewAlertsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create-rule",
 			Short: "Create Alert Rule",
-			Long: "Create Alert Rule.\n\nRequest body fields:\n  comparison_op                string   optional  Comparison operator (gt/gte/lt/lte/eq/neq)\n  condition_sql                string   required  SQL query returning a numeric value\n  description                  string   optional  What this rule monitors\n  enabled                      boolean  optional  Whether this rule is active\n  evaluation_interval_seconds  integer  optional  How often to check (seconds)\n  name                         string   required  Human-readable rule name\n  notification_channels        array    optional  Notification channels: webhook/mqtt\n  severity                     string   optional  Alert severity level\n  source_dashboard_id          uuid     optional\n  source_widget_id             string   optional\n  threshold                    number   required  Comparison value\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Alert Rule.\n\nRequest body fields:\n  comparison_op                string   optional  Comparison operator (gt/gte/lt/lte/eq/neq)\n  condition_sql                string   required  SQL query returning a numeric value\n  description                  string   optional  What this rule monitors\n  enabled                      boolean  optional  Whether this rule is active\n  evaluation_interval_seconds  integer  optional  How often to check (seconds)\n  name                         string   required  Human-readable rule name\n  notification_channels        array    optional  Notification channels: webhook/mqtt\n  severity                     string   optional  Alert severity level\n  source_dashboard_id          uuid     optional\n  source_widget_id             string   optional\n  threshold                    number   required  Comparison value\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"comparison_op\": null,\n  \"condition_sql\": \"\",\n  \"description\": null,\n  \"enabled\": null,\n  \"evaluation_interval_seconds\": null,\n  \"name\": \"\",\n  \"notification_channels\": null,\n  \"severity\": null,\n  \"source_dashboard_id\": null,\n  \"source_widget_id\": null,\n  \"threshold\": 0\n}")
@@ -55,9 +59,13 @@ func NewAlertsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				}
 				ctx := cmd.Context()
 				var body client.AlertsCreateAlertRuleJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AlertsCreateAlertRuleWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -78,9 +86,13 @@ func NewAlertsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <ruleId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <ruleId>: %w", err)
+				}
 				resp, err := getClient().AlertsDeleteAlertRuleWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -97,9 +109,13 @@ func NewAlertsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <ruleId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <ruleId>: %w", err)
+				}
 				resp, err := getClient().AlertsDisableAlertRuleWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -116,9 +132,13 @@ func NewAlertsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <ruleId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <ruleId>: %w", err)
+				}
 				resp, err := getClient().AlertsEnableAlertRuleWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -135,9 +155,13 @@ func NewAlertsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <eventId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <eventId>: %w", err)
+				}
 				resp, err := getClient().AlertsGetAlertEventWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -154,9 +178,13 @@ func NewAlertsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <ruleId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <ruleId>: %w", err)
+				}
 				resp, err := getClient().AlertsGetAlertRuleWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -172,7 +200,9 @@ func NewAlertsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AlertsListAlertEventsWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -188,7 +218,9 @@ func NewAlertsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AlertsListAlertRulesWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -203,7 +235,7 @@ func NewAlertsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "update-rule <ruleId>",
 			Short: "Update Alert Rule",
-			Long: "Update Alert Rule.\n\nRequest body fields:\n  comparison_op                string   optional\n  condition_sql                string   optional\n  description                  string   optional\n  enabled                      boolean  optional\n  evaluation_interval_seconds  integer  optional\n  name                         string   optional\n  notification_channels        array    optional\n  severity                     string   optional\n  threshold                    number   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Alert Rule.\n\nRequest body fields:\n  comparison_op                string   optional\n  condition_sql                string   optional\n  description                  string   optional\n  enabled                      boolean  optional\n  evaluation_interval_seconds  integer  optional\n  name                         string   optional\n  notification_channels        array    optional\n  severity                     string   optional\n  threshold                    number   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -212,11 +244,17 @@ func NewAlertsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <ruleId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <ruleId>: %w", err)
+				}
 				var body client.AlertsUpdateAlertRuleJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AlertsUpdateAlertRuleWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

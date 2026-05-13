@@ -30,9 +30,13 @@ func NewModelOutputSchemasCmd(getClient func() *client.ClientWithResponses) *cob
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <schemaId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <schemaId>: %w", err)
+				}
 				resp, err := getClient().ModelOutputSchemasDeleteSchemaWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -49,9 +53,13 @@ func NewModelOutputSchemasCmd(getClient func() *client.ClientWithResponses) *cob
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <schemaId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <schemaId>: %w", err)
+				}
 				resp, err := getClient().ModelOutputSchemasForkSchemaWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -68,9 +76,13 @@ func NewModelOutputSchemasCmd(getClient func() *client.ClientWithResponses) *cob
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <schemaId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <schemaId>: %w", err)
+				}
 				resp, err := getClient().ModelOutputSchemasGetBindingsWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -87,9 +99,13 @@ func NewModelOutputSchemasCmd(getClient func() *client.ClientWithResponses) *cob
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <schemaId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <schemaId>: %w", err)
+				}
 				resp, err := getClient().ModelOutputSchemasGetReviewTargetsWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -106,9 +122,13 @@ func NewModelOutputSchemasCmd(getClient func() *client.ClientWithResponses) *cob
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <schemaId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <schemaId>: %w", err)
+				}
 				resp, err := getClient().ModelOutputSchemasGetSchemaDetailWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -124,7 +144,9 @@ func NewModelOutputSchemasCmd(getClient func() *client.ClientWithResponses) *cob
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().ModelOutputSchemasListSchemasWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -139,7 +161,7 @@ func NewModelOutputSchemasCmd(getClient func() *client.ClientWithResponses) *cob
 		cmd := &cobra.Command{
 			Use:   "patch-schema <schemaId>",
 			Short: "Patch Schema",
-			Long: "Patch Schema.\n\nRequest body fields:\n  output_model   object  optional\n  review_refs    array   optional\n  standards_ref  string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Patch Schema.\n\nRequest body fields:\n  output_model   object  optional\n  review_refs    array   optional\n  standards_ref  string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -148,11 +170,17 @@ func NewModelOutputSchemasCmd(getClient func() *client.ClientWithResponses) *cob
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <schemaId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <schemaId>: %w", err)
+				}
 				var body client.ModelOutputSchemasPatchSchemaJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().ModelOutputSchemasPatchSchemaWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

@@ -14,11 +14,11 @@ import (
 // menu, but oapi-codegen may skip operations (multipart bodies, unsupported
 // schemas) and the method signature is the contract.
 type ClientMethod struct {
-	OpID       string      // e.g. "DevicesPushModelToDevice" (no WithResponse suffix)
-	PathArgs   []PathParam // ordered positional args before *Params
-	HasParams  bool        // method takes &client.<OpID>Params
-	HasBody    bool        // method takes a body (typed JSONRequestBody, not WithBody/io.Reader)
-	RespIdent  string      // *<OpID>Response (used only for documentation)
+	OpID      string      // e.g. "DevicesPushModelToDevice" (no WithResponse suffix)
+	PathArgs  []PathParam // ordered positional args before *Params
+	HasParams bool        // method takes &client.<OpID>Params
+	HasBody   bool        // method takes a body (typed JSONRequestBody, not WithBody/io.Reader)
+	RespIdent string      // *<OpID>Response (used only for documentation)
 }
 
 // LoadClientMethods scans the generated client file and returns a map keyed

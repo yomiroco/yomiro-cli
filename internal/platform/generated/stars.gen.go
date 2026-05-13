@@ -29,7 +29,9 @@ func NewStarsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().StarsListStarsWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -44,7 +46,7 @@ func NewStarsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "entity",
 			Short: "Star Entity",
-			Long: "Star Entity.\n\nRequest body fields:\n  entity_id    uuid    required\n  entity_type  string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Star Entity.\n\nRequest body fields:\n  entity_id    uuid    required\n  entity_type  string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"entity_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"entity_type\": \"\"\n}")
@@ -52,9 +54,13 @@ func NewStarsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				}
 				ctx := cmd.Context()
 				var body client.StarsStarEntityJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().StarsStarEntityWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -76,9 +82,13 @@ func NewStarsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				ctx := cmd.Context()
 				_arg0 := args[0]
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <entityId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <entityId>: %w", err)
+				}
 				resp, err := getClient().StarsUnstarEntityWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

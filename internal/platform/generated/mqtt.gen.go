@@ -28,7 +28,9 @@ func NewMqttCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().MqttGetMqttDevicesWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -44,7 +46,9 @@ func NewMqttCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().MqttGetMqttStatusWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -60,7 +64,9 @@ func NewMqttCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().MqttGetMqttTopicsWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -75,7 +81,7 @@ func NewMqttCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "send-fleet-broadcast",
 			Short: "Send Fleet Broadcast",
-			Long: "Send Fleet Broadcast.\n\nRequest body fields:\n  data     object  optional\n  message  string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Send Fleet Broadcast.\n\nRequest body fields:\n  data     object  optional\n  message  string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"data\": null,\n  \"message\": \"\"\n}")
@@ -83,9 +89,13 @@ func NewMqttCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				}
 				ctx := cmd.Context()
 				var body client.MqttSendFleetBroadcastJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().MqttSendFleetBroadcastWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

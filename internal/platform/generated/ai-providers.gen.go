@@ -28,7 +28,7 @@ func NewAiProvidersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 		cmd := &cobra.Command{
 			Use:   "create",
 			Short: "Create Ai Provider",
-			Long: "Create Ai Provider.\n\nRequest body fields:\n  api_key           string   optional  Plaintext API key — will be encrypted before storage\n  available_models  array    optional\n  base_url          string   optional\n  is_active         boolean  optional\n  name              string   required\n  provider_type     string   required  one of: anthropic, openai, google, mistral, ollama, openai_compatible, platform\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Ai Provider.\n\nRequest body fields:\n  api_key           string   optional  Plaintext API key — will be encrypted before storage\n  available_models  array    optional\n  base_url          string   optional\n  is_active         boolean  optional\n  name              string   required\n  provider_type     string   required  one of: anthropic, openai, google, mistral, ollama, openai_compatible, platform\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"api_key\": null,\n  \"available_models\": null,\n  \"base_url\": null,\n  \"is_active\": null,\n  \"name\": \"\",\n  \"provider_type\": \"anthropic\"\n}")
@@ -36,9 +36,13 @@ func NewAiProvidersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 				}
 				ctx := cmd.Context()
 				var body client.AiProvidersCreateAiProviderJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AiProvidersCreateAiProviderWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -59,9 +63,13 @@ func NewAiProvidersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <providerId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <providerId>: %w", err)
+				}
 				resp, err := getClient().AiProvidersDeleteAiProviderWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -76,7 +84,7 @@ func NewAiProvidersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 		cmd := &cobra.Command{
 			Use:   "discover-models",
 			Short: "Discover Models",
-			Long: "Discover Models.\n\nRequest body fields:\n  api_key        string  optional\n  base_url       string  optional\n  provider_type  string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Discover Models.\n\nRequest body fields:\n  api_key        string  optional\n  base_url       string  optional\n  provider_type  string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"api_key\": null,\n  \"base_url\": null,\n  \"provider_type\": \"\"\n}")
@@ -84,9 +92,13 @@ func NewAiProvidersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 				}
 				ctx := cmd.Context()
 				var body client.AiProvidersDiscoverModelsJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AiProvidersDiscoverModelsWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -107,9 +119,13 @@ func NewAiProvidersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <providerId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <providerId>: %w", err)
+				}
 				resp, err := getClient().AiProvidersGetAiProviderWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -125,7 +141,9 @@ func NewAiProvidersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AiProvidersListAiProvidersWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -142,9 +160,13 @@ func NewAiProvidersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <providerId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <providerId>: %w", err)
+				}
 				resp, err := getClient().AiProvidersListProviderModelsWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -159,7 +181,7 @@ func NewAiProvidersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 		cmd := &cobra.Command{
 			Use:   "update <providerId>",
 			Short: "Update Ai Provider",
-			Long: "Update Ai Provider.\n\nRequest body fields:\n  api_key           string   optional  New plaintext API key — will be encrypted. Omit to keep existing.\n  available_models  array    optional\n  base_url          string   optional\n  is_active         boolean  optional\n  name              string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Ai Provider.\n\nRequest body fields:\n  api_key           string   optional  New plaintext API key — will be encrypted. Omit to keep existing.\n  available_models  array    optional\n  base_url          string   optional\n  is_active         boolean  optional\n  name              string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -168,11 +190,17 @@ func NewAiProvidersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <providerId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <providerId>: %w", err)
+				}
 				var body client.AiProvidersUpdateAiProviderJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AiProvidersUpdateAiProviderWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

@@ -30,10 +30,14 @@ func NewAgentSkillFilesCmd(getClient func() *client.ClientWithResponses) *cobra.
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <skillId>: %w", err)
+				}
 				_arg1 := args[1]
 				resp, err := getClient().AgentSkillFilesDeleteSkillFileWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -50,10 +54,14 @@ func NewAgentSkillFilesCmd(getClient func() *client.ClientWithResponses) *cobra.
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <skillId>: %w", err)
+				}
 				_arg1 := args[1]
 				resp, err := getClient().AgentSkillFilesGetSkillFileWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -70,9 +78,13 @@ func NewAgentSkillFilesCmd(getClient func() *client.ClientWithResponses) *cobra.
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <skillId>: %w", err)
+				}
 				resp, err := getClient().AgentSkillFilesListSkillFilesWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -89,10 +101,14 @@ func NewAgentSkillFilesCmd(getClient func() *client.ClientWithResponses) *cobra.
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <skillId>: %w", err)
+				}
 				_arg1 := args[1]
 				resp, err := getClient().AgentSkillFilesPutSkillFileWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

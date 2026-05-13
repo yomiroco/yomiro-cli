@@ -30,7 +30,9 @@ func NewJetsonNanoCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 				ctx := cmd.Context()
 				_arg0 := args[0]
 				resp, err := getClient().JetsonNanoCheckJetsonOnlineWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -48,7 +50,9 @@ func NewJetsonNanoCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 				ctx := cmd.Context()
 				_arg0 := args[0]
 				resp, err := getClient().JetsonNanoGetDetectionDigestWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -66,7 +70,9 @@ func NewJetsonNanoCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 				ctx := cmd.Context()
 				_arg0 := args[0]
 				resp, err := getClient().JetsonNanoGetDetectionStatusWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -84,7 +90,9 @@ func NewJetsonNanoCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 				ctx := cmd.Context()
 				_arg0 := args[0]
 				resp, err := getClient().JetsonNanoGetJetsonConfigWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -102,7 +110,9 @@ func NewJetsonNanoCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 				ctx := cmd.Context()
 				_arg0 := args[0]
 				resp, err := getClient().JetsonNanoGetJetsonDeviceStatusWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -118,7 +128,9 @@ func NewJetsonNanoCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().JetsonNanoGetJetsonDevicesWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -133,7 +145,7 @@ func NewJetsonNanoCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 		cmd := &cobra.Command{
 			Use:   "send-jetson-config <deviceId>",
 			Short: "Send Jetson Config",
-			Long: "Send Jetson Config.\n\nRequest body fields:\n  camera_index  integer  optional\n  extra_config  object   optional\n  fps           integer  optional\n  resolution    string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Send Jetson Config.\n\nRequest body fields:\n  camera_index  integer  optional\n  extra_config  object   optional\n  fps           integer  optional\n  resolution    string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -143,9 +155,13 @@ func NewJetsonNanoCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 				ctx := cmd.Context()
 				_arg0 := args[0]
 				var body client.JetsonNanoSendJetsonConfigJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().JetsonNanoSendJetsonConfigWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -164,7 +180,7 @@ func NewJetsonNanoCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 		cmd := &cobra.Command{
 			Use:   "send-jetson-control <deviceId>",
 			Short: "Send Jetson Control",
-			Long: "Send Jetson Control.\n\nRequest body fields:\n  command     string  required\n  parameters  object  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Send Jetson Control.\n\nRequest body fields:\n  command     string  required\n  parameters  object  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -174,9 +190,13 @@ func NewJetsonNanoCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 				ctx := cmd.Context()
 				_arg0 := args[0]
 				var body client.JetsonNanoSendJetsonControlJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().JetsonNanoSendJetsonControlWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

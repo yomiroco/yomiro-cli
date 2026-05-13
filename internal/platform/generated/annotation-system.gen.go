@@ -30,7 +30,7 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 		cmd := &cobra.Command{
 			Use:   "bulk-add-media-to-project <projectId>",
 			Short: "Bulk Add Media To Project",
-			Long: "Bulk Add Media To Project.\n\nRequest body fields:\n  camera_image_ids  array  optional\n  camera_video_ids  array  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Bulk Add Media To Project.\n\nRequest body fields:\n  camera_image_ids  array  optional\n  camera_video_ids  array  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -39,11 +39,17 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <projectId>: %w", err)
+				}
 				var body client.AnnotationSystemBulkAddMediaToProjectJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AnnotationSystemBulkAddMediaToProjectWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -64,11 +70,17 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <projectId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <sourceProjectId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <sourceProjectId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemCopyLabelsFromProjectWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -83,7 +95,7 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 		cmd := &cobra.Command{
 			Use:   "create-label",
 			Short: "Create Label",
-			Long: "Create Label.\n\nRequest body fields:\n  category       string   optional  Label category\n  color          string   optional  Hex color code for visualization\n  description    string   optional  Label description\n  display_name   string   required  Human-readable display name\n  display_order  integer  optional  Order in which labels appear in UI\n  hotkey         string   optional  Keyboard shortcut (e.g., '1', 'a')\n  is_active      boolean  optional  Whether this label is currently active\n  name           string   required  Label name (e.g., 'scratch', 'dent')\n  project_id     uuid     required  Annotation project this label belongs to\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Label.\n\nRequest body fields:\n  category       string   optional  Label category\n  color          string   optional  Hex color code for visualization\n  description    string   optional  Label description\n  display_name   string   required  Human-readable display name\n  display_order  integer  optional  Order in which labels appear in UI\n  hotkey         string   optional  Keyboard shortcut (e.g., '1', 'a')\n  is_active      boolean  optional  Whether this label is currently active\n  name           string   required  Label name (e.g., 'scratch', 'dent')\n  project_id     uuid     required  Annotation project this label belongs to\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"category\": null,\n  \"color\": null,\n  \"description\": null,\n  \"display_name\": \"\",\n  \"display_order\": null,\n  \"hotkey\": null,\n  \"is_active\": null,\n  \"name\": \"\",\n  \"project_id\": \"00000000-0000-0000-0000-000000000000\"\n}")
@@ -91,9 +103,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 				}
 				ctx := cmd.Context()
 				var body client.AnnotationSystemCreateLabelJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AnnotationSystemCreateLabelWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -112,7 +128,7 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 		cmd := &cobra.Command{
 			Use:   "create-media",
 			Short: "Create Media",
-			Long: "Create Media.\n\nRequest body fields:\n  camera_image_id  uuid     optional  Reference to CameraImage\n  camera_video_id  uuid     optional  Reference to CameraVideo\n  description      string   optional\n  fps              number   optional  Frames per second (for videos)\n  frame_count      integer  optional  Number of frames (for videos)\n  height           integer  optional  Media height in pixels\n  media_type       string   optional  Type of media (image/video)\n  project_id       uuid     required  Annotation project this media belongs to\n  title            string   required  Title for this annotation media (defaults to filename)\n  width            integer  optional  Media width in pixels\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Media.\n\nRequest body fields:\n  camera_image_id  uuid     optional  Reference to CameraImage\n  camera_video_id  uuid     optional  Reference to CameraVideo\n  description      string   optional\n  fps              number   optional  Frames per second (for videos)\n  frame_count      integer  optional  Number of frames (for videos)\n  height           integer  optional  Media height in pixels\n  media_type       string   optional  Type of media (image/video)\n  project_id       uuid     required  Annotation project this media belongs to\n  title            string   required  Title for this annotation media (defaults to filename)\n  width            integer  optional  Media width in pixels\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"camera_image_id\": null,\n  \"camera_video_id\": null,\n  \"description\": null,\n  \"fps\": null,\n  \"frame_count\": null,\n  \"height\": null,\n  \"media_type\": null,\n  \"project_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"title\": \"\",\n  \"width\": null\n}")
@@ -120,9 +136,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 				}
 				ctx := cmd.Context()
 				var body client.AnnotationSystemCreateMediaJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AnnotationSystemCreateMediaWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -141,7 +161,7 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 		cmd := &cobra.Command{
 			Use:   "create-project",
 			Short: "Create Project",
-			Long: "Create Project.\n\nRequest body fields:\n  description  string   optional  Project description\n  is_active    boolean  optional  Whether project is active\n  name         string   required  Project name\n  version      string   optional  Project version for tracking changes\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Project.\n\nRequest body fields:\n  description  string   optional  Project description\n  is_active    boolean  optional  Whether project is active\n  name         string   required  Project name\n  version      string   optional  Project version for tracking changes\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"is_active\": null,\n  \"name\": \"\",\n  \"version\": null\n}")
@@ -149,9 +169,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 				}
 				ctx := cmd.Context()
 				var body client.AnnotationSystemCreateProjectJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AnnotationSystemCreateProjectWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -170,7 +194,7 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 		cmd := &cobra.Command{
 			Use:   "create-project-device-link",
 			Short: "Create Project Device Link",
-			Long: "Create Project Device Link.\n\nRequest body fields:\n  device_group_id  uuid     optional  Device group to link (for group-wide push)\n  device_id        uuid     optional  Individual device to link (for canary push)\n  is_active        boolean  optional  Whether this link is active\n  is_canary        boolean  optional  Whether this is a canary deployment target\n  priority         integer  optional  Priority for ordering (higher = more important)\n  project_id       uuid     required  Annotation project to link\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Project Device Link.\n\nRequest body fields:\n  device_group_id  uuid     optional  Device group to link (for group-wide push)\n  device_id        uuid     optional  Individual device to link (for canary push)\n  is_active        boolean  optional  Whether this link is active\n  is_canary        boolean  optional  Whether this is a canary deployment target\n  priority         integer  optional  Priority for ordering (higher = more important)\n  project_id       uuid     required  Annotation project to link\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"device_group_id\": null,\n  \"device_id\": null,\n  \"is_active\": null,\n  \"is_canary\": null,\n  \"priority\": null,\n  \"project_id\": \"00000000-0000-0000-0000-000000000000\"\n}")
@@ -178,9 +202,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 				}
 				ctx := cmd.Context()
 				var body client.AnnotationSystemCreateProjectDeviceLinkJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AnnotationSystemCreateProjectDeviceLinkWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -199,7 +227,7 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 		cmd := &cobra.Command{
 			Use:   "create-push",
 			Short: "Create Push",
-			Long: "Create Push.\n\nRequest body fields:\n  annotation_media_ids  array    optional  Specific media to push (all if not specified)\n  device_group_id       uuid     optional  Target device group (for group push)\n  device_id             uuid     optional  Target device (for canary push)\n  format                string   optional\n  include_images        boolean  optional  Include image files in push\n  project_id            uuid     required  Annotation project to push\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Push.\n\nRequest body fields:\n  annotation_media_ids  array    optional  Specific media to push (all if not specified)\n  device_group_id       uuid     optional  Target device group (for group push)\n  device_id             uuid     optional  Target device (for canary push)\n  format                string   optional\n  include_images        boolean  optional  Include image files in push\n  project_id            uuid     required  Annotation project to push\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"annotation_media_ids\": null,\n  \"device_group_id\": null,\n  \"device_id\": null,\n  \"format\": null,\n  \"include_images\": null,\n  \"project_id\": \"00000000-0000-0000-0000-000000000000\"\n}")
@@ -207,9 +235,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 				}
 				ctx := cmd.Context()
 				var body client.AnnotationSystemCreatePushJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AnnotationSystemCreatePushWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -228,7 +260,7 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 		cmd := &cobra.Command{
 			Use:   "create-shape",
 			Short: "Create Shape",
-			Long: "Create Shape.\n\nRequest body fields:\n  annotation_media_id  uuid     required  Media this shape belongs to\n  attributes           object   optional  Additional attributes\n  color                string   optional  Override color (uses label color if not set)\n  confidence           number   optional  Confidence score (for model suggestions)\n  frame_index          integer  optional  Frame index (0 for images, frame number for videos)\n  geometry             object   required  Shape geometry data\n  is_keyframe          boolean  optional  Whether this is a keyframe (vs interpolated)\n  label_id             uuid     optional  Label for this shape\n  shape_type           string   optional  Type of shape\n  stroke_width         integer  optional  Stroke width for drawing\n  track_id             string   optional  Object tracking ID across frames\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Shape.\n\nRequest body fields:\n  annotation_media_id  uuid     required  Media this shape belongs to\n  attributes           object   optional  Additional attributes\n  color                string   optional  Override color (uses label color if not set)\n  confidence           number   optional  Confidence score (for model suggestions)\n  frame_index          integer  optional  Frame index (0 for images, frame number for videos)\n  geometry             object   required  Shape geometry data\n  is_keyframe          boolean  optional  Whether this is a keyframe (vs interpolated)\n  label_id             uuid     optional  Label for this shape\n  shape_type           string   optional  Type of shape\n  stroke_width         integer  optional  Stroke width for drawing\n  track_id             string   optional  Object tracking ID across frames\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"annotation_media_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"attributes\": null,\n  \"color\": null,\n  \"confidence\": null,\n  \"frame_index\": null,\n  \"geometry\": {},\n  \"is_keyframe\": null,\n  \"label_id\": null,\n  \"shape_type\": null,\n  \"stroke_width\": null,\n  \"track_id\": null\n}")
@@ -236,9 +268,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 				}
 				ctx := cmd.Context()
 				var body client.AnnotationSystemCreateShapeJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AnnotationSystemCreateShapeWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -257,7 +293,7 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 		cmd := &cobra.Command{
 			Use:   "create-shapes-bulk",
 			Short: "Create Shapes Bulk",
-			Long: "Create Shapes Bulk.\n\nRequest body fields:\n  annotation_media_id  uuid   required\n  label_ids            array  optional\n  shapes               array  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Shapes Bulk.\n\nRequest body fields:\n  annotation_media_id  uuid   required\n  label_ids            array  optional\n  shapes               array  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"annotation_media_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"label_ids\": null,\n  \"shapes\": []\n}")
@@ -265,9 +301,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 				}
 				ctx := cmd.Context()
 				var body client.AnnotationSystemCreateShapesBulkJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AnnotationSystemCreateShapesBulkWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -288,9 +328,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <labelId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <labelId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemDeleteLabelWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -307,9 +351,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <mediaId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <mediaId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemDeleteMediaWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -326,9 +374,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <projectId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemDeleteProjectWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -345,9 +397,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <linkId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <linkId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemDeleteProjectDeviceLinkWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -364,9 +420,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <shapeId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <shapeId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemDeleteShapeWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -383,11 +443,17 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <annotationMediaId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <annotationMediaId>: %w", err)
+				}
 				_arg1, err := strconv.Atoi(args[1])
-				if err != nil { return fmt.Errorf("path arg <frameIndex>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <frameIndex>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemDeleteShapesByFrameWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -404,9 +470,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <projectId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemDuplicateProjectWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -423,9 +493,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <labelId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <labelId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemGetLabelWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -442,9 +516,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <projectId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemGetLinksForProjectWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -461,9 +539,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <mediaId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <mediaId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemGetMediaWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -480,9 +562,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <mediaId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <mediaId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemGetMediaFileWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -499,9 +585,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <mediaId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <mediaId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemGetMediaWithShapesWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -518,9 +608,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <projectId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemGetProjectWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -537,9 +631,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <linkId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <linkId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemGetProjectDeviceLinkWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -556,9 +654,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <projectId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemGetProjectWithStatsWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -575,9 +677,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <pushId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <pushId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemGetPushWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -594,9 +700,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <pushId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <pushId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemGetPushDataWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -613,9 +723,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <shapeId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <shapeId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemGetShapeWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -632,9 +746,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <shapeId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <shapeId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemGetShapeWithLabelWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -651,9 +769,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <mediaId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <mediaId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemGetVideoFramesWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -670,9 +792,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <projectId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemInitializeDefaultLabelsWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -689,9 +815,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <annotationMediaId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <annotationMediaId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemInterpolateShapesWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -707,7 +837,9 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AnnotationSystemListLabelsWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -723,7 +855,9 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AnnotationSystemListMediaWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -739,7 +873,9 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AnnotationSystemListProjectDeviceLinksWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -755,7 +891,9 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AnnotationSystemListProjectsWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -771,7 +909,9 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AnnotationSystemListPushesWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -787,7 +927,9 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AnnotationSystemListShapesWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -804,11 +946,17 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <mediaId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <mediaId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <projectId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemMoveMediaToProjectWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -824,7 +972,9 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AnnotationSystemPreviewPushWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -839,7 +989,7 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 		cmd := &cobra.Command{
 			Use:   "push-to-all-linked",
 			Short: "Push To All Linked",
-			Long: "Push To All Linked.\n\nRequest body fields:\n  device_group_ids  array  optional\n  device_ids        array  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Push To All Linked.\n\nRequest body fields:\n  device_group_ids  array  optional\n  device_ids        array  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"device_group_ids\": null,\n  \"device_ids\": null\n}")
@@ -847,9 +997,13 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 				}
 				ctx := cmd.Context()
 				var body client.AnnotationSystemPushToAllLinkedJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AnnotationSystemPushToAllLinkedWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -870,11 +1024,17 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <projectId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <deviceId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemQuickLinkDeviceWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -891,11 +1051,17 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <projectId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				resp, err := getClient().AnnotationSystemQuickLinkDeviceGroupWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -910,7 +1076,7 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 		cmd := &cobra.Command{
 			Use:   "update-label <labelId>",
 			Short: "Update Label",
-			Long: "Update Label.\n\nRequest body fields:\n  category       string   optional\n  color          string   optional\n  description    string   optional\n  display_name   string   optional\n  display_order  integer  optional\n  hotkey         string   optional\n  is_active      boolean  optional\n  name           string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Label.\n\nRequest body fields:\n  category       string   optional\n  color          string   optional\n  description    string   optional\n  display_name   string   optional\n  display_order  integer  optional\n  hotkey         string   optional\n  is_active      boolean  optional\n  name           string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -919,11 +1085,17 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <labelId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <labelId>: %w", err)
+				}
 				var body client.AnnotationSystemUpdateLabelJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AnnotationSystemUpdateLabelWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -942,7 +1114,7 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 		cmd := &cobra.Command{
 			Use:   "update-media <mediaId>",
 			Short: "Update Media",
-			Long: "Update Media.\n\nRequest body fields:\n  description  string   optional\n  fps          number   optional\n  frame_count  integer  optional\n  height       integer  optional\n  title        string   optional\n  width        integer  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Media.\n\nRequest body fields:\n  description  string   optional\n  fps          number   optional\n  frame_count  integer  optional\n  height       integer  optional\n  title        string   optional\n  width        integer  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -951,11 +1123,17 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <mediaId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <mediaId>: %w", err)
+				}
 				var body client.AnnotationSystemUpdateMediaJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AnnotationSystemUpdateMediaWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -974,7 +1152,7 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 		cmd := &cobra.Command{
 			Use:   "update-project <projectId>",
 			Short: "Update Project",
-			Long: "Update Project.\n\nRequest body fields:\n  description  string   optional\n  is_active    boolean  optional\n  name         string   optional\n  version      string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Project.\n\nRequest body fields:\n  description  string   optional\n  is_active    boolean  optional\n  name         string   optional\n  version      string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -983,11 +1161,17 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <projectId>: %w", err)
+				}
 				var body client.AnnotationSystemUpdateProjectJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AnnotationSystemUpdateProjectWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -1006,7 +1190,7 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 		cmd := &cobra.Command{
 			Use:   "update-project-device-link <linkId>",
 			Short: "Update Project Device Link",
-			Long: "Update Project Device Link.\n\nRequest body fields:\n  is_active  boolean  optional\n  is_canary  boolean  optional\n  priority   integer  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Project Device Link.\n\nRequest body fields:\n  is_active  boolean  optional\n  is_canary  boolean  optional\n  priority   integer  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -1015,11 +1199,17 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <linkId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <linkId>: %w", err)
+				}
 				var body client.AnnotationSystemUpdateProjectDeviceLinkJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AnnotationSystemUpdateProjectDeviceLinkWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -1038,7 +1228,7 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 		cmd := &cobra.Command{
 			Use:   "update-shape <shapeId>",
 			Short: "Update Shape",
-			Long: "Update Shape.\n\nRequest body fields:\n  attributes    object   optional\n  color         string   optional\n  confidence    number   optional\n  frame_index   integer  optional\n  geometry      object   optional\n  is_keyframe   boolean  optional\n  label_id      uuid     optional\n  shape_type    string   optional\n  stroke_width  integer  optional\n  track_id      string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Shape.\n\nRequest body fields:\n  attributes    object   optional\n  color         string   optional\n  confidence    number   optional\n  frame_index   integer  optional\n  geometry      object   optional\n  is_keyframe   boolean  optional\n  label_id      uuid     optional\n  shape_type    string   optional\n  stroke_width  integer  optional\n  track_id      string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -1047,11 +1237,17 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <shapeId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <shapeId>: %w", err)
+				}
 				var body client.AnnotationSystemUpdateShapeJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AnnotationSystemUpdateShapeWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

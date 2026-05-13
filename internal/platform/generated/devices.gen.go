@@ -30,9 +30,13 @@ func NewDevicesCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceId>: %w", err)
+				}
 				resp, err := getClient().DevicesCheckDeviceHealthWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -47,7 +51,7 @@ func NewDevicesCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 		cmd := &cobra.Command{
 			Use:   "create",
 			Short: "Create Device",
-			Long: "Create Device.\n\nRequest body fields:\n  configuration    object  optional\n  device_group_id  uuid    required  The device group this device belongs to\n  device_type      string  optional\n  location_id      uuid    required  The location this device belongs to (line or unit level)\n  name             string  required\n  status           string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Device.\n\nRequest body fields:\n  configuration    object  optional\n  device_group_id  uuid    required  The device group this device belongs to\n  device_type      string  optional\n  location_id      uuid    required  The location this device belongs to (line or unit level)\n  name             string  required\n  status           string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"configuration\": null,\n  \"device_group_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"device_type\": null,\n  \"location_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"name\": \"\",\n  \"status\": null\n}")
@@ -55,9 +59,13 @@ func NewDevicesCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 				}
 				ctx := cmd.Context()
 				var body client.DevicesCreateDeviceJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().DevicesCreateDeviceWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -78,9 +86,13 @@ func NewDevicesCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceId>: %w", err)
+				}
 				resp, err := getClient().DevicesDeleteDeviceWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -96,7 +108,9 @@ func NewDevicesCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().DevicesDiscoverDevicesWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -113,9 +127,13 @@ func NewDevicesCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceId>: %w", err)
+				}
 				resp, err := getClient().DevicesGetDeviceWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -132,9 +150,13 @@ func NewDevicesCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceId>: %w", err)
+				}
 				resp, err := getClient().DevicesGetDeviceSyncStatusWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -150,7 +172,9 @@ func NewDevicesCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().DevicesListDevicesWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -167,11 +191,17 @@ func NewDevicesCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <modelId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <modelId>: %w", err)
+				}
 				resp, err := getClient().DevicesPushModelToDeviceWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -188,9 +218,13 @@ func NewDevicesCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceId>: %w", err)
+				}
 				resp, err := getClient().DevicesTestDeviceConnectionWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -207,9 +241,13 @@ func NewDevicesCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceId>: %w", err)
+				}
 				resp, err := getClient().DevicesTriggerDeviceSyncWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -224,7 +262,7 @@ func NewDevicesCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 		cmd := &cobra.Command{
 			Use:   "update <deviceId>",
 			Short: "Update Device",
-			Long: "Update Device.\n\nRequest body fields:\n  configuration  object  optional\n  device_type    string  optional\n  location_id    uuid    optional  Assign device to a location (line or unit level)\n  name           string  optional\n  status         string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Device.\n\nRequest body fields:\n  configuration  object  optional\n  device_type    string  optional\n  location_id    uuid    optional  Assign device to a location (line or unit level)\n  name           string  optional\n  status         string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -233,11 +271,17 @@ func NewDevicesCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceId>: %w", err)
+				}
 				var body client.DevicesUpdateDeviceJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().DevicesUpdateDeviceWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

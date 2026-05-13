@@ -28,7 +28,7 @@ func NewDeviceGroupsCmd(getClient func() *client.ClientWithResponses) *cobra.Com
 		cmd := &cobra.Command{
 			Use:   "create",
 			Short: "Create Device Group",
-			Long: "Create Device Group.\n\nRequest body fields:\n  description  string  optional  Optional description\n  name         string  required  Display name for the device group\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Device Group.\n\nRequest body fields:\n  description  string  optional  Optional description\n  name         string  required  Display name for the device group\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"name\": \"\"\n}")
@@ -36,9 +36,13 @@ func NewDeviceGroupsCmd(getClient func() *client.ClientWithResponses) *cobra.Com
 				}
 				ctx := cmd.Context()
 				var body client.DeviceGroupsCreateDeviceGroupJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().DeviceGroupsCreateDeviceGroupWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -59,9 +63,13 @@ func NewDeviceGroupsCmd(getClient func() *client.ClientWithResponses) *cobra.Com
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				resp, err := getClient().DeviceGroupsDeleteDeviceGroupWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -78,9 +86,13 @@ func NewDeviceGroupsCmd(getClient func() *client.ClientWithResponses) *cobra.Com
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				resp, err := getClient().DeviceGroupsGetDeviceGroupWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -96,7 +108,9 @@ func NewDeviceGroupsCmd(getClient func() *client.ClientWithResponses) *cobra.Com
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().DeviceGroupsListDeviceGroupsWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -111,7 +125,7 @@ func NewDeviceGroupsCmd(getClient func() *client.ClientWithResponses) *cobra.Com
 		cmd := &cobra.Command{
 			Use:   "update <deviceGroupId>",
 			Short: "Update Device Group",
-			Long: "Update Device Group.\n\nRequest body fields:\n  description  string  optional\n  name         string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Device Group.\n\nRequest body fields:\n  description  string  optional\n  name         string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -120,11 +134,17 @@ func NewDeviceGroupsCmd(getClient func() *client.ClientWithResponses) *cobra.Com
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				var body client.DeviceGroupsUpdateDeviceGroupJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().DeviceGroupsUpdateDeviceGroupWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

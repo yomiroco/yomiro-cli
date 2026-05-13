@@ -28,7 +28,9 @@ func NewAgentStreamCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 				ctx := cmd.Context()
 				_arg0 := args[0]
 				resp, err := getClient().AgentStreamStreamSessionEventsWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

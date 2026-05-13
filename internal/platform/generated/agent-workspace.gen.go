@@ -30,10 +30,14 @@ func NewAgentWorkspaceCmd(getClient func() *client.ClientWithResponses) *cobra.C
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <configId>: %w", err)
+				}
 				_arg1 := args[1]
 				resp, err := getClient().AgentWorkspaceGetWorkspaceFileWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -50,9 +54,13 @@ func NewAgentWorkspaceCmd(getClient func() *client.ClientWithResponses) *cobra.C
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <configId>: %w", err)
+				}
 				resp, err := getClient().AgentWorkspaceListWorkspaceFilesWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -69,10 +77,14 @@ func NewAgentWorkspaceCmd(getClient func() *client.ClientWithResponses) *cobra.C
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <configId>: %w", err)
+				}
 				_arg1 := args[1]
 				resp, err := getClient().AgentWorkspacePutWorkspaceFileWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

@@ -52,9 +52,13 @@ func NewImagesCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <imageId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <imageId>: %w", err)
+				}
 				resp, err := getClient().ImagesDeleteCameraImageWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -71,9 +75,13 @@ func NewImagesCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <imageId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <imageId>: %w", err)
+				}
 				resp, err := getClient().ImagesGetDifferenceFileWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -90,9 +98,13 @@ func NewImagesCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <imageId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <imageId>: %w", err)
+				}
 				resp, err := getClient().ImagesGetHeatmapFileWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -109,9 +121,13 @@ func NewImagesCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <imageId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <imageId>: %w", err)
+				}
 				resp, err := getClient().ImagesGetOriginalFileWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -128,9 +144,13 @@ func NewImagesCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <imageId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <imageId>: %w", err)
+				}
 				resp, err := getClient().ImagesGetProcessedFileWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -145,7 +165,7 @@ func NewImagesCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "patch-camera-review <imageId>",
 			Short: "Patch Camera Image Review",
-			Long: "Patch Camera Image Review.\n\nRequest body fields:\n  note   string  optional\n  state  string  required  one of: pending, approved, rejected\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Patch Camera Image Review.\n\nRequest body fields:\n  note   string  optional\n  state  string  required  one of: pending, approved, rejected\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -154,11 +174,17 @@ func NewImagesCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <imageId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <imageId>: %w", err)
+				}
 				var body client.ImagesPatchCameraImageReviewJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().ImagesPatchCameraImageReviewWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -179,9 +205,13 @@ func NewImagesCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <imageId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <imageId>: %w", err)
+				}
 				resp, err := getClient().ImagesReadCameraImageWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -197,7 +227,9 @@ func NewImagesCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().ImagesReadCameraImagesWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -223,7 +255,7 @@ func NewImagesCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "update-camera <imageId>",
 			Short: "Update Camera Image",
-			Long: "Update Camera Image.\n\nRequest body fields:\n  description        string  optional\n  processing_status  string  optional\n  source             string  optional\n  title              string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Camera Image.\n\nRequest body fields:\n  description        string  optional\n  processing_status  string  optional\n  source             string  optional\n  title              string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -232,11 +264,17 @@ func NewImagesCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <imageId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <imageId>: %w", err)
+				}
 				var body client.ImagesUpdateCameraImageJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().ImagesUpdateCameraImageWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

@@ -30,7 +30,7 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 		cmd := &cobra.Command{
 			Use:   "create",
 			Short: "Create Dashboard",
-			Long: "Create Dashboard.\n\nRequest body fields:\n  description  string  optional  Dashboard description\n  document     object  optional\n  name         string  required  Dashboard name\n  status       string  optional  Dashboard status: draft, published\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Dashboard.\n\nRequest body fields:\n  description  string  optional  Dashboard description\n  document     object  optional\n  name         string  required  Dashboard name\n  status       string  optional  Dashboard status: draft, published\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"document\": null,\n  \"name\": \"\",\n  \"status\": null\n}")
@@ -38,9 +38,13 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 				}
 				ctx := cmd.Context()
 				var body client.DashboardsCreateDashboardJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().DashboardsCreateDashboardWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -61,9 +65,13 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <dashboardId>: %w", err)
+				}
 				resp, err := getClient().DashboardsDeleteDashboardWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -80,9 +88,13 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <dashboardId>: %w", err)
+				}
 				resp, err := getClient().DashboardsExportDashboardWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -99,9 +111,13 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <dashboardId>: %w", err)
+				}
 				resp, err := getClient().DashboardsGetAlertSummaryWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -118,9 +134,13 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <dashboardId>: %w", err)
+				}
 				resp, err := getClient().DashboardsGetDashboardWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -137,9 +157,13 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <dashboardId>: %w", err)
+				}
 				resp, err := getClient().DashboardsGetDashboardAnnotationsWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -156,10 +180,14 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <dashboardId>: %w", err)
+				}
 				_arg1 := args[1]
 				resp, err := getClient().DashboardsGetVariableValuesWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -176,11 +204,17 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <dashboardId>: %w", err)
+				}
 				_arg1, err := strconv.Atoi(args[1])
-				if err != nil { return fmt.Errorf("path arg <version>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <version>: %w", err)
+				}
 				resp, err := getClient().DashboardsGetVersionWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -197,10 +231,14 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <dashboardId>: %w", err)
+				}
 				_arg1 := args[1]
 				resp, err := getClient().DashboardsGetWidgetAlertEventsWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -217,9 +255,13 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				var body client.DashboardsImportDashboardJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().DashboardsImportDashboardWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -239,7 +281,9 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 				ctx := cmd.Context()
 				_arg0 := args[0]
 				resp, err := getClient().DashboardsImportTemplateWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -255,7 +299,9 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().DashboardsListDashboardsWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -270,7 +316,9 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().DashboardsListTemplatesWithResponse(ctx)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -286,9 +334,13 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <dashboardId>: %w", err)
+				}
 				resp, err := getClient().DashboardsListVersionsWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -305,10 +357,14 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <dashboardId>: %w", err)
+				}
 				_arg1 := args[1]
 				resp, err := getClient().DashboardsQueryWidgetWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -325,11 +381,17 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <dashboardId>: %w", err)
+				}
 				_arg1, err := strconv.Atoi(args[1])
-				if err != nil { return fmt.Errorf("path arg <version>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <version>: %w", err)
+				}
 				resp, err := getClient().DashboardsRestoreVersionWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -344,7 +406,7 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 		cmd := &cobra.Command{
 			Use:   "update <dashboardId>",
 			Short: "Update Dashboard",
-			Long: "Update Dashboard.\n\nRequest body fields:\n  description  string   optional\n  document     object   optional\n  is_default   boolean  optional\n  name         string   optional\n  status       string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Dashboard.\n\nRequest body fields:\n  description  string   optional\n  document     object   optional\n  is_default   boolean  optional\n  name         string   optional\n  status       string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -353,11 +415,17 @@ func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <dashboardId>: %w", err)
+				}
 				var body client.DashboardsUpdateDashboardJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().DashboardsUpdateDashboardWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

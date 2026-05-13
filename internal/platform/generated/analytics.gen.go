@@ -26,7 +26,9 @@ func NewAnalyticsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AnalyticsGetAnalyticsSummaryWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -42,7 +44,9 @@ func NewAnalyticsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AnalyticsGetDashboardStatsWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -58,7 +62,9 @@ func NewAnalyticsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AnalyticsGetDetectionTrendsWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -74,7 +80,9 @@ func NewAnalyticsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AnalyticsGetDetectionTypesWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -90,7 +98,9 @@ func NewAnalyticsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AnalyticsGetDeviceHealthWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -106,7 +116,9 @@ func NewAnalyticsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AnalyticsGetDevicePerformanceWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -122,7 +134,9 @@ func NewAnalyticsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AnalyticsGetGrafanaUrlWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

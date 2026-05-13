@@ -28,7 +28,9 @@ func NewImpersonateCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().ImpersonateImpersonationStatusWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -43,7 +45,7 @@ func NewImpersonateCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 		cmd := &cobra.Command{
 			Use:   "start-impersonation",
 			Short: "Start Impersonation",
-			Long: "Start Impersonation.\n\nRequest body fields:\n  target_user_id  uuid  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Start Impersonation.\n\nRequest body fields:\n  target_user_id  uuid  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"target_user_id\": \"00000000-0000-0000-0000-000000000000\"\n}")
@@ -51,9 +53,13 @@ func NewImpersonateCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 				}
 				ctx := cmd.Context()
 				var body client.ImpersonateStartImpersonationJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().ImpersonateStartImpersonationWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -73,7 +79,9 @@ func NewImpersonateCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().ImpersonateStopImpersonationWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

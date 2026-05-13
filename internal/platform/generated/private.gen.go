@@ -26,7 +26,7 @@ func NewPrivateCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 		cmd := &cobra.Command{
 			Use:   "create-user",
 			Short: "Create User",
-			Long: "Create User.\n\nRequest body fields:\n  auth0_sub    string   optional\n  email        string   required\n  full_name    string   required\n  is_verified  boolean  optional\n  tenant_id    uuid     required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create User.\n\nRequest body fields:\n  auth0_sub    string   optional\n  email        string   required\n  full_name    string   required\n  is_verified  boolean  optional\n  tenant_id    uuid     required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"auth0_sub\": null,\n  \"email\": \"\",\n  \"full_name\": \"\",\n  \"is_verified\": null,\n  \"tenant_id\": \"00000000-0000-0000-0000-000000000000\"\n}")
@@ -34,9 +34,13 @@ func NewPrivateCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 				}
 				ctx := cmd.Context()
 				var body client.PrivateCreateUserJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().PrivateCreateUserWithResponse(ctx, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -55,7 +59,9 @@ func NewPrivateCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().PrivateGetTenantByOrgIdWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

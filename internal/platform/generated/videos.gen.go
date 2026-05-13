@@ -30,9 +30,13 @@ func NewVideosCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <videoId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <videoId>: %w", err)
+				}
 				resp, err := getClient().VideosDebugVideoFileWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -49,9 +53,13 @@ func NewVideosCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <videoId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <videoId>: %w", err)
+				}
 				resp, err := getClient().VideosDeleteCameraVideoWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -68,9 +76,13 @@ func NewVideosCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <videoId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <videoId>: %w", err)
+				}
 				resp, err := getClient().VideosGetOriginalVideoWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -88,7 +100,9 @@ func NewVideosCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				ctx := cmd.Context()
 				_arg0 := args[0]
 				resp, err := getClient().VideosGetProcessedVideoWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -105,9 +119,13 @@ func NewVideosCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <videoId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <videoId>: %w", err)
+				}
 				resp, err := getClient().VideosGetProcessedVideoFileWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -124,9 +142,13 @@ func NewVideosCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <videoId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <videoId>: %w", err)
+				}
 				resp, err := getClient().VideosGetProcessingStatusWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -154,9 +176,13 @@ func NewVideosCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <videoId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <videoId>: %w", err)
+				}
 				resp, err := getClient().VideosReadCameraVideoWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -172,7 +198,9 @@ func NewVideosCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().VideosReadCameraVideosWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -189,9 +217,13 @@ func NewVideosCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <videoId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <videoId>: %w", err)
+				}
 				resp, err := getClient().VideosReprocessCameraVideoWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -206,7 +238,7 @@ func NewVideosCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "update-camera <videoId>",
 			Short: "Update Camera Video",
-			Long: "Update Camera Video.\n\nRequest body fields:\n  description        string  optional\n  processing_status  string  optional\n  title              string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Camera Video.\n\nRequest body fields:\n  description        string  optional\n  processing_status  string  optional\n  title              string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -215,11 +247,17 @@ func NewVideosCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <videoId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <videoId>: %w", err)
+				}
 				var body client.VideosUpdateCameraVideoJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().VideosUpdateCameraVideoWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

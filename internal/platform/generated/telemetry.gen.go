@@ -24,7 +24,9 @@ func NewTelemetryCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().TelemetryReceiveOtlpMetricsWithResponse(ctx)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

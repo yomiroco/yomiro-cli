@@ -26,7 +26,9 @@ func NewAgentWorkspaceDefaultsCmd(getClient func() *client.ClientWithResponses) 
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AgentWorkspaceDefaultsGetDefaultSoulMdWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -42,7 +44,9 @@ func NewAgentWorkspaceDefaultsCmd(getClient func() *client.ClientWithResponses) 
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AgentWorkspaceDefaultsPutDefaultSoulMdWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

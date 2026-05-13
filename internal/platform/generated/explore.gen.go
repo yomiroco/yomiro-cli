@@ -28,7 +28,9 @@ func NewExploreCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().ExploreGetDataSourcesWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -43,7 +45,7 @@ func NewExploreCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 		cmd := &cobra.Command{
 			Use:   "run-raw-query",
 			Short: "Run Raw Query",
-			Long: "Run Raw Query.\n\nRequest body fields:\n  limit       integer  optional\n  sql         string   required\n  time_range  string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Run Raw Query.\n\nRequest body fields:\n  limit       integer  optional\n  sql         string   required\n  time_range  string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"limit\": null,\n  \"sql\": \"\",\n  \"time_range\": null\n}")
@@ -51,9 +53,13 @@ func NewExploreCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 				}
 				ctx := cmd.Context()
 				var body client.ExploreRunRawQueryJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().ExploreRunRawQueryWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

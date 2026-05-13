@@ -28,7 +28,7 @@ func NewInspectionCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 		cmd := &cobra.Command{
 			Use:   "create-capture-annotation <captureId>",
 			Short: "Create Capture Annotation",
-			Long: "Create Capture Annotation.\n\nRequest body fields:\n  defect_type         string  required\n  description         string  optional\n  detection_event_id  uuid    optional\n  detection_event_ts  string  optional\n  geometry            object  required\n  severity            string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Capture Annotation.\n\nRequest body fields:\n  defect_type         string  required\n  description         string  optional\n  detection_event_id  uuid    optional\n  detection_event_ts  string  optional\n  geometry            object  required\n  severity            string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -37,11 +37,17 @@ func NewInspectionCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <captureId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <captureId>: %w", err)
+				}
 				var body client.InspectionCreateCaptureAnnotationJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().InspectionCreateCaptureAnnotationWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -62,9 +68,13 @@ func NewInspectionCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <annotationId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <annotationId>: %w", err)
+				}
 				resp, err := getClient().InspectionDeleteAnnotationWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -81,9 +91,13 @@ func NewInspectionCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <captureId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <captureId>: %w", err)
+				}
 				resp, err := getClient().InspectionListCaptureAnnotationsWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -100,9 +114,13 @@ func NewInspectionCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <captureId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <captureId>: %w", err)
+				}
 				resp, err := getClient().InspectionPromoteCaptureToGoldenWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -117,7 +135,7 @@ func NewInspectionCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 		cmd := &cobra.Command{
 			Use:   "set-capture-reference-set <captureId>",
 			Short: "Set Capture Reference Set",
-			Long: "Set Capture Reference Set.\n\nRequest body fields:\n  is_reference_set  boolean  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Set Capture Reference Set.\n\nRequest body fields:\n  is_reference_set  boolean  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -126,11 +144,17 @@ func NewInspectionCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <captureId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <captureId>: %w", err)
+				}
 				var body client.InspectionSetCaptureReferenceSetJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().InspectionSetCaptureReferenceSetWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -149,7 +173,7 @@ func NewInspectionCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 		cmd := &cobra.Command{
 			Use:   "update-annotation <annotationId>",
 			Short: "Update Annotation",
-			Long: "Update Annotation.\n\nRequest body fields:\n  defect_type  string  optional\n  description  string  optional\n  geometry     object  optional\n  severity     string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Annotation.\n\nRequest body fields:\n  defect_type  string  optional\n  description  string  optional\n  geometry     object  optional\n  severity     string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -158,11 +182,17 @@ func NewInspectionCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <annotationId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <annotationId>: %w", err)
+				}
 				var body client.InspectionUpdateAnnotationJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().InspectionUpdateAnnotationWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

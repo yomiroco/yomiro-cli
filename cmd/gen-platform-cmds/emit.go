@@ -82,10 +82,10 @@ func New{{.GoTag}}Cmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 `
 
 type tmplData struct {
-	Tag          string
-	GoTag        string
-	CLITag       string
-	Subs         []subCmd
+	Tag           string
+	GoTag         string
+	CLITag        string
+	Subs          []subCmd
 	NeedsFmt      bool
 	NeedsUUID     bool
 	NeedsStrconv  bool
@@ -152,13 +152,13 @@ func EmitGroup(tag string, ops []Operation, methods map[string]ClientMethod, out
 		subs = append(subs, s)
 	}
 	data := tmplData{
-		Tag:          tag,
-		GoTag:        goName(tag),
-		CLITag:       cliName(tag),
-		Subs:         subs,
-		NeedsFmt:     needsFmt,
-		NeedsUUID:    needsUUID,
-		NeedsStrconv: needsStrconv,
+		Tag:           tag,
+		GoTag:         goName(tag),
+		CLITag:        cliName(tag),
+		Subs:          subs,
+		NeedsFmt:      needsFmt,
+		NeedsUUID:     needsUUID,
+		NeedsStrconv:  needsStrconv,
 		NeedsOutput:   needsOutput,
 		NeedsBindings: needsBindings,
 	}

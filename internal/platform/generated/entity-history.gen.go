@@ -29,7 +29,9 @@ func NewEntityHistoryCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().EntityHistoryListRecentWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -46,9 +48,13 @@ func NewEntityHistoryCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <groupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <groupId>: %w", err)
+				}
 				resp, err := getClient().EntityHistoryRestoreWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

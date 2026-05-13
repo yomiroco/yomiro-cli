@@ -28,7 +28,7 @@ func NewDataSourcesCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 		cmd := &cobra.Command{
 			Use:   "create",
 			Short: "Create Data Source",
-			Long: "Create Data Source.\n\nRequest body fields:\n  agent_dsn      string   optional  Agent DSN for proxied connections\n  agent_id       uuid     optional  Agent UUID for proxied connections\n  database_name  string   optional  Database name\n  description    string   optional  Connection description\n  ds_type        string   required  Database type: postgresql | mysql | timescaledb\n  extra_options  object   optional  Additional connection options\n  host           string   optional  Database host\n  name           string   required  Connection name\n  password       string   optional  Plain-text password (encrypted on save)\n  port           integer  optional  Database port\n  ssl_mode       string   optional  SSL mode\n  username       string   optional  Database username\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Data Source.\n\nRequest body fields:\n  agent_dsn      string   optional  Agent DSN for proxied connections\n  agent_id       uuid     optional  Agent UUID for proxied connections\n  database_name  string   optional  Database name\n  description    string   optional  Connection description\n  ds_type        string   required  Database type: postgresql | mysql | timescaledb\n  extra_options  object   optional  Additional connection options\n  host           string   optional  Database host\n  name           string   required  Connection name\n  password       string   optional  Plain-text password (encrypted on save)\n  port           integer  optional  Database port\n  ssl_mode       string   optional  SSL mode\n  username       string   optional  Database username\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"agent_dsn\": null,\n  \"agent_id\": null,\n  \"database_name\": null,\n  \"description\": null,\n  \"ds_type\": \"\",\n  \"extra_options\": null,\n  \"host\": null,\n  \"name\": \"\",\n  \"password\": null,\n  \"port\": null,\n  \"ssl_mode\": null,\n  \"username\": null\n}")
@@ -36,9 +36,13 @@ func NewDataSourcesCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 				}
 				ctx := cmd.Context()
 				var body client.DataSourcesCreateDataSourceJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().DataSourcesCreateDataSourceWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -59,9 +63,13 @@ func NewDataSourcesCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <sourceId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <sourceId>: %w", err)
+				}
 				resp, err := getClient().DataSourcesDeleteDataSourceWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -78,9 +86,13 @@ func NewDataSourcesCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <sourceId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <sourceId>: %w", err)
+				}
 				resp, err := getClient().DataSourcesGetDataSourceWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -97,9 +109,13 @@ func NewDataSourcesCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <sourceId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <sourceId>: %w", err)
+				}
 				resp, err := getClient().DataSourcesIntrospectDataSourceWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -115,7 +131,9 @@ func NewDataSourcesCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().DataSourcesListDataSourcesWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -132,9 +150,13 @@ func NewDataSourcesCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <sourceId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <sourceId>: %w", err)
+				}
 				resp, err := getClient().DataSourcesTestDataSourceWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -149,7 +171,7 @@ func NewDataSourcesCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 		cmd := &cobra.Command{
 			Use:   "update <sourceId>",
 			Short: "Update Data Source",
-			Long: "Update Data Source.\n\nRequest body fields:\n  agent_dsn      string   optional\n  agent_id       uuid     optional\n  database_name  string   optional\n  description    string   optional\n  ds_type        string   optional\n  extra_options  object   optional\n  host           string   optional\n  name           string   optional\n  password       string   optional  Plain-text password (encrypted on save)\n  port           integer  optional\n  ssl_mode       string   optional\n  username       string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Data Source.\n\nRequest body fields:\n  agent_dsn      string   optional\n  agent_id       uuid     optional\n  database_name  string   optional\n  description    string   optional\n  ds_type        string   optional\n  extra_options  object   optional\n  host           string   optional\n  name           string   optional\n  password       string   optional  Plain-text password (encrypted on save)\n  port           integer  optional\n  ssl_mode       string   optional\n  username       string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -158,11 +180,17 @@ func NewDataSourcesCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <sourceId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <sourceId>: %w", err)
+				}
 				var body client.DataSourcesUpdateDataSourceJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().DataSourcesUpdateDataSourceWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

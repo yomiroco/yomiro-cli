@@ -30,11 +30,17 @@ func NewRefSheetsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <sheetId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <sheetId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <versionId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <versionId>: %w", err)
+				}
 				resp, err := getClient().RefSheetsActivateRefSheetVersionWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -73,9 +79,13 @@ func NewRefSheetsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <sheetId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <sheetId>: %w", err)
+				}
 				resp, err := getClient().RefSheetsDeleteRefSheetWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -92,11 +102,17 @@ func NewRefSheetsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <sheetId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <sheetId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <versionId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <versionId>: %w", err)
+				}
 				resp, err := getClient().RefSheetsDeleteRefSheetVersionWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -113,9 +129,13 @@ func NewRefSheetsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <sheetId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <sheetId>: %w", err)
+				}
 				resp, err := getClient().RefSheetsGetRefSheetWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -143,9 +163,13 @@ func NewRefSheetsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <sheetId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <sheetId>: %w", err)
+				}
 				resp, err := getClient().RefSheetsListRefSheetVersionsWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -161,7 +185,9 @@ func NewRefSheetsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().RefSheetsListRefSheetsWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -176,7 +202,7 @@ func NewRefSheetsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 		cmd := &cobra.Command{
 			Use:   "update <sheetId>",
 			Short: "Update Ref Sheet",
-			Long: "Update Ref Sheet.\n\nRequest body fields:\n  description  string  optional\n  name         string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Ref Sheet.\n\nRequest body fields:\n  description  string  optional\n  name         string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -185,11 +211,17 @@ func NewRefSheetsCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <sheetId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <sheetId>: %w", err)
+				}
 				var body client.RefSheetsUpdateRefSheetJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().RefSheetsUpdateRefSheetWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

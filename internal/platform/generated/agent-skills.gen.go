@@ -28,7 +28,7 @@ func NewAgentSkillsCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 		cmd := &cobra.Command{
 			Use:   "create-skill",
 			Short: "Create Skill",
-			Long: "Create Skill.\n\nRequest body fields:\n  description       string  optional\n  name              string  required\n  scope             string  optional  one of: global, agent, group\n  scope_ref         string  optional\n  skill_md_content  string  optional  Optional SKILL.md content to upload\n  source            string  optional\n  tags              array   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Skill.\n\nRequest body fields:\n  description       string  optional\n  name              string  required\n  scope             string  optional  one of: global, agent, group\n  scope_ref         string  optional\n  skill_md_content  string  optional  Optional SKILL.md content to upload\n  source            string  optional\n  tags              array   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"name\": \"\",\n  \"scope\": null,\n  \"scope_ref\": null,\n  \"skill_md_content\": null,\n  \"source\": null,\n  \"tags\": null\n}")
@@ -36,9 +36,13 @@ func NewAgentSkillsCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 				}
 				ctx := cmd.Context()
 				var body client.AgentSkillsCreateSkillJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AgentSkillsCreateSkillWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -59,9 +63,13 @@ func NewAgentSkillsCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <skillId>: %w", err)
+				}
 				resp, err := getClient().AgentSkillsDeleteSkillWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -78,9 +86,13 @@ func NewAgentSkillsCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <skillId>: %w", err)
+				}
 				resp, err := getClient().AgentSkillsForkSkillWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -97,9 +109,13 @@ func NewAgentSkillsCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <skillId>: %w", err)
+				}
 				resp, err := getClient().AgentSkillsGetDefaultContentWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -116,9 +132,13 @@ func NewAgentSkillsCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <skillId>: %w", err)
+				}
 				resp, err := getClient().AgentSkillsGetSkillWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -135,9 +155,13 @@ func NewAgentSkillsCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <skillId>: %w", err)
+				}
 				resp, err := getClient().AgentSkillsGetSkillContentWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -153,7 +177,9 @@ func NewAgentSkillsCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AgentSkillsListSkillsWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -170,9 +196,13 @@ func NewAgentSkillsCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <skillId>: %w", err)
+				}
 				resp, err := getClient().AgentSkillsPutSkillContentWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -189,9 +219,13 @@ func NewAgentSkillsCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <skillId>: %w", err)
+				}
 				resp, err := getClient().AgentSkillsRevertForkWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -206,7 +240,7 @@ func NewAgentSkillsCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 		cmd := &cobra.Command{
 			Use:   "update-skill <skillId>",
 			Short: "Update Skill",
-			Long: "Update Skill.\n\nRequest body fields:\n  description       string  optional\n  name              string  optional\n  scope             string  optional  one of: global, agent, group\n  scope_ref         string  optional\n  skill_md_content  string  optional\n  status            string  optional  one of: draft, active, archived\n  tags              array   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Skill.\n\nRequest body fields:\n  description       string  optional\n  name              string  optional\n  scope             string  optional  one of: global, agent, group\n  scope_ref         string  optional\n  skill_md_content  string  optional\n  status            string  optional  one of: draft, active, archived\n  tags              array   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -215,11 +249,17 @@ func NewAgentSkillsCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <skillId>: %w", err)
+				}
 				var body client.AgentSkillsUpdateSkillJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AgentSkillsUpdateSkillWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

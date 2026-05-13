@@ -28,7 +28,9 @@ func NewOrganizationsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().OrganizationsDeleteOrganizationLogoWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -44,7 +46,9 @@ func NewOrganizationsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().OrganizationsGetOrganizationLogoWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -60,7 +64,9 @@ func NewOrganizationsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().OrganizationsReadOrganizationMeWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -76,7 +82,9 @@ func NewOrganizationsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().OrganizationsReadOrganizationMqttConfigWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -91,7 +99,7 @@ func NewOrganizationsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 		cmd := &cobra.Command{
 			Use:   "update-me",
 			Short: "Update Organization Me",
-			Long: "Update Organization Me.\n\nRequest body fields:\n  billing_email    string   optional\n  billing_plan     string   optional\n  customer_domain  string   optional\n  internal_id      string   optional\n  is_active        boolean  optional\n  logo_path        string   optional\n  mqtt_password    string   optional\n  mqtt_username    string   optional\n  name             string   optional\n  settings         object   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Organization Me.\n\nRequest body fields:\n  billing_email    string   optional\n  billing_plan     string   optional\n  customer_domain  string   optional\n  internal_id      string   optional\n  is_active        boolean  optional\n  logo_path        string   optional\n  mqtt_password    string   optional\n  mqtt_username    string   optional\n  name             string   optional\n  settings         object   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"billing_email\": null,\n  \"billing_plan\": null,\n  \"customer_domain\": null,\n  \"internal_id\": null,\n  \"is_active\": null,\n  \"logo_path\": null,\n  \"mqtt_password\": null,\n  \"mqtt_username\": null,\n  \"name\": null,\n  \"settings\": null\n}")
@@ -99,9 +107,13 @@ func NewOrganizationsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 				}
 				ctx := cmd.Context()
 				var body client.OrganizationsUpdateOrganizationMeJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().OrganizationsUpdateOrganizationMeWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

@@ -28,7 +28,7 @@ func NewOtelEndpointsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 		cmd := &cobra.Command{
 			Use:   "create <deviceGroupId>",
 			Short: "Create Otel Endpoint",
-			Long: "Create Otel Endpoint.\n\nRequest body fields:\n  endpoint  string   required  gRPC endpoint (host:port)\n  insecure  boolean  optional  Use insecure (no TLS) gRPC connection\n  name      string   required  Endpoint name (e.g. 'cluster', 'local-dev')\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Otel Endpoint.\n\nRequest body fields:\n  endpoint  string   required  gRPC endpoint (host:port)\n  insecure  boolean  optional  Use insecure (no TLS) gRPC connection\n  name      string   required  Endpoint name (e.g. 'cluster', 'local-dev')\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -37,11 +37,17 @@ func NewOtelEndpointsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				var body client.OtelEndpointsCreateOtelEndpointJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().OtelEndpointsCreateOtelEndpointWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -62,11 +68,17 @@ func NewOtelEndpointsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <endpointId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <endpointId>: %w", err)
+				}
 				resp, err := getClient().OtelEndpointsDeleteOtelEndpointWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -83,9 +95,13 @@ func NewOtelEndpointsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				resp, err := getClient().OtelEndpointsListOtelEndpointsWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -102,11 +118,17 @@ func NewOtelEndpointsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <endpointId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <endpointId>: %w", err)
+				}
 				resp, err := getClient().OtelEndpointsTestOtelEndpointWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -121,7 +143,7 @@ func NewOtelEndpointsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 		cmd := &cobra.Command{
 			Use:   "update <deviceGroupId> <endpointId>",
 			Short: "Update Otel Endpoint",
-			Long: "Update Otel Endpoint.\n\nRequest body fields:\n  endpoint  string   optional\n  insecure  boolean  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Otel Endpoint.\n\nRequest body fields:\n  endpoint  string   optional\n  insecure  boolean  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -130,13 +152,21 @@ func NewOtelEndpointsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <endpointId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <endpointId>: %w", err)
+				}
 				var body client.OtelEndpointsUpdateOtelEndpointJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().OtelEndpointsUpdateOtelEndpointWithResponse(ctx, _arg0, _arg1, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

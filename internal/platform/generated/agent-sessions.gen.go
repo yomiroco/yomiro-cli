@@ -30,7 +30,9 @@ func NewAgentSessionsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 				ctx := cmd.Context()
 				_arg0 := args[0]
 				resp, err := getClient().AgentSessionsGetSessionMessagesWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -46,7 +48,9 @@ func NewAgentSessionsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AgentSessionsListSessionsWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -61,7 +65,7 @@ func NewAgentSessionsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 		cmd := &cobra.Command{
 			Use:   "save-session-messages-endpoint <sessionId>",
 			Short: "Save Session Messages Endpoint",
-			Long: "Save Session Messages Endpoint.\n\nRequest body fields:\n  messages  array   required\n  status    string  optional  one of: active, paused_for_approval, stopped, completed, failed\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Save Session Messages Endpoint.\n\nRequest body fields:\n  messages  array   required\n  status    string  optional  one of: active, paused_for_approval, stopped, completed, failed\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -71,9 +75,13 @@ func NewAgentSessionsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 				ctx := cmd.Context()
 				_arg0 := args[0]
 				var body client.AgentSessionsSaveSessionMessagesEndpointJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AgentSessionsSaveSessionMessagesEndpointWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -95,7 +103,9 @@ func NewAgentSessionsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 				ctx := cmd.Context()
 				_arg0 := args[0]
 				resp, err := getClient().AgentSessionsUpdateSessionWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -110,7 +120,7 @@ func NewAgentSessionsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 		cmd := &cobra.Command{
 			Use:   "update-session-preferences <sessionId>",
 			Short: "Update Session Preferences",
-			Long: "Update Session Preferences.\n\nRequest body fields:\n  session_preferences  object  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Session Preferences.\n\nRequest body fields:\n  session_preferences  object  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -120,9 +130,13 @@ func NewAgentSessionsCmd(getClient func() *client.ClientWithResponses) *cobra.Co
 				ctx := cmd.Context()
 				_arg0 := args[0]
 				var body client.AgentSessionsUpdateSessionPreferencesJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AgentSessionsUpdateSessionPreferencesWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

@@ -30,9 +30,13 @@ func NewAgentChatCmd(getClient func() *client.ClientWithResponses) *cobra.Comman
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <configId>: %w", err)
+				}
 				resp, err := getClient().AgentChatChatWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

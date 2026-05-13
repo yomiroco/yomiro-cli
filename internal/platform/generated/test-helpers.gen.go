@@ -27,7 +27,7 @@ func NewTestHelpersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 		cmd := &cobra.Command{
 			Use:   "create-test-tenant",
 			Short: "Create Test Tenant",
-			Long: "Create Test Tenant.\n\nRequest body fields:\n  auth0_sub  string  required\n  email      string  required\n  worker_id  string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Test Tenant.\n\nRequest body fields:\n  auth0_sub  string  required\n  email      string  required\n  worker_id  string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"auth0_sub\": \"\",\n  \"email\": \"\",\n  \"worker_id\": \"\"\n}")
@@ -35,9 +35,13 @@ func NewTestHelpersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 				}
 				ctx := cmd.Context()
 				var body client.TestHelpersCreateTestTenantJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().TestHelpersCreateTestTenantWithResponse(ctx, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -56,9 +60,13 @@ func NewTestHelpersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <tenantId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <tenantId>: %w", err)
+				}
 				resp, err := getClient().TestHelpersDeleteTestTenantWithResponse(ctx, _arg0)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -71,7 +79,7 @@ func NewTestHelpersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 		cmd := &cobra.Command{
 			Use:   "sweep-test-tenants",
 			Short: "Sweep Test Tenants",
-			Long: "Sweep Test Tenants.\n\nRequest body fields:\n  older_than_minutes  integer  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Sweep Test Tenants.\n\nRequest body fields:\n  older_than_minutes  integer  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"older_than_minutes\": null\n}")
@@ -79,9 +87,13 @@ func NewTestHelpersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 				}
 				ctx := cmd.Context()
 				var body client.TestHelpersSweepTestTenantsJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().TestHelpersSweepTestTenantsWithResponse(ctx, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -99,7 +111,9 @@ func NewTestHelpersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().TestHelpersSweepTestUsersWithResponse(ctx)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

@@ -28,7 +28,7 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create-config",
 			Short: "Create Agent Config",
-			Long: "Create Agent Config.\n\nRequest body fields:\n  agent_md_content  string   optional  Optional AGENT.md content to upload\n  agent_role        string   optional  one of: sidebar, general, custom, page\n  cost_budget_usd   number   optional\n  data_sources      array    optional\n  description       string   optional\n  execution_tier    string   optional  one of: structured, shell\n  is_default        boolean  optional\n  model             string   optional\n  name              string   required\n  skills            array    optional\n  soul_md_content   string   optional  Optional SOUL.md content to upload\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Agent Config.\n\nRequest body fields:\n  agent_md_content  string   optional  Optional AGENT.md content to upload\n  agent_role        string   optional  one of: sidebar, general, custom, page\n  cost_budget_usd   number   optional\n  data_sources      array    optional\n  description       string   optional\n  execution_tier    string   optional  one of: structured, shell\n  is_default        boolean  optional\n  model             string   optional\n  name              string   required\n  skills            array    optional\n  soul_md_content   string   optional  Optional SOUL.md content to upload\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"agent_md_content\": null,\n  \"agent_role\": null,\n  \"cost_budget_usd\": null,\n  \"data_sources\": null,\n  \"description\": null,\n  \"execution_tier\": null,\n  \"is_default\": null,\n  \"model\": null,\n  \"name\": \"\",\n  \"skills\": null,\n  \"soul_md_content\": null\n}")
@@ -36,9 +36,13 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				}
 				ctx := cmd.Context()
 				var body client.AgentsCreateAgentConfigJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AgentsCreateAgentConfigWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -57,7 +61,7 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create-heartbeat-task <configId>",
 			Short: "Create Heartbeat Task",
-			Long: "Create Heartbeat Task.\n\nRequest body fields:\n  description             string  optional\n  name                    string  required\n  output_config           object  optional\n  output_target           string  optional  one of: dashboard_widget, notification, report, none\n  prompt                  string  required\n  schedule                string  required\n  target_agent_config_id  uuid    optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Heartbeat Task.\n\nRequest body fields:\n  description             string  optional\n  name                    string  required\n  output_config           object  optional\n  output_target           string  optional  one of: dashboard_widget, notification, report, none\n  prompt                  string  required\n  schedule                string  required\n  target_agent_config_id  uuid    optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -66,11 +70,17 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <configId>: %w", err)
+				}
 				var body client.AgentsCreateHeartbeatTaskJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AgentsCreateHeartbeatTaskWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -89,7 +99,7 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create-hook <configId>",
 			Short: "Create Hook",
-			Long: "Create Hook.\n\nRequest body fields:\n  description      string  optional\n  event_type       string  required  one of: inspection_completed, ringbuffer_captured, alert_fired, device_connecte…\n  filter           object  optional\n  name             string  required\n  prompt_template  string  required\n  security_mode    string  optional  one of: auto, notify, approval_required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Hook.\n\nRequest body fields:\n  description      string  optional\n  event_type       string  required  one of: inspection_completed, ringbuffer_captured, alert_fired, device_connecte…\n  filter           object  optional\n  name             string  required\n  prompt_template  string  required\n  security_mode    string  optional  one of: auto, notify, approval_required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -98,11 +108,17 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <configId>: %w", err)
+				}
 				var body client.AgentsCreateHookJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AgentsCreateHookWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -123,9 +139,13 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <configId>: %w", err)
+				}
 				resp, err := getClient().AgentsDeleteAgentConfigWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -142,9 +162,13 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <taskId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <taskId>: %w", err)
+				}
 				resp, err := getClient().AgentsDeleteHeartbeatTaskWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -161,9 +185,13 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <hookId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <hookId>: %w", err)
+				}
 				resp, err := getClient().AgentsDeleteHookWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -180,9 +208,13 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <configId>: %w", err)
+				}
 				resp, err := getClient().AgentsExportHeartbeatMdWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -199,9 +231,13 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <configId>: %w", err)
+				}
 				resp, err := getClient().AgentsGetAgentConfigWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -218,9 +254,13 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <taskId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <taskId>: %w", err)
+				}
 				resp, err := getClient().AgentsGetHeartbeatTaskWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -237,9 +277,13 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <hookId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <hookId>: %w", err)
+				}
 				resp, err := getClient().AgentsGetHookWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -255,7 +299,9 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AgentsListAgentConfigsWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -272,9 +318,13 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <configId>: %w", err)
+				}
 				resp, err := getClient().AgentsListHeartbeatTasksWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -291,9 +341,13 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <configId>: %w", err)
+				}
 				resp, err := getClient().AgentsListHooksWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -309,7 +363,9 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().AgentsListPageAgentsWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -326,9 +382,13 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <configId>: %w", err)
+				}
 				resp, err := getClient().AgentsSyncHeartbeatMdWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -343,7 +403,7 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "update-config <configId>",
 			Short: "Update Agent Config",
-			Long: "Update Agent Config.\n\nRequest body fields:\n  agent_md_content      string   optional  Updated AGENT.md content\n  agent_role            string   optional  one of: sidebar, general, custom, page\n  cost_budget_usd       number   optional\n  data_sources          array    optional\n  description           string   optional\n  execution_tier        string   optional  one of: structured, shell\n  is_active             boolean  optional\n  is_default            boolean  optional\n  model                 string   optional\n  name                  string   optional\n  security_policy       object   optional\n  skills                array    optional\n  soul_md_content       string   optional  Updated SOUL.md content\n  uses_default_soul_md  boolean  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Agent Config.\n\nRequest body fields:\n  agent_md_content      string   optional  Updated AGENT.md content\n  agent_role            string   optional  one of: sidebar, general, custom, page\n  cost_budget_usd       number   optional\n  data_sources          array    optional\n  description           string   optional\n  execution_tier        string   optional  one of: structured, shell\n  is_active             boolean  optional\n  is_default            boolean  optional\n  model                 string   optional\n  name                  string   optional\n  security_policy       object   optional\n  skills                array    optional\n  soul_md_content       string   optional  Updated SOUL.md content\n  uses_default_soul_md  boolean  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -352,11 +412,17 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <configId>: %w", err)
+				}
 				var body client.AgentsUpdateAgentConfigJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AgentsUpdateAgentConfigWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -375,7 +441,7 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "update-heartbeat-task <taskId>",
 			Short: "Update Heartbeat Task",
-			Long: "Update Heartbeat Task.\n\nRequest body fields:\n  description             string   optional\n  is_active               boolean  optional\n  name                    string   optional\n  output_config           object   optional\n  output_target           string   optional  one of: dashboard_widget, notification, report, none\n  prompt                  string   optional\n  schedule                string   optional\n  target_agent_config_id  uuid     optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Heartbeat Task.\n\nRequest body fields:\n  description             string   optional\n  is_active               boolean  optional\n  name                    string   optional\n  output_config           object   optional\n  output_target           string   optional  one of: dashboard_widget, notification, report, none\n  prompt                  string   optional\n  schedule                string   optional\n  target_agent_config_id  uuid     optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -384,11 +450,17 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <taskId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <taskId>: %w", err)
+				}
 				var body client.AgentsUpdateHeartbeatTaskJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AgentsUpdateHeartbeatTaskWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -407,7 +479,7 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "update-hook <hookId>",
 			Short: "Update Hook",
-			Long: "Update Hook.\n\nRequest body fields:\n  description      string   optional\n  filter           object   optional\n  is_active        boolean  optional\n  name             string   optional\n  prompt_template  string   optional\n  security_mode    string   optional  one of: auto, notify, approval_required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Hook.\n\nRequest body fields:\n  description      string   optional\n  filter           object   optional\n  is_active        boolean  optional\n  name             string   optional\n  prompt_template  string   optional\n  security_mode    string   optional  one of: auto, notify, approval_required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -416,11 +488,17 @@ func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <hookId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <hookId>: %w", err)
+				}
 				var body client.AgentsUpdateHookJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().AgentsUpdateHookWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}

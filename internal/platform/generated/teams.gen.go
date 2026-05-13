@@ -30,9 +30,13 @@ func NewTeamsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <teamId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <teamId>: %w", err)
+				}
 				resp, err := getClient().TeamsAddTeamMemberWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -47,7 +51,7 @@ func NewTeamsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create",
 			Short: "Create Team",
-			Long: "Create Team.\n\nRequest body fields:\n  default_role  string   optional  Default role for new members\n  description   string   optional  Team description\n  is_default    boolean  optional  Whether this is the tenant's default team\n  name          string   required  Team name\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Team.\n\nRequest body fields:\n  default_role  string   optional  Default role for new members\n  description   string   optional  Team description\n  is_default    boolean  optional  Whether this is the tenant's default team\n  name          string   required  Team name\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"default_role\": null,\n  \"description\": null,\n  \"is_default\": null,\n  \"name\": \"\"\n}")
@@ -55,9 +59,13 @@ func NewTeamsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				}
 				ctx := cmd.Context()
 				var body client.TeamsCreateTeamJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().TeamsCreateTeamWithResponse(ctx, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -78,9 +86,13 @@ func NewTeamsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <teamId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <teamId>: %w", err)
+				}
 				resp, err := getClient().TeamsDeleteTeamWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -96,7 +108,9 @@ func NewTeamsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().TeamsGetDefaultTeamWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -113,9 +127,13 @@ func NewTeamsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <teamId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <teamId>: %w", err)
+				}
 				resp, err := getClient().TeamsGetTeamWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -132,9 +150,13 @@ func NewTeamsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <teamId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <teamId>: %w", err)
+				}
 				resp, err := getClient().TeamsListTeamMembersWithResponse(ctx, _arg0, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -150,7 +172,9 @@ func NewTeamsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				resp, err := getClient().TeamsListTeamsWithResponse(ctx, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -167,11 +191,17 @@ func NewTeamsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			RunE: func(cmd *cobra.Command, args []string) error {
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <teamId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <teamId>: %w", err)
+				}
 				_arg1, err := uuid.Parse(args[1])
-				if err != nil { return fmt.Errorf("path arg <userId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <userId>: %w", err)
+				}
 				resp, err := getClient().TeamsRemoveTeamMemberWithResponse(ctx, _arg0, _arg1, &params)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
@@ -186,7 +216,7 @@ func NewTeamsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "update <teamId>",
 			Short: "Update Team",
-			Long: "Update Team.\n\nRequest body fields:\n  default_role  string   optional\n  description   string   optional\n  is_default    boolean  optional\n  name          string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Team.\n\nRequest body fields:\n  default_role  string   optional\n  description   string   optional\n  is_default    boolean  optional\n  name          string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
@@ -195,11 +225,17 @@ func NewTeamsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				}
 				ctx := cmd.Context()
 				_arg0, err := uuid.Parse(args[0])
-				if err != nil { return fmt.Errorf("path arg <teamId>: %w", err) }
+				if err != nil {
+					return fmt.Errorf("path arg <teamId>: %w", err)
+				}
 				var body client.TeamsUpdateTeamJSONRequestBody
-				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
 				resp, err := getClient().TeamsUpdateTeamWithResponse(ctx, _arg0, &params, body)
-				if err != nil { return err }
+				if err != nil {
+					return err
+				}
 				return output.RenderResponse(cmd, resp)
 			},
 		}
