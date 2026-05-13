@@ -1,0 +1,13 @@
+package: client
+output: internal/platform/client/client.gen.go
+generate:
+  models: true
+  client: true
+  embedded-spec: false
+output-options:
+  skip-prune: true
+# Note: one operation is excluded at the CLI invocation
+# (`--exclude-operation-ids=images-reprocess_camera_image`) because it has a
+# malformed spec — the path declares `{id}` but the handler parameter is
+# `image_id` (query), leaving the placeholder unbound. oapi-codegen rejects
+# this. Tracked separately; the route needs to use `id: uuid.UUID`.

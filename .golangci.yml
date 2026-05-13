@@ -1,0 +1,43 @@
+version: "2"
+linters:
+  enable:
+    - gosec
+  settings:
+    gosec:
+      # G101: test fixtures and YAML samples carry placeholder credentials by design
+      # G115: int->int32 narrowings are bounded by caller validation
+      # G117: marshaled struct tags that resemble secret patterns (false-positive in tests)
+      # G304: file path inputs are user-supplied by design (config files)
+      # G402: InsecureSkipVerify is operator-controlled for cert-pinning workflows
+      # G404: math/rand is fine for backoff jitter (non-security use)
+      # G703: gen-platform-cmds writes only to a fixed output dir under cli/
+      # G704: HTTP destinations are validated upstream by the platform client
+      excludes:
+        - G101
+        - G115
+        - G117
+        - G304
+        - G402
+        - G404
+        - G703
+        - G704
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gofmt
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

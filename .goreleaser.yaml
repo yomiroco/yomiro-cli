@@ -1,0 +1,103 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+
+# This config targets the public release repo `github.com/yomiroco/yomiro-cli`.
+# The CLI source mirrors out of this monorepo (where the module path is
+# `github.com/yomiroco/yomiro-cli`) into the public repo, where the module path
+# is rewritten to `github.com/yomiroco/yomiro-cli`. The release pipeline runs
+# only in the public repo, where the ldflags `-X github.com/yomiroco/yomiro-cli/...`
+# paths resolve correctly.
+#
+# Heads-up: running `goreleaser release --snapshot` locally from the monorepo
+# will silently produce binaries with empty version metadata
+# (Version="dev"/Commit="none"/Date="unknown") because Go's linker drops `-X`
+# for unresolved symbol paths. Use the public repo for real snapshots.
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: yomiro
+    main: ./cmd/yomiro
+    binary: yomiro
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin]
+    goarch: [amd64, arm64]
+    ldflags:
+      - -s -w
+      - -X github.com/yomiroco/yomiro-cli/internal/buildinfo.Version={{.Version}}
+      - -X github.com/yomiroco/yomiro-cli/internal/buildinfo.Commit={{.ShortCommit}}
+      - -X github.com/yomiroco/yomiro-cli/internal/buildinfo.Date={{.Date}}
+
+archives:
+  - id: yomiro
+    name_template: 'yomiro_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - LICENSE*
+      - README*
+
+checksum:
+  name_template: 'checksums.txt'
+
+signs:
+  - id: cosign
+    cmd: cosign
+    args:
+      - sign-blob
+      - '--yes'
+      - '--output-signature=${signature}'
+      - '${artifact}'
+    artifacts: checksum
+    output: true
+
+# dockers_v2 replaces the deprecated dockers + docker_manifests pair.
+# goreleaser automatically builds multi-arch images and creates the manifest list.
+dockers_v2:
+  - images:
+      - 'ghcr.io/yomiroco/yomiro'
+    tags:
+      - '{{ .Version }}'
+      - 'latest'
+    platforms: [linux/amd64, linux/arm64]
+    labels:
+      "org.opencontainers.image.source": "https://github.com/yomiroco/yomiro-cli"
+    dockerfile: Dockerfile
+
+brews:
+  - name: yomiro
+    repository:
+      owner: yomiroco
+      name: homebrew-yomiro
+      branch: main
+      token: '{{ .Env.HOMEBREW_TAP_TOKEN }}'
+    # Pre-release tags (e.g. v0.0.1-rc1) skip the formula push.
+    skip_upload: auto
+    homepage: 'https://yomiro.io'
+    description: 'Yomiro CLI — gateway daemon and platform control'
+    license: 'Apache-2.0'
+    install: |
+      bin.install "yomiro"
+    test: |
+      system "#{bin}/yomiro version"
+
+release:
+  github:
+    owner: yomiroco
+    name: yomiro-cli
+  draft: false
+  prerelease: auto
+
+changelog:
+  use: github
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
