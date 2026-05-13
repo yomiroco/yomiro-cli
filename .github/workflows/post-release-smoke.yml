@@ -1,0 +1,123 @@
+name: post-release-smoke
+
+# Runs whenever a release is published in this repo. Downloads the matching
+# release archive, verifies its cosign signature, then sanity-checks the
+# binary against the dev and prod platform endpoints.
+#
+# Failure here means the release is broken end-to-end — either the published
+# artifact won't run, the cosign signature is bad, or the platform API is
+# unreachable from the binary's perspective.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to smoke (defaults to latest)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        env:
+          - name: dev
+            base_url: https://api.dev.yomiro.io
+          - name: prod
+            base_url: https://api.yomiro.io
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Resolve tag
+        id: tag
+        run: |
+          if [ -n "${{ github.event.release.tag_name }}" ]; then
+            echo "tag=${{ github.event.release.tag_name }}" >> "$GITHUB_OUTPUT"
+          elif [ -n "${{ inputs.tag }}" ]; then
+            echo "tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            tag="$(gh release view --repo "${{ github.repository }}" --json tagName -q .tagName)"
+            echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Compute archive name
+        id: archive
+        run: |
+          tag="${{ steps.tag.outputs.tag }}"
+          version="${tag#v}"
+          case "${{ matrix.os }}" in
+            ubuntu-latest) os=linux  ;;
+            macos-latest)  os=darwin ;;
+          esac
+          arch="$(uname -m)"
+          case "$arch" in
+            x86_64)  arch=amd64 ;;
+            aarch64|arm64) arch=arm64 ;;
+          esac
+          echo "name=yomiro_${version}_${os}_${arch}.tar.gz" >> "$GITHUB_OUTPUT"
+
+      - uses: sigstore/cosign-installer@v3
+
+      - name: Download release artifact + checksums
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p dl && cd dl
+          gh release download "${{ steps.tag.outputs.tag }}" \
+            --repo "${{ github.repository }}" \
+            --pattern "${{ steps.archive.outputs.name }}" \
+            --pattern "checksums.txt" \
+            --pattern "checksums.txt.sig"
+
+      - name: Verify cosign signature on checksums.txt
+        working-directory: dl
+        run: |
+          cosign verify-blob \
+            --certificate-identity-regexp 'https://github.com/${{ github.repository }}/.*' \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            --signature checksums.txt.sig \
+            checksums.txt
+
+      - name: Verify archive checksum
+        working-directory: dl
+        run: |
+          grep "  ${{ steps.archive.outputs.name }}$" checksums.txt | shasum -a 256 -c -
+
+      - name: Extract binary
+        run: |
+          tar -xzf "dl/${{ steps.archive.outputs.name }}" -C dl
+          chmod +x dl/yomiro
+          echo "$(pwd)/dl" >> "$GITHUB_PATH"
+
+      - name: yomiro version matches tag
+        run: |
+          out="$(yomiro version)"
+          echo "$out"
+          expected="${{ steps.tag.outputs.tag }}"
+          expected="${expected#v}"
+          # `yomiro version` prints something like "yomiro version 0.0.1-rc2 (commit ..., built ...)"
+          echo "$out" | grep -q "$expected" || {
+            echo "::error::version output does not contain $expected"
+            exit 1
+          }
+
+      - name: yomiro --help loads cleanly
+        env:
+          YOMIRO_API_BASE_URL: ${{ matrix.env.base_url }}
+        run: yomiro --help
+
+      - name: Platform API reachable (${{ matrix.env.name }})
+        run: |
+          # The CLI itself can't run an unauthenticated smoke against the
+          # platform yet (every operation needs a token), so we check
+          # liveness via the public OpenAPI spec endpoint which the CLI
+          # uses for client regeneration. If it's down, the CLI can't work.
+          curl -fSs --max-time 15 "${{ matrix.env.base_url }}/api/v1/openapi.json" >/dev/null
