@@ -38,6 +38,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: sigstore/cosign-installer@v3
+      - uses: anchore/sbom-action/download-syft@v0
 
       - name: Run goreleaser
         uses: goreleaser/goreleaser-action@v6

@@ -2,7 +2,7 @@
 
 # This config targets the public release repo `github.com/yomiroco/yomiro-cli`.
 # The CLI source mirrors out of this monorepo (where the module path is
-# `github.com/yomiroco/yomiro-cli`) into the public repo, where the module path
+# `github.com/hojland/yomiro/cli`) into the public repo, where the module path
 # is rewritten to `github.com/yomiroco/yomiro-cli`. The release pipeline runs
 # only in the public repo, where the ldflags `-X github.com/yomiroco/yomiro-cli/...`
 # paths resolve correctly.
@@ -23,8 +23,14 @@ builds:
     binary: yomiro
     env:
       - CGO_ENABLED=0
-    goos: [linux, darwin]
+    goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
+    ignore:
+      # No windows/arm64 binary — the CLI's gateway daemon stack doesn't
+      # currently target ARM Windows users. Drop the build to keep the
+      # release page tidy. Add it back when there's a real ask.
+      - goos: windows
+        goarch: arm64
     ldflags:
       - -s -w
       - -X github.com/yomiroco/yomiro-cli/internal/buildinfo.Version={{.Version}}
@@ -44,6 +50,14 @@ archives:
 
 checksum:
   name_template: 'checksums.txt'
+
+# Per-archive CycloneDX SBOM, attached to the GitHub release alongside the
+# tarball. Uses the syft binary bundled with the goreleaser action runner.
+sboms:
+  - id: archive
+    artifacts: archive
+    documents:
+      - '${artifact}.sbom.json'
 
 signs:
   - id: cosign
