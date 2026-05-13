@@ -63,6 +63,7 @@ Every release archive is signed with [cosign](https://github.com/sigstore/cosign
 
 ```sh
 cosign verify-blob \
+  --certificate checksums.txt.pem \
   --certificate-identity-regexp 'https://github.com/yomiroco/yomiro-cli/.*' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com \
   --signature checksums.txt.sig \

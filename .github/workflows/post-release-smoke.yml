@@ -75,12 +75,14 @@ jobs:
             --repo "${{ github.repository }}" \
             --pattern "${{ steps.archive.outputs.name }}" \
             --pattern "checksums.txt" \
-            --pattern "checksums.txt.sig"
+            --pattern "checksums.txt.sig" \
+            --pattern "checksums.txt.pem"
 
       - name: Verify cosign signature on checksums.txt
         working-directory: dl
         run: |
           cosign verify-blob \
+            --certificate checksums.txt.pem \
             --certificate-identity-regexp 'https://github.com/${{ github.repository }}/.*' \
             --certificate-oidc-issuer https://token.actions.githubusercontent.com \
             --signature checksums.txt.sig \
