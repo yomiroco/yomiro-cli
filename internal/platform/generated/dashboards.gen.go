@@ -2,272 +2,370 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
+	"strconv"
+
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewDashboardsCmd returns the cobra command tree for dashboards.
-func NewDashboardsCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewDashboardsCmd returns the cobra command tree for dashboards. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewDashboardsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "dashboards",
 		Short: "Manage dashboards",
 	}
 
 	{
+		var params client.DashboardsCreateDashboardParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
 			Use:   "create",
 			Short: "Create Dashboard",
+			Long: "Create Dashboard.\n\nRequest body fields:\n  description  string  optional  Dashboard description\n  document     object  optional\n  name         string  required  Dashboard name\n  status       string  optional  Dashboard status: draft, published\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DashboardsCreateDashboard"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"document\": null,\n  \"name\": \"\",\n  \"status\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.DashboardsCreateDashboardJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().DashboardsCreateDashboardWithResponse(ctx, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DashboardsDeleteDashboardParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete <dashboardId>",
 			Short: "Delete Dashboard",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DashboardsDeleteDashboard"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				resp, err := getClient().DashboardsDeleteDashboardWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DashboardsExportDashboardParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "export <dashboardId>",
 			Short: "Export Dashboard",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DashboardsExportDashboard"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				resp, err := getClient().DashboardsExportDashboardWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DashboardsGetAlertSummaryParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-alert-summary <dashboardId>",
 			Short: "Get Alert Summary",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DashboardsGetAlertSummary"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				resp, err := getClient().DashboardsGetAlertSummaryWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DashboardsGetDashboardParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get <dashboardId>",
 			Short: "Get Dashboard",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DashboardsGetDashboard"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				resp, err := getClient().DashboardsGetDashboardWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DashboardsGetDashboardAnnotationsParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-annotations <dashboardId>",
 			Short: "Get Dashboard Annotations",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DashboardsGetDashboardAnnotations"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				resp, err := getClient().DashboardsGetDashboardAnnotationsWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DashboardsGetVariableValuesParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "get-variable-values <dashboardId> <varName>",
 			Short: "Get Variable Values",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DashboardsGetVariableValues"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				_arg1 := args[1]
+				resp, err := getClient().DashboardsGetVariableValuesWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DashboardsGetVersionParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-version <dashboardId> <version>",
 			Short: "Get Version",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DashboardsGetVersion"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				_arg1, err := strconv.Atoi(args[1])
+				if err != nil { return fmt.Errorf("path arg <version>: %w", err) }
+				resp, err := getClient().DashboardsGetVersionWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DashboardsGetWidgetAlertEventsParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-widget-alert-events <dashboardId> <widgetId>",
 			Short: "Get Widget Alert Events",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DashboardsGetWidgetAlertEvents"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				_arg1 := args[1]
+				resp, err := getClient().DashboardsGetWidgetAlertEventsWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DashboardsImportDashboardParams
+		var bodyJSON string
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "import",
 			Short: "Import Dashboard",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DashboardsImportDashboard"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				var body client.DashboardsImportDashboardJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().DashboardsImportDashboardWithResponse(ctx, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		_ = cmd.MarkFlagRequired("json-body")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DashboardsImportTemplateParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "import-template <templateKey>",
 			Short: "Import Template",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DashboardsImportTemplate"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				resp, err := getClient().DashboardsImportTemplateWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DashboardsListDashboardsParams
 		cmd := &cobra.Command{
 			Use:   "list",
 			Short: "List Dashboards",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DashboardsListDashboards"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().DashboardsListDashboardsWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "list-templates",
 			Short: "List Templates",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DashboardsListTemplates"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().DashboardsListTemplatesWithResponse(ctx)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DashboardsListVersionsParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "list-versions <dashboardId>",
 			Short: "List Versions",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DashboardsListVersions"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				resp, err := getClient().DashboardsListVersionsWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DashboardsQueryWidgetParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "query-widget <dashboardId> <widgetId>",
 			Short: "Query Widget",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DashboardsQueryWidget"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				_arg1 := args[1]
+				resp, err := getClient().DashboardsQueryWidgetWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DashboardsRestoreVersionParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "restore-version <dashboardId> <version>",
 			Short: "Restore Version",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DashboardsRestoreVersion"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				_arg1, err := strconv.Atoi(args[1])
+				if err != nil { return fmt.Errorf("path arg <version>: %w", err) }
+				resp, err := getClient().DashboardsRestoreVersionWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DashboardsUpdateDashboardParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update <dashboardId>",
 			Short: "Update Dashboard",
+			Long: "Update Dashboard.\n\nRequest body fields:\n  description  string   optional\n  document     object   optional\n  is_default   boolean  optional\n  name         string   optional\n  status       string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DashboardsUpdateDashboard"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"document\": null,\n  \"is_default\": null,\n  \"name\": null,\n  \"status\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <dashboardId>: %w", err) }
+				var body client.DashboardsUpdateDashboardJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().DashboardsUpdateDashboardWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 

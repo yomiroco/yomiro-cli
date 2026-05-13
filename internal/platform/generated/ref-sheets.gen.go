@@ -2,32 +2,43 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewRefSheetsCmd returns the cobra command tree for ref-sheets.
-func NewRefSheetsCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewRefSheetsCmd returns the cobra command tree for ref-sheets. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewRefSheetsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "ref-sheets",
 		Short: "Manage ref-sheets",
 	}
 
 	{
+		var params client.RefSheetsActivateRefSheetVersionParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "activate-version <sheetId> <versionId>",
 			Short: "Activate Ref Sheet Version",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "RefSheetsActivateRefSheetVersion"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <sheetId>: %w", err) }
+				_arg1, err := uuid.Parse(args[1])
+				if err != nil { return fmt.Errorf("path arg <versionId>: %w", err) }
+				resp, err := getClient().RefSheetsActivateRefSheetVersionWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
@@ -36,11 +47,7 @@ func NewRefSheetsCmd(c *client.ClientWithResponses) *cobra.Command {
 			Use:   "create",
 			Short: "Create Ref Sheet",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "RefSheetsCreateRefSheet"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				return fmt.Errorf("operation RefSheetsCreateRefSheet is not exposed by the generated client (multipart body or unsupported schema); use the platform UI or REST directly")
 			},
 		}
 		root.AddCommand(cmd)
@@ -48,121 +55,149 @@ func NewRefSheetsCmd(c *client.ClientWithResponses) *cobra.Command {
 
 	{
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "create-version",
 			Short: "Create Ref Sheet Version",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "RefSheetsCreateRefSheetVersion"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				return fmt.Errorf("operation RefSheetsCreateRefSheetVersion is not exposed by the generated client (multipart body or unsupported schema); use the platform UI or REST directly")
 			},
 		}
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.RefSheetsDeleteRefSheetParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete <sheetId>",
 			Short: "Delete Ref Sheet",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "RefSheetsDeleteRefSheet"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <sheetId>: %w", err) }
+				resp, err := getClient().RefSheetsDeleteRefSheetWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.RefSheetsDeleteRefSheetVersionParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-version <sheetId> <versionId>",
 			Short: "Delete Ref Sheet Version",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "RefSheetsDeleteRefSheetVersion"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <sheetId>: %w", err) }
+				_arg1, err := uuid.Parse(args[1])
+				if err != nil { return fmt.Errorf("path arg <versionId>: %w", err) }
+				resp, err := getClient().RefSheetsDeleteRefSheetVersionWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.RefSheetsGetRefSheetParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get <sheetId>",
 			Short: "Get Ref Sheet",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "RefSheetsGetRefSheet"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <sheetId>: %w", err) }
+				resp, err := getClient().RefSheetsGetRefSheetWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "inspect-excel-sheets",
 			Short: "Inspect Excel Sheets",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "RefSheetsInspectExcelSheets"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				return fmt.Errorf("operation RefSheetsInspectExcelSheets is not exposed by the generated client (multipart body or unsupported schema); use the platform UI or REST directly")
 			},
 		}
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.RefSheetsListRefSheetVersionsParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "list-versions <sheetId>",
 			Short: "List Ref Sheet Versions",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "RefSheetsListRefSheetVersions"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <sheetId>: %w", err) }
+				resp, err := getClient().RefSheetsListRefSheetVersionsWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.RefSheetsListRefSheetsParams
 		cmd := &cobra.Command{
 			Use:   "list",
 			Short: "List Ref Sheets",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "RefSheetsListRefSheets"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().RefSheetsListRefSheetsWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.RefSheetsUpdateRefSheetParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update <sheetId>",
 			Short: "Update Ref Sheet",
+			Long: "Update Ref Sheet.\n\nRequest body fields:\n  description  string  optional\n  name         string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "RefSheetsUpdateRefSheet"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"name\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <sheetId>: %w", err) }
+				var body client.RefSheetsUpdateRefSheetJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().RefSheetsUpdateRefSheetWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 

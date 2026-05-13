@@ -61,14 +61,26 @@ type CreateKeyRequest struct {
 	ExpiresAt *string  `json:"expires_at,omitempty"`
 }
 
-// CurrentUser mirrors a subset of UserPublic — used by `whoami`.
+// CurrentUser mirrors a subset of UserPublic — used by `whoami`. The
+// backend's UserPublic schema returns `tenant_id` (flat UUID), not a nested
+// tenant object; the display-friendly `Tenant.Name` is fetched separately
+// via CurrentOrganization (GET /api/v1/organizations/me).
 type CurrentUser struct {
-	ID     string `json:"id"`
-	Email  string `json:"email"`
-	Tenant struct {
+	ID       string `json:"id"`
+	Email    string `json:"email"`
+	TenantID string `json:"tenant_id"`
+	Tenant   struct {
 		ID   string `json:"id"`
 		Name string `json:"name"`
-	} `json:"tenant,omitempty"`
+	} `json:"-"`
+}
+
+// CurrentOrganization is a minimal mirror of TenantPublic — only what the
+// CLI surfaces in post-login output today.
+type CurrentOrganization struct {
+	ID         string `json:"id"`
+	Name       string `json:"name"`
+	InternalID string `json:"internal_id"`
 }
 
 func (c *Client) do(req *http.Request, out any) error {
@@ -118,12 +130,29 @@ func (c *Client) RevokeAPIKey(keyID string) error {
 	return c.do(r, nil)
 }
 
-// Whoami returns the current user.
+// Whoami returns the current user, with the tenant display name resolved
+// via a follow-up GET /organizations/me. The latter is best-effort: if the
+// caller's token doesn't have org scope or the user has no tenant_id, the
+// Tenant fields stay at their zero values rather than the call erroring.
 func (c *Client) Whoami() (*CurrentUser, error) {
 	r, _ := http.NewRequest(http.MethodGet, c.BaseURL+"/api/v1/users/me", nil)
 	var u CurrentUser
 	if err := c.do(r, &u); err != nil {
 		return nil, err
 	}
+	if org, err := c.CurrentOrganization(); err == nil && org != nil {
+		u.Tenant.ID = org.ID
+		u.Tenant.Name = org.Name
+	}
 	return &u, nil
+}
+
+// CurrentOrganization returns the tenant the bearer token resolves to.
+func (c *Client) CurrentOrganization() (*CurrentOrganization, error) {
+	r, _ := http.NewRequest(http.MethodGet, c.BaseURL+"/api/v1/organizations/me", nil)
+	var o CurrentOrganization
+	if err := c.do(r, &o); err != nil {
+		return nil, err
+	}
+	return &o, nil
 }

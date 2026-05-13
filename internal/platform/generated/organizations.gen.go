@@ -2,105 +2,123 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewOrganizationsCmd returns the cobra command tree for organizations.
-func NewOrganizationsCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewOrganizationsCmd returns the cobra command tree for organizations. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewOrganizationsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "organizations",
 		Short: "Manage organizations",
 	}
 
 	{
+		var params client.OrganizationsDeleteOrganizationLogoParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-logo",
 			Short: "Delete Organization Logo",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "OrganizationsDeleteOrganizationLogo"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().OrganizationsDeleteOrganizationLogoWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.OrganizationsGetOrganizationLogoParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "get-logo",
 			Short: "Get Organization Logo",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "OrganizationsGetOrganizationLogo"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().OrganizationsGetOrganizationLogoWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.OrganizationsReadOrganizationMeParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "read-me",
 			Short: "Read Organization Me",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "OrganizationsReadOrganizationMe"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().OrganizationsReadOrganizationMeWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.OrganizationsReadOrganizationMqttConfigParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "read-mqtt-config",
 			Short: "Read Organization Mqtt Config",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "OrganizationsReadOrganizationMqttConfig"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().OrganizationsReadOrganizationMqttConfigWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.OrganizationsUpdateOrganizationMeParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update-me",
 			Short: "Update Organization Me",
+			Long: "Update Organization Me.\n\nRequest body fields:\n  billing_email    string   optional\n  billing_plan     string   optional\n  customer_domain  string   optional\n  internal_id      string   optional\n  is_active        boolean  optional\n  logo_path        string   optional\n  mqtt_password    string   optional\n  mqtt_username    string   optional\n  name             string   optional\n  settings         object   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "OrganizationsUpdateOrganizationMe"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"billing_email\": null,\n  \"billing_plan\": null,\n  \"customer_domain\": null,\n  \"internal_id\": null,\n  \"is_active\": null,\n  \"logo_path\": null,\n  \"mqtt_password\": null,\n  \"mqtt_username\": null,\n  \"name\": null,\n  \"settings\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.OrganizationsUpdateOrganizationMeJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().OrganizationsUpdateOrganizationMeWithResponse(ctx, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "upload-logo",
 			Short: "Upload Organization Logo",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "OrganizationsUploadOrganizationLogo"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				return fmt.Errorf("operation OrganizationsUploadOrganizationLogo is not exposed by the generated client (multipart body or unsupported schema); use the platform UI or REST directly")
 			},
 		}
 		root.AddCommand(cmd)

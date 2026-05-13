@@ -2,32 +2,35 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
-
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewActivityCmd returns the cobra command tree for activity.
-func NewActivityCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewActivityCmd returns the cobra command tree for activity. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewActivityCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "activity",
 		Short: "Manage activity",
 	}
 
 	{
+		var params client.ActivityListActivityParams
 		cmd := &cobra.Command{
 			Use:   "list",
 			Short: "List Activity",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ActivityListActivity"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().ActivityListActivityWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 

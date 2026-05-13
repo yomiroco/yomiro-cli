@@ -2,15 +2,20 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewImagesCmd returns the cobra command tree for images.
-func NewImagesCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewImagesCmd returns the cobra command tree for images. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewImagesCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "images",
 		Short: "Manage images",
@@ -18,14 +23,10 @@ func NewImagesCmd(c *client.ClientWithResponses) *cobra.Command {
 
 	{
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "capture-and-object-detection",
 			Short: "Capture And Object Detection",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ImagesCaptureAndObjectDetection"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				return fmt.Errorf("operation ImagesCaptureAndObjectDetection is not exposed by the generated client (multipart body or unsupported schema); use the platform UI or REST directly")
 			},
 		}
 		root.AddCommand(cmd)
@@ -33,166 +34,217 @@ func NewImagesCmd(c *client.ClientWithResponses) *cobra.Command {
 
 	{
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "capture",
 			Short: "Capture Image",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ImagesCaptureImage"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				return fmt.Errorf("operation ImagesCaptureImage is not exposed by the generated client (multipart body or unsupported schema); use the platform UI or REST directly")
 			},
 		}
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.ImagesDeleteCameraImageParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-camera <imageId>",
 			Short: "Delete Camera Image",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ImagesDeleteCameraImage"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <imageId>: %w", err) }
+				resp, err := getClient().ImagesDeleteCameraImageWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.ImagesGetDifferenceFileParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-difference-file <imageId>",
 			Short: "Get Difference File",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ImagesGetDifferenceFile"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <imageId>: %w", err) }
+				resp, err := getClient().ImagesGetDifferenceFileWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.ImagesGetHeatmapFileParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-heatmap-file <imageId>",
 			Short: "Get Heatmap File",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ImagesGetHeatmapFile"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <imageId>: %w", err) }
+				resp, err := getClient().ImagesGetHeatmapFileWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.ImagesGetOriginalFileParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-original-file <imageId>",
 			Short: "Get Original File",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ImagesGetOriginalFile"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <imageId>: %w", err) }
+				resp, err := getClient().ImagesGetOriginalFileWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.ImagesGetProcessedFileParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-processed-file <imageId>",
 			Short: "Get Processed File",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ImagesGetProcessedFile"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <imageId>: %w", err) }
+				resp, err := getClient().ImagesGetProcessedFileWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.ImagesPatchCameraImageReviewParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "patch-camera-review <imageId>",
 			Short: "Patch Camera Image Review",
+			Long: "Patch Camera Image Review.\n\nRequest body fields:\n  note   string  optional\n  state  string  required  one of: pending, approved, rejected\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ImagesPatchCameraImageReview"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"note\": null,\n  \"state\": \"pending\"\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <imageId>: %w", err) }
+				var body client.ImagesPatchCameraImageReviewJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().ImagesPatchCameraImageReviewWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.ImagesReadCameraImageParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get <imageId>",
 			Short: "Read Camera Image",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ImagesReadCameraImage"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <imageId>: %w", err) }
+				resp, err := getClient().ImagesReadCameraImageWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.ImagesReadCameraImagesParams
 		cmd := &cobra.Command{
 			Use:   "list",
 			Short: "Read Camera Images",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ImagesReadCameraImages"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().ImagesReadCameraImagesWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "reprocess-camera",
 			Short: "Reprocess Camera Image",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ImagesReprocessCameraImage"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				return fmt.Errorf("operation ImagesReprocessCameraImage is not exposed by the generated client (multipart body or unsupported schema); use the platform UI or REST directly")
 			},
 		}
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.ImagesUpdateCameraImageParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update-camera <imageId>",
 			Short: "Update Camera Image",
+			Long: "Update Camera Image.\n\nRequest body fields:\n  description        string  optional\n  processing_status  string  optional\n  source             string  optional\n  title              string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ImagesUpdateCameraImage"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"processing_status\": null,\n  \"source\": null,\n  \"title\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <imageId>: %w", err) }
+				var body client.ImagesUpdateCameraImageJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().ImagesUpdateCameraImageWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 

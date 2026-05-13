@@ -5,6 +5,7 @@ go 1.25.0
 require (
 	github.com/coder/websocket v1.8.14
 	github.com/eclipse/paho.mqtt.golang v1.5.1
+	github.com/google/uuid v1.6.0
 	github.com/gopcua/opcua v0.8.0
 	github.com/huin/goupnp v1.3.0
 	github.com/jackc/pgx/v5 v5.9.2
@@ -14,6 +15,7 @@ require (
 	github.com/pingcap/tidb/pkg/parser v0.0.0-20260430044939-9d1ac814ecda
 	github.com/simonvetter/modbus v1.6.4
 	github.com/spf13/cobra v1.10.2
+	github.com/spf13/pflag v1.0.9
 	github.com/zalando/go-keyring v0.2.8
 	google.golang.org/grpc v1.80.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -27,7 +29,6 @@ require (
 	github.com/danieljoos/wincred v1.2.3 // indirect
 	github.com/goburrow/serial v0.1.0 // indirect
 	github.com/godbus/dbus/v5 v5.2.2 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
@@ -39,7 +40,6 @@ require (
 	github.com/pingcap/failpoint v0.0.0-20240528011301-b51a646c7c86 // indirect
 	github.com/pingcap/log v1.1.0 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
-	github.com/spf13/pflag v1.0.9 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect

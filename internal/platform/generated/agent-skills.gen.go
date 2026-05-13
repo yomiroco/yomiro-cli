@@ -2,167 +2,232 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewAgentSkillsCmd returns the cobra command tree for agent-skills.
-func NewAgentSkillsCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewAgentSkillsCmd returns the cobra command tree for agent-skills. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewAgentSkillsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "agent-skills",
 		Short: "Manage agent-skills",
 	}
 
 	{
+		var params client.AgentSkillsCreateSkillParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "create-skill",
 			Short: "Create Skill",
+			Long: "Create Skill.\n\nRequest body fields:\n  description       string  optional\n  name              string  required\n  scope             string  optional  one of: global, agent, group\n  scope_ref         string  optional\n  skill_md_content  string  optional  Optional SKILL.md content to upload\n  source            string  optional\n  tags              array   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentSkillsCreateSkill"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"name\": \"\",\n  \"scope\": null,\n  \"scope_ref\": null,\n  \"skill_md_content\": null,\n  \"source\": null,\n  \"tags\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.AgentSkillsCreateSkillJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AgentSkillsCreateSkillWithResponse(ctx, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentSkillsDeleteSkillParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-skill <skillId>",
 			Short: "Delete Skill",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentSkillsDeleteSkill"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				resp, err := getClient().AgentSkillsDeleteSkillWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentSkillsForkSkillParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "fork-skill <skillId>",
 			Short: "Fork Skill",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentSkillsForkSkill"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				resp, err := getClient().AgentSkillsForkSkillWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentSkillsGetDefaultContentParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-default-content <skillId>",
 			Short: "Get Default Content",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentSkillsGetDefaultContent"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				resp, err := getClient().AgentSkillsGetDefaultContentWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentSkillsGetSkillParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-skill <skillId>",
 			Short: "Get Skill",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentSkillsGetSkill"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				resp, err := getClient().AgentSkillsGetSkillWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentSkillsGetSkillContentParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-skill-content <skillId>",
 			Short: "Get Skill Content",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentSkillsGetSkillContent"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				resp, err := getClient().AgentSkillsGetSkillContentWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentSkillsListSkillsParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "list-skills",
 			Short: "List Skills",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentSkillsListSkills"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AgentSkillsListSkillsWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentSkillsPutSkillContentParams
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "put-skill-content <skillId>",
 			Short: "Put Skill Content",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentSkillsPutSkillContent"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				resp, err := getClient().AgentSkillsPutSkillContentWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentSkillsRevertForkParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "revert-fork <skillId>",
 			Short: "Revert Fork",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentSkillsRevertFork"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				resp, err := getClient().AgentSkillsRevertForkWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentSkillsUpdateSkillParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update-skill <skillId>",
 			Short: "Update Skill",
+			Long: "Update Skill.\n\nRequest body fields:\n  description       string  optional\n  name              string  optional\n  scope             string  optional  one of: global, agent, group\n  scope_ref         string  optional\n  skill_md_content  string  optional\n  status            string  optional  one of: draft, active, archived\n  tags              array   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentSkillsUpdateSkill"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"name\": null,\n  \"scope\": null,\n  \"scope_ref\": null,\n  \"skill_md_content\": null,\n  \"status\": null,\n  \"tags\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <skillId>: %w", err) }
+				var body client.AgentSkillsUpdateSkillJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AgentSkillsUpdateSkillWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 

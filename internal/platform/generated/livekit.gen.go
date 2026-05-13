@@ -2,62 +2,71 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
-
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewLivekitCmd returns the cobra command tree for livekit.
-func NewLivekitCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewLivekitCmd returns the cobra command tree for livekit. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewLivekitCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "livekit",
 		Short: "Manage livekit",
 	}
 
 	{
+		var params client.LivekitGetViewerTokenParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "get-viewer-token",
 			Short: "Get Viewer Token",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "LivekitGetViewerToken"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().LivekitGetViewerTokenWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.LivekitStartDeviceStreamParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "start-device-stream <deviceId>",
 			Short: "Start Device Stream",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "LivekitStartDeviceStream"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				resp, err := getClient().LivekitStartDeviceStreamWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.LivekitStopDeviceStreamParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "stop-device-stream <deviceId>",
 			Short: "Stop Device Stream",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "LivekitStopDeviceStream"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				resp, err := getClient().LivekitStopDeviceStreamWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 

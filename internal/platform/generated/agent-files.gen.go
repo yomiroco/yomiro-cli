@@ -2,77 +2,101 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewAgentFilesCmd returns the cobra command tree for agent-files.
-func NewAgentFilesCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewAgentFilesCmd returns the cobra command tree for agent-files. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewAgentFilesCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "agent-files",
 		Short: "Manage agent-files",
 	}
 
 	{
+		var params client.AgentFilesDeleteFileParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-file <configId> <filePath>",
 			Short: "Delete File",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentFilesDeleteFile"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				_arg1 := args[1]
+				resp, err := getClient().AgentFilesDeleteFileWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentFilesGetFileParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-file <configId> <filePath>",
 			Short: "Get File",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentFilesGetFile"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				_arg1 := args[1]
+				resp, err := getClient().AgentFilesGetFileWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentFilesListFilesParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "list-files <configId>",
 			Short: "List Files",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentFilesListFiles"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				resp, err := getClient().AgentFilesListFilesWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentFilesPutFileParams
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "put-file <configId> <filePath>",
 			Short: "Put File",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentFilesPutFile"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				_arg1 := args[1]
+				resp, err := getClient().AgentFilesPutFileWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 

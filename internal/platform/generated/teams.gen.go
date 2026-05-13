@@ -2,152 +2,212 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewTeamsCmd returns the cobra command tree for teams.
-func NewTeamsCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewTeamsCmd returns the cobra command tree for teams. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewTeamsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "teams",
 		Short: "Manage teams",
 	}
 
 	{
+		var params client.TeamsAddTeamMemberParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "add-member <teamId>",
 			Short: "Add Team Member",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "TeamsAddTeamMember"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <teamId>: %w", err) }
+				resp, err := getClient().TeamsAddTeamMemberWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.TeamsCreateTeamParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
 			Use:   "create",
 			Short: "Create Team",
+			Long: "Create Team.\n\nRequest body fields:\n  default_role  string   optional  Default role for new members\n  description   string   optional  Team description\n  is_default    boolean  optional  Whether this is the tenant's default team\n  name          string   required  Team name\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "TeamsCreateTeam"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"default_role\": null,\n  \"description\": null,\n  \"is_default\": null,\n  \"name\": \"\"\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.TeamsCreateTeamJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().TeamsCreateTeamWithResponse(ctx, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.TeamsDeleteTeamParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete <teamId>",
 			Short: "Delete Team",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "TeamsDeleteTeam"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <teamId>: %w", err) }
+				resp, err := getClient().TeamsDeleteTeamWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.TeamsGetDefaultTeamParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "get-default",
 			Short: "Get Default Team",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "TeamsGetDefaultTeam"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().TeamsGetDefaultTeamWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.TeamsGetTeamParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get <teamId>",
 			Short: "Get Team",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "TeamsGetTeam"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <teamId>: %w", err) }
+				resp, err := getClient().TeamsGetTeamWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.TeamsListTeamMembersParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "list-members <teamId>",
 			Short: "List Team Members",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "TeamsListTeamMembers"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <teamId>: %w", err) }
+				resp, err := getClient().TeamsListTeamMembersWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.TeamsListTeamsParams
 		cmd := &cobra.Command{
 			Use:   "list",
 			Short: "List Teams",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "TeamsListTeams"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().TeamsListTeamsWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.TeamsRemoveTeamMemberParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "remove-member <teamId> <userId>",
 			Short: "Remove Team Member",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "TeamsRemoveTeamMember"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <teamId>: %w", err) }
+				_arg1, err := uuid.Parse(args[1])
+				if err != nil { return fmt.Errorf("path arg <userId>: %w", err) }
+				resp, err := getClient().TeamsRemoveTeamMemberWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.TeamsUpdateTeamParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update <teamId>",
 			Short: "Update Team",
+			Long: "Update Team.\n\nRequest body fields:\n  default_role  string   optional\n  description   string   optional\n  is_default    boolean  optional\n  name          string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "TeamsUpdateTeam"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"default_role\": null,\n  \"description\": null,\n  \"is_default\": null,\n  \"name\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <teamId>: %w", err) }
+				var body client.TeamsUpdateTeamJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().TeamsUpdateTeamWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 

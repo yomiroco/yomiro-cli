@@ -2,47 +2,64 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewPrivateCmd returns the cobra command tree for private.
-func NewPrivateCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewPrivateCmd returns the cobra command tree for private. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewPrivateCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "private",
 		Short: "Manage private",
 	}
 
 	{
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "create-user",
 			Short: "Create User",
+			Long: "Create User.\n\nRequest body fields:\n  auth0_sub    string   optional\n  email        string   required\n  full_name    string   required\n  is_verified  boolean  optional\n  tenant_id    uuid     required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "PrivateCreateUser"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"auth0_sub\": null,\n  \"email\": \"\",\n  \"full_name\": \"\",\n  \"is_verified\": null,\n  \"tenant_id\": \"00000000-0000-0000-0000-000000000000\"\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.PrivateCreateUserJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().PrivateCreateUserWithResponse(ctx, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.PrivateGetTenantByOrgIdParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "get-tenant-by-org-id",
 			Short: "Get Tenant By Org Id",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "PrivateGetTenantByOrgId"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().PrivateGetTenantByOrgIdWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 

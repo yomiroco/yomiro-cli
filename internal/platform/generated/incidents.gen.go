@@ -2,182 +2,285 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewIncidentsCmd returns the cobra command tree for incidents.
-func NewIncidentsCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewIncidentsCmd returns the cobra command tree for incidents. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewIncidentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "incidents",
 		Short: "Manage incidents",
 	}
 
 	{
+		var params client.IncidentsAddIncidentNoteParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "add-note <incidentId>",
 			Short: "Add Incident Note",
+			Long: "Add Incident Note.\n\nRequest body fields:\n  content  string  required  Note text (markdown)\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "IncidentsAddIncidentNote"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"content\": \"\"\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				var body client.IncidentsAddIncidentNoteJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().IncidentsAddIncidentNoteWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.IncidentsCreateIncidentParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
 			Use:   "create",
 			Short: "Create Incident",
+			Long: "Create Incident.\n\nRequest body fields:\n  description          string  optional\n  location_id          uuid    optional\n  severity             string  optional\n  source_dashboard_id  uuid    optional\n  started_at           string  optional\n  title                string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "IncidentsCreateIncident"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"location_id\": null,\n  \"severity\": null,\n  \"source_dashboard_id\": null,\n  \"started_at\": null,\n  \"title\": \"\"\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.IncidentsCreateIncidentJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().IncidentsCreateIncidentWithResponse(ctx, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.IncidentsDeleteIncidentParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete <incidentId>",
 			Short: "Delete Incident",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "IncidentsDeleteIncident"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				resp, err := getClient().IncidentsDeleteIncidentWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.IncidentsDeleteIncidentNoteParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-note <incidentId> <noteId>",
 			Short: "Delete Incident Note",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "IncidentsDeleteIncidentNote"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				_arg1, err := uuid.Parse(args[1])
+				if err != nil { return fmt.Errorf("path arg <noteId>: %w", err) }
+				resp, err := getClient().IncidentsDeleteIncidentNoteWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.IncidentsGetIncidentParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get <incidentId>",
 			Short: "Get Incident",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "IncidentsGetIncident"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				resp, err := getClient().IncidentsGetIncidentWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.IncidentsLinkDeviceToIncidentParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "link-device <incidentId> <deviceId>",
 			Short: "Link Device To Incident",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "IncidentsLinkDeviceToIncident"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				_arg1, err := uuid.Parse(args[1])
+				if err != nil { return fmt.Errorf("path arg <deviceId>: %w", err) }
+				resp, err := getClient().IncidentsLinkDeviceToIncidentWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.IncidentsListIncidentNotesParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "list-notes <incidentId>",
 			Short: "List Incident Notes",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "IncidentsListIncidentNotes"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				resp, err := getClient().IncidentsListIncidentNotesWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.IncidentsListIncidentsParams
 		cmd := &cobra.Command{
 			Use:   "list",
 			Short: "List Incidents",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "IncidentsListIncidents"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().IncidentsListIncidentsWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.IncidentsUnlinkDeviceFromIncidentParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "unlink-device <incidentId> <deviceId>",
 			Short: "Unlink Device From Incident",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "IncidentsUnlinkDeviceFromIncident"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				_arg1, err := uuid.Parse(args[1])
+				if err != nil { return fmt.Errorf("path arg <deviceId>: %w", err) }
+				resp, err := getClient().IncidentsUnlinkDeviceFromIncidentWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.IncidentsUpdateIncidentParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update <incidentId>",
 			Short: "Update Incident",
+			Long: "Update Incident.\n\nRequest body fields:\n  description  string  optional\n  ended_at     string  optional\n  location_id  uuid    optional\n  severity     string  optional\n  started_at   string  optional\n  status       string  optional\n  title        string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "IncidentsUpdateIncident"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"ended_at\": null,\n  \"location_id\": null,\n  \"severity\": null,\n  \"started_at\": null,\n  \"status\": null,\n  \"title\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				var body client.IncidentsUpdateIncidentJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().IncidentsUpdateIncidentWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.IncidentsUpdateIncidentNoteParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update-note <incidentId> <noteId>",
 			Short: "Update Incident Note",
+			Long: "Update Incident Note.\n\nRequest body fields:\n  content  string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "IncidentsUpdateIncidentNote"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"content\": \"\"\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <incidentId>: %w", err) }
+				_arg1, err := uuid.Parse(args[1])
+				if err != nil { return fmt.Errorf("path arg <noteId>: %w", err) }
+				var body client.IncidentsUpdateIncidentNoteJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().IncidentsUpdateIncidentNoteWithResponse(ctx, _arg0, _arg1, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 

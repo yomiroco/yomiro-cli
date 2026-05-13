@@ -2,90 +2,104 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewModelsCmd returns the cobra command tree for models.
-func NewModelsCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewModelsCmd returns the cobra command tree for models. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewModelsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "models",
 		Short: "Manage models",
 	}
 
 	{
+		var params client.ModelsDeleteModelParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete <modelId>",
 			Short: "Delete Model",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ModelsDeleteModel"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <modelId>: %w", err) }
+				resp, err := getClient().ModelsDeleteModelWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.ModelsGetDownloadUrlParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-download-url <modelId>",
 			Short: "Get Download Url",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ModelsGetDownloadUrl"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <modelId>: %w", err) }
+				resp, err := getClient().ModelsGetDownloadUrlWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.ModelsGetModelParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get <modelId>",
 			Short: "Get Model",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ModelsGetModel"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <modelId>: %w", err) }
+				resp, err := getClient().ModelsGetModelWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.ModelsListModelsParams
 		cmd := &cobra.Command{
 			Use:   "list",
 			Short: "List Models",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ModelsListModels"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().ModelsListModelsWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "upload",
 			Short: "Upload Model",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "ModelsUploadModel"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				return fmt.Errorf("operation ModelsUploadModel is not exposed by the generated client (multipart body or unsupported schema); use the platform UI or REST directly")
 			},
 		}
 		root.AddCommand(cmd)

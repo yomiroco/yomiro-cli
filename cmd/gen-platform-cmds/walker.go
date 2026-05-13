@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/pb33f/libopenapi"
+	"github.com/pb33f/libopenapi/datamodel/high/base"
 	v3 "github.com/pb33f/libopenapi/datamodel/high/v3"
 )
 
@@ -16,9 +17,34 @@ type Operation struct {
 	Method      string
 	Path        string
 	Summary     string
-	PathParams  []string
+	PathParams  []PathParam
 	QueryParams []Param
 	BodyType    string
+	// BodyFields lists the top-level properties of the request body schema,
+	// used to render the schema-preview help block and the --skeleton JSON
+	// template. Nil when there's no body or the body schema isn't an object.
+	BodyFields []BodyField
+}
+
+// BodyField is one top-level property of a request body's JSON schema.
+// Nested objects collapse to Kind="object"; the skeleton renderer emits
+// `{}` for them and operators fill in via --json-body @file.
+type BodyField struct {
+	Name        string
+	Kind        string // "string", "integer", "number", "boolean", "object", "array", "uuid"
+	Format      string // raw OpenAPI format (uuid, date-time, ...) for richer hints
+	Description string
+	Required    bool
+	Enum        []string
+}
+
+// PathParam carries the Go type the generated client expects for this
+// positional argument. Format inferred from the OpenAPI parameter schema —
+// `string + format=uuid` → "uuid.UUID", plain integer → "int", anything
+// else → "string". Anything more exotic blows up obviously during build.
+type PathParam struct {
+	Name   string
+	GoType string
 }
 
 type Param struct {
@@ -67,9 +93,10 @@ func Walk(path string) (map[string][]Operation, error) {
 				Method:      method,
 				Path:        path,
 				Summary:     op.Summary,
-				PathParams:  pathParamNames(op),
+				PathParams:  pathParams(path, op),
 				QueryParams: queryParams(op),
 				BodyType:    bodyType(op),
+				BodyFields:  bodyFields(op),
 			})
 		}
 	}
@@ -86,14 +113,54 @@ func primaryTag(op *v3.Operation) string {
 	return op.Tags[0]
 }
 
-func pathParamNames(op *v3.Operation) []string {
-	var out []string
+// pathParams returns path parameters in URL-template order — matching
+// oapi-codegen's method-signature ordering — annotated with the Go type the
+// generated client expects (uuid.UUID for `format: uuid`, int for integer
+// types, plain string otherwise).
+func pathParams(path string, op *v3.Operation) []PathParam {
+	types := map[string]string{}
 	for _, p := range op.Parameters {
 		if p.In == "path" {
-			out = append(out, p.Name)
+			types[p.Name] = goTypeForParam(p)
 		}
 	}
+	var out []PathParam
+	for {
+		i := strings.Index(path, "{")
+		if i < 0 {
+			break
+		}
+		j := strings.Index(path[i:], "}")
+		if j < 0 {
+			break
+		}
+		name := path[i+1 : i+j]
+		if gt, ok := types[name]; ok {
+			out = append(out, PathParam{Name: name, GoType: gt})
+		}
+		path = path[i+j+1:]
+	}
 	return out
+}
+
+func goTypeForParam(p *v3.Parameter) string {
+	if p.Schema == nil {
+		return "string"
+	}
+	s := p.Schema.Schema()
+	if s == nil || len(s.Type) == 0 {
+		return "string"
+	}
+	switch s.Type[0] {
+	case "integer":
+		return "int"
+	case "string":
+		if s.Format == "uuid" {
+			return "uuid.UUID"
+		}
+		return "string"
+	}
+	return "string"
 }
 
 func queryParams(op *v3.Operation) []Param {
@@ -138,4 +205,76 @@ func bodyType(op *v3.Operation) string {
 		_ = s
 	}
 	return ""
+}
+
+// bodyFields resolves the request body schema and returns its top-level
+// properties annotated with kind/format/required/enum metadata. Returns nil
+// when the body isn't an `application/json` object schema (multipart,
+// references the generator can't resolve, oneOf/anyOf top-level, etc.).
+func bodyFields(op *v3.Operation) []BodyField {
+	if op.RequestBody == nil || op.RequestBody.Content == nil {
+		return nil
+	}
+	for ct, mt := range op.RequestBody.Content.FromOldest() {
+		if !strings.HasPrefix(ct, "application/json") {
+			continue
+		}
+		if mt.Schema == nil {
+			continue
+		}
+		s := mt.Schema.Schema()
+		if s == nil || s.Properties == nil {
+			return nil
+		}
+		required := map[string]bool{}
+		for _, name := range s.Required {
+			required[name] = true
+		}
+		var out []BodyField
+		for name, propProxy := range s.Properties.FromOldest() {
+			prop := propProxy.Schema()
+			if prop == nil {
+				continue
+			}
+			out = append(out, BodyField{
+				Name:        name,
+				Kind:        schemaKind(prop),
+				Format:      prop.Format,
+				Description: collapseWhitespace(prop.Description),
+				Required:    required[name],
+				Enum:        enumStrings(prop),
+			})
+		}
+		return out
+	}
+	return nil
+}
+
+func schemaKind(s *base.Schema) string {
+	if s == nil || len(s.Type) == 0 {
+		return "any"
+	}
+	t := s.Type[0]
+	if t == "string" && s.Format == "uuid" {
+		return "uuid"
+	}
+	return t
+}
+
+func enumStrings(s *base.Schema) []string {
+	if s == nil || len(s.Enum) == 0 {
+		return nil
+	}
+	out := make([]string, 0, len(s.Enum))
+	for _, e := range s.Enum {
+		if e == nil {
+			continue
+		}
+		out = append(out, e.Value)
+	}
+	return out
+}
+
+func collapseWhitespace(s string) string {
+	return strings.Join(strings.Fields(s), " ")
 }

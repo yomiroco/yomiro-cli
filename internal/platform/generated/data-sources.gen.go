@@ -2,122 +2,175 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewDataSourcesCmd returns the cobra command tree for data-sources.
-func NewDataSourcesCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewDataSourcesCmd returns the cobra command tree for data-sources. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewDataSourcesCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "data-sources",
 		Short: "Manage data-sources",
 	}
 
 	{
+		var params client.DataSourcesCreateDataSourceParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
 			Use:   "create",
 			Short: "Create Data Source",
+			Long: "Create Data Source.\n\nRequest body fields:\n  agent_dsn      string   optional  Agent DSN for proxied connections\n  agent_id       uuid     optional  Agent UUID for proxied connections\n  database_name  string   optional  Database name\n  description    string   optional  Connection description\n  ds_type        string   required  Database type: postgresql | mysql | timescaledb\n  extra_options  object   optional  Additional connection options\n  host           string   optional  Database host\n  name           string   required  Connection name\n  password       string   optional  Plain-text password (encrypted on save)\n  port           integer  optional  Database port\n  ssl_mode       string   optional  SSL mode\n  username       string   optional  Database username\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DataSourcesCreateDataSource"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"agent_dsn\": null,\n  \"agent_id\": null,\n  \"database_name\": null,\n  \"description\": null,\n  \"ds_type\": \"\",\n  \"extra_options\": null,\n  \"host\": null,\n  \"name\": \"\",\n  \"password\": null,\n  \"port\": null,\n  \"ssl_mode\": null,\n  \"username\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.DataSourcesCreateDataSourceJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().DataSourcesCreateDataSourceWithResponse(ctx, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DataSourcesDeleteDataSourceParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete <sourceId>",
 			Short: "Delete Data Source",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DataSourcesDeleteDataSource"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <sourceId>: %w", err) }
+				resp, err := getClient().DataSourcesDeleteDataSourceWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DataSourcesGetDataSourceParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get <sourceId>",
 			Short: "Get Data Source",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DataSourcesGetDataSource"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <sourceId>: %w", err) }
+				resp, err := getClient().DataSourcesGetDataSourceWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DataSourcesIntrospectDataSourceParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "introspect <sourceId>",
 			Short: "Introspect Data Source",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DataSourcesIntrospectDataSource"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <sourceId>: %w", err) }
+				resp, err := getClient().DataSourcesIntrospectDataSourceWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DataSourcesListDataSourcesParams
 		cmd := &cobra.Command{
 			Use:   "list",
 			Short: "List Data Sources",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DataSourcesListDataSources"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().DataSourcesListDataSourcesWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DataSourcesTestDataSourceParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "test <sourceId>",
 			Short: "Test Data Source",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DataSourcesTestDataSource"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <sourceId>: %w", err) }
+				resp, err := getClient().DataSourcesTestDataSourceWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.DataSourcesUpdateDataSourceParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update <sourceId>",
 			Short: "Update Data Source",
+			Long: "Update Data Source.\n\nRequest body fields:\n  agent_dsn      string   optional\n  agent_id       uuid     optional\n  database_name  string   optional\n  description    string   optional\n  ds_type        string   optional\n  extra_options  object   optional\n  host           string   optional\n  name           string   optional\n  password       string   optional  Plain-text password (encrypted on save)\n  port           integer  optional\n  ssl_mode       string   optional\n  username       string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "DataSourcesUpdateDataSource"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"agent_dsn\": null,\n  \"agent_id\": null,\n  \"database_name\": null,\n  \"description\": null,\n  \"ds_type\": null,\n  \"extra_options\": null,\n  \"host\": null,\n  \"name\": null,\n  \"password\": null,\n  \"port\": null,\n  \"ssl_mode\": null,\n  \"username\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <sourceId>: %w", err) }
+				var body client.DataSourcesUpdateDataSourceJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().DataSourcesUpdateDataSourceWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 

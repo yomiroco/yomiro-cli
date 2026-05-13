@@ -2,75 +2,105 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewTestHelpersCmd returns the cobra command tree for test-helpers.
-func NewTestHelpersCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewTestHelpersCmd returns the cobra command tree for test-helpers. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewTestHelpersCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "test-helpers",
 		Short: "Manage test-helpers",
 	}
 
 	{
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "create-test-tenant",
 			Short: "Create Test Tenant",
+			Long: "Create Test Tenant.\n\nRequest body fields:\n  auth0_sub  string  required\n  email      string  required\n  worker_id  string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "TestHelpersCreateTestTenant"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"auth0_sub\": \"\",\n  \"email\": \"\",\n  \"worker_id\": \"\"\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.TestHelpersCreateTestTenantJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().TestHelpersCreateTestTenantWithResponse(ctx, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-test-tenant <tenantId>",
 			Short: "Delete Test Tenant",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "TestHelpersDeleteTestTenant"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <tenantId>: %w", err) }
+				resp, err := getClient().TestHelpersDeleteTestTenantWithResponse(ctx, _arg0)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
 		root.AddCommand(cmd)
 	}
 
 	{
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "sweep-test-tenants",
 			Short: "Sweep Test Tenants",
+			Long: "Sweep Test Tenants.\n\nRequest body fields:\n  older_than_minutes  integer  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "TestHelpersSweepTestTenants"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"older_than_minutes\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.TestHelpersSweepTestTenantsJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().TestHelpersSweepTestTenantsWithResponse(ctx, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "sweep-test-users",
 			Short: "Sweep Test Users",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "TestHelpersSweepTestUsers"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().TestHelpersSweepTestUsersWithResponse(ctx)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
 		root.AddCommand(cmd)

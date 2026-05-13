@@ -2,32 +2,37 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
-
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewAgentStreamCmd returns the cobra command tree for agent-stream.
-func NewAgentStreamCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewAgentStreamCmd returns the cobra command tree for agent-stream. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewAgentStreamCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "agent-stream",
 		Short: "Manage agent-stream",
 	}
 
 	{
+		var params client.AgentStreamStreamSessionEventsParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "stream-session-events <sessionId>",
 			Short: "Stream Session Events",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentStreamStreamSessionEvents"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				resp, err := getClient().AgentStreamStreamSessionEventsWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 

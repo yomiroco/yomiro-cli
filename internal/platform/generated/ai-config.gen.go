@@ -2,77 +2,124 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewAiConfigCmd returns the cobra command tree for ai-config.
-func NewAiConfigCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewAiConfigCmd returns the cobra command tree for ai-config. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewAiConfigCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "ai-config",
 		Short: "Manage ai-config",
 	}
 
 	{
+		var params client.AiConfigCreateOrReplaceAiConfigParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "create-or-replace <deviceGroupId>",
 			Short: "Create Or Replace Ai Config",
+			Long: "Create Or Replace Ai Config.\n\nRequest body fields:\n  active_annotation_project_id        uuid     optional  Active annotation project for SAM3-LiteText visual prompts. Used when detection…\n  capture_config                      object   optional  Capture rules configuration (CaptureConfig JSON)\n  denoise_enabled                     boolean  optional  Enable lightweight denoising\n  denoise_strength                    integer  optional  Denoising strength (1-10, higher = more denoising)\n  detection_interval                  integer  optional  Frame interval for detection (process every Nth frame)\n  detection_publish_interval_seconds  number   optional  Interval in seconds between detection digest MQTT publishes\n  detection_source                    string   optional  one of: text_prompts, annotation_project; Detection prompt source for SAM3-Lite…\n  enabled                             boolean  optional  Enable object detection\n  image_prompts                       array    optional  Reference image prompts [{url, label}] for SAM3-LiteText\n  model_pipeline                      string   optional  one of: none, nanoowl_sam, sam3_lite, golden_state; Available AI model pipeline…\n  overlay_enabled                     boolean  optional  Draw AI detections overlay on video stream\n  pad_square                          boolean  optional  Pad image to square for OWL predictor\n  sam_enabled                         boolean  optional  Enable SAM segmentation\n  similarity_threshold                number   optional  SSIM threshold for frame similarity\n  text_queries                        array    optional  Text queries for object detection\n  threshold                           number   optional  Detection confidence threshold\n  track_thresh                        number   optional  Min detection confidence to initiate a new track in ByteTrack\n  tracking_enabled                    boolean  optional  Enable object tracking\n  tracking_iou_threshold              number   optional  IoU match threshold for ByteTrack first-stage association (match_thresh)\n  use_tree_predictor                  boolean  optional  Use TreePredictor for complex queries\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AiConfigCreateOrReplaceAiConfig"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"active_annotation_project_id\": null,\n  \"capture_config\": null,\n  \"denoise_enabled\": null,\n  \"denoise_strength\": null,\n  \"detection_interval\": null,\n  \"detection_publish_interval_seconds\": null,\n  \"detection_source\": null,\n  \"enabled\": null,\n  \"image_prompts\": null,\n  \"model_pipeline\": null,\n  \"overlay_enabled\": null,\n  \"pad_square\": null,\n  \"sam_enabled\": null,\n  \"similarity_threshold\": null,\n  \"text_queries\": null,\n  \"threshold\": null,\n  \"track_thresh\": null,\n  \"tracking_enabled\": null,\n  \"tracking_iou_threshold\": null,\n  \"use_tree_predictor\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				var body client.AiConfigCreateOrReplaceAiConfigJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AiConfigCreateOrReplaceAiConfigWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AiConfigDeleteAiConfigParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete <deviceGroupId>",
 			Short: "Delete Ai Config",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AiConfigDeleteAiConfig"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				resp, err := getClient().AiConfigDeleteAiConfigWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AiConfigGetAiConfigParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get <deviceGroupId>",
 			Short: "Get Ai Config",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AiConfigGetAiConfig"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				resp, err := getClient().AiConfigGetAiConfigWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AiConfigUpdateAiConfigParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update <deviceGroupId>",
 			Short: "Update Ai Config",
+			Long: "Update Ai Config.\n\nRequest body fields:\n  active_annotation_project_id        uuid     optional\n  capture_config                      object   optional\n  denoise_enabled                     boolean  optional\n  denoise_strength                    integer  optional\n  detection_interval                  integer  optional\n  detection_publish_interval_seconds  number   optional\n  detection_source                    string   optional  one of: text_prompts, annotation_project; Detection prompt source for SAM3-Lite…\n  enabled                             boolean  optional\n  image_prompts                       array    optional\n  model_pipeline                      string   optional  one of: none, nanoowl_sam, sam3_lite, golden_state; Available AI model pipeline…\n  overlay_enabled                     boolean  optional\n  pad_square                          boolean  optional\n  sam_enabled                         boolean  optional\n  similarity_threshold                number   optional\n  text_queries                        array    optional\n  threshold                           number   optional\n  track_thresh                        number   optional\n  tracking_enabled                    boolean  optional\n  tracking_iou_threshold              number   optional\n  use_tree_predictor                  boolean  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AiConfigUpdateAiConfig"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"active_annotation_project_id\": null,\n  \"capture_config\": null,\n  \"denoise_enabled\": null,\n  \"denoise_strength\": null,\n  \"detection_interval\": null,\n  \"detection_publish_interval_seconds\": null,\n  \"detection_source\": null,\n  \"enabled\": null,\n  \"image_prompts\": null,\n  \"model_pipeline\": null,\n  \"overlay_enabled\": null,\n  \"pad_square\": null,\n  \"sam_enabled\": null,\n  \"similarity_threshold\": null,\n  \"text_queries\": null,\n  \"threshold\": null,\n  \"track_thresh\": null,\n  \"tracking_enabled\": null,\n  \"tracking_iou_threshold\": null,\n  \"use_tree_predictor\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				var body client.AiConfigUpdateAiConfigJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AiConfigUpdateAiConfigWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 

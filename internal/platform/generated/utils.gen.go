@@ -2,15 +2,17 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
-
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewUtilsCmd returns the cobra command tree for utils.
-func NewUtilsCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewUtilsCmd returns the cobra command tree for utils. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewUtilsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "utils",
 		Short: "Manage utils",
@@ -18,31 +20,31 @@ func NewUtilsCmd(c *client.ClientWithResponses) *cobra.Command {
 
 	{
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "health-check",
 			Short: "Health Check",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "UtilsHealthCheck"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().UtilsHealthCheckWithResponse(ctx)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.UtilsTestEmailParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "test-email",
 			Short: "Test Email",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "UtilsTestEmail"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().UtilsTestEmailWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 

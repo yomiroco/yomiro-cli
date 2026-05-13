@@ -2,122 +2,131 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
-
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewAnalyticsCmd returns the cobra command tree for analytics.
-func NewAnalyticsCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewAnalyticsCmd returns the cobra command tree for analytics. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewAnalyticsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "analytics",
 		Short: "Manage analytics",
 	}
 
 	{
+		var params client.AnalyticsGetAnalyticsSummaryParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "get-summary",
 			Short: "Get Analytics Summary",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnalyticsGetAnalyticsSummary"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AnalyticsGetAnalyticsSummaryWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnalyticsGetDashboardStatsParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "get-dashboard-stats",
 			Short: "Get Dashboard Stats",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnalyticsGetDashboardStats"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AnalyticsGetDashboardStatsWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnalyticsGetDetectionTrendsParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "get-detection-trends",
 			Short: "Get Detection Trends",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnalyticsGetDetectionTrends"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AnalyticsGetDetectionTrendsWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnalyticsGetDetectionTypesParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "get-detection-types",
 			Short: "Get Detection Types",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnalyticsGetDetectionTypes"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AnalyticsGetDetectionTypesWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnalyticsGetDeviceHealthParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "get-device-health",
 			Short: "Get Device Health",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnalyticsGetDeviceHealth"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AnalyticsGetDeviceHealthWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnalyticsGetDevicePerformanceParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "get-device-performance",
 			Short: "Get Device Performance",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnalyticsGetDevicePerformance"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AnalyticsGetDevicePerformanceWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnalyticsGetGrafanaUrlParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "get-grafana-url",
 			Short: "Get Grafana Url",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnalyticsGetGrafanaUrl"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AnalyticsGetGrafanaUrlWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 

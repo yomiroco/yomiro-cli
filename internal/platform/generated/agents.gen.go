@@ -2,287 +2,433 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewAgentsCmd returns the cobra command tree for agents.
-func NewAgentsCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewAgentsCmd returns the cobra command tree for agents. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewAgentsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "agents",
 		Short: "Manage agents",
 	}
 
 	{
+		var params client.AgentsCreateAgentConfigParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "create-config",
 			Short: "Create Agent Config",
+			Long: "Create Agent Config.\n\nRequest body fields:\n  agent_md_content  string   optional  Optional AGENT.md content to upload\n  agent_role        string   optional  one of: sidebar, general, custom, page\n  cost_budget_usd   number   optional\n  data_sources      array    optional\n  description       string   optional\n  execution_tier    string   optional  one of: structured, shell\n  is_default        boolean  optional\n  model             string   optional\n  name              string   required\n  skills            array    optional\n  soul_md_content   string   optional  Optional SOUL.md content to upload\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsCreateAgentConfig"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"agent_md_content\": null,\n  \"agent_role\": null,\n  \"cost_budget_usd\": null,\n  \"data_sources\": null,\n  \"description\": null,\n  \"execution_tier\": null,\n  \"is_default\": null,\n  \"model\": null,\n  \"name\": \"\",\n  \"skills\": null,\n  \"soul_md_content\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.AgentsCreateAgentConfigJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AgentsCreateAgentConfigWithResponse(ctx, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentsCreateHeartbeatTaskParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "create-heartbeat-task <configId>",
 			Short: "Create Heartbeat Task",
+			Long: "Create Heartbeat Task.\n\nRequest body fields:\n  description             string  optional\n  name                    string  required\n  output_config           object  optional\n  output_target           string  optional  one of: dashboard_widget, notification, report, none\n  prompt                  string  required\n  schedule                string  required\n  target_agent_config_id  uuid    optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsCreateHeartbeatTask"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"name\": \"\",\n  \"output_config\": null,\n  \"output_target\": null,\n  \"prompt\": \"\",\n  \"schedule\": \"\",\n  \"target_agent_config_id\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				var body client.AgentsCreateHeartbeatTaskJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AgentsCreateHeartbeatTaskWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentsCreateHookParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "create-hook <configId>",
 			Short: "Create Hook",
+			Long: "Create Hook.\n\nRequest body fields:\n  description      string  optional\n  event_type       string  required  one of: inspection_completed, ringbuffer_captured, alert_fired, device_connecte…\n  filter           object  optional\n  name             string  required\n  prompt_template  string  required\n  security_mode    string  optional  one of: auto, notify, approval_required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsCreateHook"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"event_type\": \"inspection_completed\",\n  \"filter\": null,\n  \"name\": \"\",\n  \"prompt_template\": \"\",\n  \"security_mode\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				var body client.AgentsCreateHookJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AgentsCreateHookWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentsDeleteAgentConfigParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-config <configId>",
 			Short: "Delete Agent Config",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsDeleteAgentConfig"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				resp, err := getClient().AgentsDeleteAgentConfigWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentsDeleteHeartbeatTaskParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-heartbeat-task <taskId>",
 			Short: "Delete Heartbeat Task",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsDeleteHeartbeatTask"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <taskId>: %w", err) }
+				resp, err := getClient().AgentsDeleteHeartbeatTaskWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentsDeleteHookParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-hook <hookId>",
 			Short: "Delete Hook",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsDeleteHook"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <hookId>: %w", err) }
+				resp, err := getClient().AgentsDeleteHookWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentsExportHeartbeatMdParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "export-heartbeat-md <configId>",
 			Short: "Export Heartbeat Md",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsExportHeartbeatMd"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				resp, err := getClient().AgentsExportHeartbeatMdWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentsGetAgentConfigParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-config <configId>",
 			Short: "Get Agent Config",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsGetAgentConfig"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				resp, err := getClient().AgentsGetAgentConfigWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentsGetHeartbeatTaskParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-heartbeat-task <taskId>",
 			Short: "Get Heartbeat Task",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsGetHeartbeatTask"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <taskId>: %w", err) }
+				resp, err := getClient().AgentsGetHeartbeatTaskWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentsGetHookParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-hook <hookId>",
 			Short: "Get Hook",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsGetHook"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <hookId>: %w", err) }
+				resp, err := getClient().AgentsGetHookWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentsListAgentConfigsParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "list-configs",
 			Short: "List Agent Configs",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsListAgentConfigs"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AgentsListAgentConfigsWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentsListHeartbeatTasksParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "list-heartbeat-tasks <configId>",
 			Short: "List Heartbeat Tasks",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsListHeartbeatTasks"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				resp, err := getClient().AgentsListHeartbeatTasksWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentsListHooksParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "list-hooks <configId>",
 			Short: "List Hooks",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsListHooks"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				resp, err := getClient().AgentsListHooksWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentsListPageAgentsParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "list-page",
 			Short: "List Page Agents",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsListPageAgents"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AgentsListPageAgentsWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentsSyncHeartbeatMdParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "sync-heartbeat-md <configId>",
 			Short: "Sync Heartbeat Md",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsSyncHeartbeatMd"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				resp, err := getClient().AgentsSyncHeartbeatMdWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentsUpdateAgentConfigParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update-config <configId>",
 			Short: "Update Agent Config",
+			Long: "Update Agent Config.\n\nRequest body fields:\n  agent_md_content      string   optional  Updated AGENT.md content\n  agent_role            string   optional  one of: sidebar, general, custom, page\n  cost_budget_usd       number   optional\n  data_sources          array    optional\n  description           string   optional\n  execution_tier        string   optional  one of: structured, shell\n  is_active             boolean  optional\n  is_default            boolean  optional\n  model                 string   optional\n  name                  string   optional\n  security_policy       object   optional\n  skills                array    optional\n  soul_md_content       string   optional  Updated SOUL.md content\n  uses_default_soul_md  boolean  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsUpdateAgentConfig"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"agent_md_content\": null,\n  \"agent_role\": null,\n  \"cost_budget_usd\": null,\n  \"data_sources\": null,\n  \"description\": null,\n  \"execution_tier\": null,\n  \"is_active\": null,\n  \"is_default\": null,\n  \"model\": null,\n  \"name\": null,\n  \"security_policy\": null,\n  \"skills\": null,\n  \"soul_md_content\": null,\n  \"uses_default_soul_md\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				var body client.AgentsUpdateAgentConfigJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AgentsUpdateAgentConfigWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentsUpdateHeartbeatTaskParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update-heartbeat-task <taskId>",
 			Short: "Update Heartbeat Task",
+			Long: "Update Heartbeat Task.\n\nRequest body fields:\n  description             string   optional\n  is_active               boolean  optional\n  name                    string   optional\n  output_config           object   optional\n  output_target           string   optional  one of: dashboard_widget, notification, report, none\n  prompt                  string   optional\n  schedule                string   optional\n  target_agent_config_id  uuid     optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsUpdateHeartbeatTask"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"is_active\": null,\n  \"name\": null,\n  \"output_config\": null,\n  \"output_target\": null,\n  \"prompt\": null,\n  \"schedule\": null,\n  \"target_agent_config_id\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <taskId>: %w", err) }
+				var body client.AgentsUpdateHeartbeatTaskJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AgentsUpdateHeartbeatTaskWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentsUpdateHookParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update-hook <hookId>",
 			Short: "Update Hook",
+			Long: "Update Hook.\n\nRequest body fields:\n  description      string   optional\n  filter           object   optional\n  is_active        boolean  optional\n  name             string   optional\n  prompt_template  string   optional\n  security_mode    string   optional  one of: auto, notify, approval_required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentsUpdateHook"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"filter\": null,\n  \"is_active\": null,\n  \"name\": null,\n  \"prompt_template\": null,\n  \"security_mode\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <hookId>: %w", err) }
+				var body client.AgentsUpdateHookJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AgentsUpdateHookWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 

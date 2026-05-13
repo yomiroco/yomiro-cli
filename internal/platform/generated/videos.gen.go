@@ -2,195 +2,241 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewVideosCmd returns the cobra command tree for videos.
-func NewVideosCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewVideosCmd returns the cobra command tree for videos. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewVideosCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "videos",
 		Short: "Manage videos",
 	}
 
 	{
+		var params client.VideosDebugVideoFileParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "debug-file <videoId>",
 			Short: "Debug Video File",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "VideosDebugVideoFile"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <videoId>: %w", err) }
+				resp, err := getClient().VideosDebugVideoFileWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.VideosDeleteCameraVideoParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-camera <videoId>",
 			Short: "Delete Camera Video",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "VideosDeleteCameraVideo"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <videoId>: %w", err) }
+				resp, err := getClient().VideosDeleteCameraVideoWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.VideosGetOriginalVideoParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-original <videoId>",
 			Short: "Get Original Video",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "VideosGetOriginalVideo"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <videoId>: %w", err) }
+				resp, err := getClient().VideosGetOriginalVideoWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.VideosGetProcessedVideoParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-processed <filename>",
 			Short: "Get Processed Video",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "VideosGetProcessedVideo"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				resp, err := getClient().VideosGetProcessedVideoWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.VideosGetProcessedVideoFileParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-processed-file <videoId>",
 			Short: "Get Processed Video File",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "VideosGetProcessedVideoFile"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <videoId>: %w", err) }
+				resp, err := getClient().VideosGetProcessedVideoFileWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.VideosGetProcessingStatusParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-processing-status <videoId>",
 			Short: "Get Processing Status",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "VideosGetProcessingStatus"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <videoId>: %w", err) }
+				resp, err := getClient().VideosGetProcessingStatusWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "process",
 			Short: "Process Video",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "VideosProcessVideo"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				return fmt.Errorf("operation VideosProcessVideo is not exposed by the generated client (multipart body or unsupported schema); use the platform UI or REST directly")
 			},
 		}
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.VideosReadCameraVideoParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get <videoId>",
 			Short: "Read Camera Video",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "VideosReadCameraVideo"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <videoId>: %w", err) }
+				resp, err := getClient().VideosReadCameraVideoWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.VideosReadCameraVideosParams
 		cmd := &cobra.Command{
 			Use:   "list",
 			Short: "Read Camera Videos",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "VideosReadCameraVideos"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().VideosReadCameraVideosWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.VideosReprocessCameraVideoParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "reprocess-camera <videoId>",
 			Short: "Reprocess Camera Video",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "VideosReprocessCameraVideo"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <videoId>: %w", err) }
+				resp, err := getClient().VideosReprocessCameraVideoWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.VideosUpdateCameraVideoParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update-camera <videoId>",
 			Short: "Update Camera Video",
+			Long: "Update Camera Video.\n\nRequest body fields:\n  description        string  optional\n  processing_status  string  optional\n  title              string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "VideosUpdateCameraVideo"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"processing_status\": null,\n  \"title\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <videoId>: %w", err) }
+				var body client.VideosUpdateCameraVideoJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().VideosUpdateCameraVideoWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "upload-camera",
 			Short: "Upload Camera Video",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "VideosUploadCameraVideo"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				return fmt.Errorf("operation VideosUploadCameraVideo is not exposed by the generated client (multipart body or unsupported schema); use the platform UI or REST directly")
 			},
 		}
 		root.AddCommand(cmd)

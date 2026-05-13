@@ -23,22 +23,37 @@ func NewCmd() *cobra.Command {
 // overridden via env (`YOMIRO_AUTH0_DOMAIN`, `YOMIRO_AUTH0_CLIENT_ID`,
 // `YOMIRO_AUTH0_AUDIENCE`, `YOMIRO_API_URL`) or flags.
 //
-// TODO: defaultAuth0ClientID is a placeholder until prod Auth0 is provisioned
-// (the prod auth0-app terragrunt unit lives in infrastructure/_disabled/).
-// The dev tenant's CLI client_id is `oGQgnpBtymVPMJMkHbvP433o6n8sqO4e`
-// (provisioned via infrastructure/modules/auth0-app on 2026-05-04). Operators
-// running against dev must currently override with --auth0-client-id /
-// YOMIRO_AUTH0_CLIENT_ID; bake the real prod value here once prod auth0 lands.
+// defaultAuth0ClientID is the prod CLI client (provisioned via
+// infrastructure/live/prod/auth0-app on 2026-05-13). Operators running
+// against dev override with --auth0-client-id / YOMIRO_AUTH0_CLIENT_ID
+// = oGQgnpBtymVPMJMkHbvP433o6n8sqO4e (and --api-url / YOMIRO_API_URL =
+// https://api.dev.yomiro.io, --audience / YOMIRO_AUTH0_AUDIENCE =
+// https://api.dev.yomiro.io).
 //
 // Note: the Auth0 tenant must also have "Device Code" enabled in Tenant
 // Settings → Advanced (the auth0/auth0 provider has no resource for that
 // toggle). Without it, the device-code flow returns `unauthorized_client`.
 const (
 	defaultAuth0Domain   = "yomiro.eu.auth0.com"
-	defaultAuth0ClientID = "yomiro-cli"
+	defaultAuth0ClientID = "sUIOMvj0aaIRFbOPDcYUZ8bM5yCbWnA5"
 	defaultAudience      = "https://api.yomiro.io"
 	defaultAPIURL        = "https://api.yomiro.io"
 )
+
+// defaultCLIScopes is the least-privileged set granted to a freshly-logged-in
+// CLI: enough to inspect every resource the wired groups expose, nothing
+// that can mutate state. Operators who need write access pass --scopes to
+// `yomiro auth login` (or mint a per-purpose key in the platform UI).
+//
+// Mirrors the read half of backend/app/database_models/platform/api_key.py
+// ApiKeyScope; keep in sync when a new resource tag lands.
+var defaultCLIScopes = []string{
+	"agents:read",
+	"dashboards:read",
+	"data:read",
+	"inspection:read",
+	"devices:read",
+}
 
 func newSetTokenCmd() *cobra.Command {
 	var apiURL, token, user, tenant string

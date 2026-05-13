@@ -2,167 +2,229 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewAlertsCmd returns the cobra command tree for alerts.
-func NewAlertsCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewAlertsCmd returns the cobra command tree for alerts. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewAlertsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "alerts",
 		Short: "Manage alerts",
 	}
 
 	{
+		var params client.AlertsAcknowledgeAlertEventParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "acknowledge-event <eventId>",
 			Short: "Acknowledge Alert Event",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AlertsAcknowledgeAlertEvent"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <eventId>: %w", err) }
+				resp, err := getClient().AlertsAcknowledgeAlertEventWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AlertsCreateAlertRuleParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "create-rule",
 			Short: "Create Alert Rule",
+			Long: "Create Alert Rule.\n\nRequest body fields:\n  comparison_op                string   optional  Comparison operator (gt/gte/lt/lte/eq/neq)\n  condition_sql                string   required  SQL query returning a numeric value\n  description                  string   optional  What this rule monitors\n  enabled                      boolean  optional  Whether this rule is active\n  evaluation_interval_seconds  integer  optional  How often to check (seconds)\n  name                         string   required  Human-readable rule name\n  notification_channels        array    optional  Notification channels: webhook/mqtt\n  severity                     string   optional  Alert severity level\n  source_dashboard_id          uuid     optional\n  source_widget_id             string   optional\n  threshold                    number   required  Comparison value\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AlertsCreateAlertRule"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"comparison_op\": null,\n  \"condition_sql\": \"\",\n  \"description\": null,\n  \"enabled\": null,\n  \"evaluation_interval_seconds\": null,\n  \"name\": \"\",\n  \"notification_channels\": null,\n  \"severity\": null,\n  \"source_dashboard_id\": null,\n  \"source_widget_id\": null,\n  \"threshold\": 0\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.AlertsCreateAlertRuleJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AlertsCreateAlertRuleWithResponse(ctx, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AlertsDeleteAlertRuleParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-rule <ruleId>",
 			Short: "Delete Alert Rule",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AlertsDeleteAlertRule"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <ruleId>: %w", err) }
+				resp, err := getClient().AlertsDeleteAlertRuleWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AlertsDisableAlertRuleParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "disable-rule <ruleId>",
 			Short: "Disable Alert Rule",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AlertsDisableAlertRule"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <ruleId>: %w", err) }
+				resp, err := getClient().AlertsDisableAlertRuleWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AlertsEnableAlertRuleParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "enable-rule <ruleId>",
 			Short: "Enable Alert Rule",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AlertsEnableAlertRule"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <ruleId>: %w", err) }
+				resp, err := getClient().AlertsEnableAlertRuleWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AlertsGetAlertEventParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-event <eventId>",
 			Short: "Get Alert Event",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AlertsGetAlertEvent"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <eventId>: %w", err) }
+				resp, err := getClient().AlertsGetAlertEventWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AlertsGetAlertRuleParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-rule <ruleId>",
 			Short: "Get Alert Rule",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AlertsGetAlertRule"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <ruleId>: %w", err) }
+				resp, err := getClient().AlertsGetAlertRuleWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AlertsListAlertEventsParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "list-events",
 			Short: "List Alert Events",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AlertsListAlertEvents"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AlertsListAlertEventsWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AlertsListAlertRulesParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "list-rules",
 			Short: "List Alert Rules",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AlertsListAlertRules"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AlertsListAlertRulesWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AlertsUpdateAlertRuleParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update-rule <ruleId>",
 			Short: "Update Alert Rule",
+			Long: "Update Alert Rule.\n\nRequest body fields:\n  comparison_op                string   optional\n  condition_sql                string   optional\n  description                  string   optional\n  enabled                      boolean  optional\n  evaluation_interval_seconds  integer  optional\n  name                         string   optional\n  notification_channels        array    optional\n  severity                     string   optional\n  threshold                    number   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AlertsUpdateAlertRule"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"comparison_op\": null,\n  \"condition_sql\": null,\n  \"description\": null,\n  \"enabled\": null,\n  \"evaluation_interval_seconds\": null,\n  \"name\": null,\n  \"notification_channels\": null,\n  \"severity\": null,\n  \"threshold\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <ruleId>: %w", err) }
+				var body client.AlertsUpdateAlertRuleJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AlertsUpdateAlertRuleWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 

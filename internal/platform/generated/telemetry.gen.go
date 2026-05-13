@@ -2,15 +2,16 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
-
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewTelemetryCmd returns the cobra command tree for telemetry.
-func NewTelemetryCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewTelemetryCmd returns the cobra command tree for telemetry. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewTelemetryCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "telemetry",
 		Short: "Manage telemetry",
@@ -18,14 +19,13 @@ func NewTelemetryCmd(c *client.ClientWithResponses) *cobra.Command {
 
 	{
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "receive-otlp-metrics",
 			Short: "Receive Otlp Metrics",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "TelemetryReceiveOtlpMetrics"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().TelemetryReceiveOtlpMetricsWithResponse(ctx)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
 		root.AddCommand(cmd)

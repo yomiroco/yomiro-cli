@@ -2,47 +2,51 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
-
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewAgentWorkspaceDefaultsCmd returns the cobra command tree for agent-workspace-defaults.
-func NewAgentWorkspaceDefaultsCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewAgentWorkspaceDefaultsCmd returns the cobra command tree for agent-workspace-defaults. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewAgentWorkspaceDefaultsCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "agent-workspace-defaults",
 		Short: "Manage agent-workspace-defaults",
 	}
 
 	{
+		var params client.AgentWorkspaceDefaultsGetDefaultSoulMdParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "get-default-soul-md",
 			Short: "Get Default Soul Md",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentWorkspaceDefaultsGetDefaultSoulMd"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AgentWorkspaceDefaultsGetDefaultSoulMdWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentWorkspaceDefaultsPutDefaultSoulMdParams
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "put-default-soul-md",
 			Short: "Put Default Soul Md",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentWorkspaceDefaultsPutDefaultSoulMd"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AgentWorkspaceDefaultsPutDefaultSoulMdWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 

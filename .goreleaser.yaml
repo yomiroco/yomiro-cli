@@ -2,7 +2,7 @@
 
 # This config targets the public release repo `github.com/yomiroco/yomiro-cli`.
 # The CLI source mirrors out of this monorepo (where the module path is
-# `github.com/hojland/yomiro/cli`) into the public repo, where the module path
+# `github.com/yomiroco/yomiro-cli`) into the public repo, where the module path
 # is rewritten to `github.com/yomiroco/yomiro-cli`. The release pipeline runs
 # only in the public repo, where the ldflags `-X github.com/yomiroco/yomiro-cli/...`
 # paths resolve correctly.

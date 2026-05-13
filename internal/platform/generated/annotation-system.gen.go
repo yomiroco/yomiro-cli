@@ -2,735 +2,1073 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
+	"strconv"
+
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewAnnotationSystemCmd returns the cobra command tree for annotation-system.
-func NewAnnotationSystemCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewAnnotationSystemCmd returns the cobra command tree for annotation-system. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "annotation-system",
 		Short: "Manage annotation-system",
 	}
 
 	{
+		var params client.AnnotationSystemBulkAddMediaToProjectParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "bulk-add-media-to-project <projectId>",
 			Short: "Bulk Add Media To Project",
+			Long: "Bulk Add Media To Project.\n\nRequest body fields:\n  camera_image_ids  array  optional\n  camera_video_ids  array  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemBulkAddMediaToProject"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"camera_image_ids\": null,\n  \"camera_video_ids\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				var body client.AnnotationSystemBulkAddMediaToProjectJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AnnotationSystemBulkAddMediaToProjectWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemCopyLabelsFromProjectParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "copy-labels-from-project <projectId> <sourceProjectId>",
 			Short: "Copy Labels From Project",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemCopyLabelsFromProject"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				_arg1, err := uuid.Parse(args[1])
+				if err != nil { return fmt.Errorf("path arg <sourceProjectId>: %w", err) }
+				resp, err := getClient().AnnotationSystemCopyLabelsFromProjectWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemCreateLabelParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "create-label",
 			Short: "Create Label",
+			Long: "Create Label.\n\nRequest body fields:\n  category       string   optional  Label category\n  color          string   optional  Hex color code for visualization\n  description    string   optional  Label description\n  display_name   string   required  Human-readable display name\n  display_order  integer  optional  Order in which labels appear in UI\n  hotkey         string   optional  Keyboard shortcut (e.g., '1', 'a')\n  is_active      boolean  optional  Whether this label is currently active\n  name           string   required  Label name (e.g., 'scratch', 'dent')\n  project_id     uuid     required  Annotation project this label belongs to\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemCreateLabel"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"category\": null,\n  \"color\": null,\n  \"description\": null,\n  \"display_name\": \"\",\n  \"display_order\": null,\n  \"hotkey\": null,\n  \"is_active\": null,\n  \"name\": \"\",\n  \"project_id\": \"00000000-0000-0000-0000-000000000000\"\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.AnnotationSystemCreateLabelJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AnnotationSystemCreateLabelWithResponse(ctx, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemCreateMediaParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "create-media",
 			Short: "Create Media",
+			Long: "Create Media.\n\nRequest body fields:\n  camera_image_id  uuid     optional  Reference to CameraImage\n  camera_video_id  uuid     optional  Reference to CameraVideo\n  description      string   optional\n  fps              number   optional  Frames per second (for videos)\n  frame_count      integer  optional  Number of frames (for videos)\n  height           integer  optional  Media height in pixels\n  media_type       string   optional  Type of media (image/video)\n  project_id       uuid     required  Annotation project this media belongs to\n  title            string   required  Title for this annotation media (defaults to filename)\n  width            integer  optional  Media width in pixels\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemCreateMedia"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"camera_image_id\": null,\n  \"camera_video_id\": null,\n  \"description\": null,\n  \"fps\": null,\n  \"frame_count\": null,\n  \"height\": null,\n  \"media_type\": null,\n  \"project_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"title\": \"\",\n  \"width\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.AnnotationSystemCreateMediaJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AnnotationSystemCreateMediaWithResponse(ctx, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemCreateProjectParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "create-project",
 			Short: "Create Project",
+			Long: "Create Project.\n\nRequest body fields:\n  description  string   optional  Project description\n  is_active    boolean  optional  Whether project is active\n  name         string   required  Project name\n  version      string   optional  Project version for tracking changes\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemCreateProject"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"is_active\": null,\n  \"name\": \"\",\n  \"version\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.AnnotationSystemCreateProjectJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AnnotationSystemCreateProjectWithResponse(ctx, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemCreateProjectDeviceLinkParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "create-project-device-link",
 			Short: "Create Project Device Link",
+			Long: "Create Project Device Link.\n\nRequest body fields:\n  device_group_id  uuid     optional  Device group to link (for group-wide push)\n  device_id        uuid     optional  Individual device to link (for canary push)\n  is_active        boolean  optional  Whether this link is active\n  is_canary        boolean  optional  Whether this is a canary deployment target\n  priority         integer  optional  Priority for ordering (higher = more important)\n  project_id       uuid     required  Annotation project to link\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemCreateProjectDeviceLink"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"device_group_id\": null,\n  \"device_id\": null,\n  \"is_active\": null,\n  \"is_canary\": null,\n  \"priority\": null,\n  \"project_id\": \"00000000-0000-0000-0000-000000000000\"\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.AnnotationSystemCreateProjectDeviceLinkJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AnnotationSystemCreateProjectDeviceLinkWithResponse(ctx, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemCreatePushParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "create-push",
 			Short: "Create Push",
+			Long: "Create Push.\n\nRequest body fields:\n  annotation_media_ids  array    optional  Specific media to push (all if not specified)\n  device_group_id       uuid     optional  Target device group (for group push)\n  device_id             uuid     optional  Target device (for canary push)\n  format                string   optional\n  include_images        boolean  optional  Include image files in push\n  project_id            uuid     required  Annotation project to push\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemCreatePush"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"annotation_media_ids\": null,\n  \"device_group_id\": null,\n  \"device_id\": null,\n  \"format\": null,\n  \"include_images\": null,\n  \"project_id\": \"00000000-0000-0000-0000-000000000000\"\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.AnnotationSystemCreatePushJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AnnotationSystemCreatePushWithResponse(ctx, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemCreateShapeParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "create-shape",
 			Short: "Create Shape",
+			Long: "Create Shape.\n\nRequest body fields:\n  annotation_media_id  uuid     required  Media this shape belongs to\n  attributes           object   optional  Additional attributes\n  color                string   optional  Override color (uses label color if not set)\n  confidence           number   optional  Confidence score (for model suggestions)\n  frame_index          integer  optional  Frame index (0 for images, frame number for videos)\n  geometry             object   required  Shape geometry data\n  is_keyframe          boolean  optional  Whether this is a keyframe (vs interpolated)\n  label_id             uuid     optional  Label for this shape\n  shape_type           string   optional  Type of shape\n  stroke_width         integer  optional  Stroke width for drawing\n  track_id             string   optional  Object tracking ID across frames\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemCreateShape"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"annotation_media_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"attributes\": null,\n  \"color\": null,\n  \"confidence\": null,\n  \"frame_index\": null,\n  \"geometry\": {},\n  \"is_keyframe\": null,\n  \"label_id\": null,\n  \"shape_type\": null,\n  \"stroke_width\": null,\n  \"track_id\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.AnnotationSystemCreateShapeJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AnnotationSystemCreateShapeWithResponse(ctx, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemCreateShapesBulkParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "create-shapes-bulk",
 			Short: "Create Shapes Bulk",
+			Long: "Create Shapes Bulk.\n\nRequest body fields:\n  annotation_media_id  uuid   required\n  label_ids            array  optional\n  shapes               array  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemCreateShapesBulk"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"annotation_media_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"label_ids\": null,\n  \"shapes\": []\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.AnnotationSystemCreateShapesBulkJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AnnotationSystemCreateShapesBulkWithResponse(ctx, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemDeleteLabelParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-label <labelId>",
 			Short: "Delete Label",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemDeleteLabel"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <labelId>: %w", err) }
+				resp, err := getClient().AnnotationSystemDeleteLabelWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemDeleteMediaParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-media <mediaId>",
 			Short: "Delete Media",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemDeleteMedia"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <mediaId>: %w", err) }
+				resp, err := getClient().AnnotationSystemDeleteMediaWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemDeleteProjectParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-project <projectId>",
 			Short: "Delete Project",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemDeleteProject"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				resp, err := getClient().AnnotationSystemDeleteProjectWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemDeleteProjectDeviceLinkParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-project-device-link <linkId>",
 			Short: "Delete Project Device Link",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemDeleteProjectDeviceLink"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <linkId>: %w", err) }
+				resp, err := getClient().AnnotationSystemDeleteProjectDeviceLinkWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemDeleteShapeParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-shape <shapeId>",
 			Short: "Delete Shape",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemDeleteShape"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <shapeId>: %w", err) }
+				resp, err := getClient().AnnotationSystemDeleteShapeWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemDeleteShapesByFrameParams
 		cmd := &cobra.Command{
-			Use:   "delete",
+			Use:   "delete-shapes-by-frame <annotationMediaId> <frameIndex>",
 			Short: "Delete Shapes By Frame",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemDeleteShapesByFrame"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <annotationMediaId>: %w", err) }
+				_arg1, err := strconv.Atoi(args[1])
+				if err != nil { return fmt.Errorf("path arg <frameIndex>: %w", err) }
+				resp, err := getClient().AnnotationSystemDeleteShapesByFrameWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemDuplicateProjectParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "duplicate-project <projectId>",
 			Short: "Duplicate Project",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemDuplicateProject"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				resp, err := getClient().AnnotationSystemDuplicateProjectWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemGetLabelParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-label <labelId>",
 			Short: "Get Label",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemGetLabel"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <labelId>: %w", err) }
+				resp, err := getClient().AnnotationSystemGetLabelWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemGetLinksForProjectParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-links-for-project <projectId>",
 			Short: "Get Links For Project",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemGetLinksForProject"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				resp, err := getClient().AnnotationSystemGetLinksForProjectWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemGetMediaParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-media <mediaId>",
 			Short: "Get Media",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemGetMedia"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <mediaId>: %w", err) }
+				resp, err := getClient().AnnotationSystemGetMediaWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemGetMediaFileParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-media-file <mediaId>",
 			Short: "Get Media File",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemGetMediaFile"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <mediaId>: %w", err) }
+				resp, err := getClient().AnnotationSystemGetMediaFileWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemGetMediaWithShapesParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-media-with-shapes <mediaId>",
 			Short: "Get Media With Shapes",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemGetMediaWithShapes"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <mediaId>: %w", err) }
+				resp, err := getClient().AnnotationSystemGetMediaWithShapesWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemGetProjectParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-project <projectId>",
 			Short: "Get Project",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemGetProject"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				resp, err := getClient().AnnotationSystemGetProjectWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemGetProjectDeviceLinkParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-project-device-link <linkId>",
 			Short: "Get Project Device Link",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemGetProjectDeviceLink"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <linkId>: %w", err) }
+				resp, err := getClient().AnnotationSystemGetProjectDeviceLinkWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemGetProjectWithStatsParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-project-with-stats <projectId>",
 			Short: "Get Project With Stats",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemGetProjectWithStats"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				resp, err := getClient().AnnotationSystemGetProjectWithStatsWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemGetPushParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-push <pushId>",
 			Short: "Get Push",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemGetPush"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <pushId>: %w", err) }
+				resp, err := getClient().AnnotationSystemGetPushWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemGetPushDataParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-push-data <pushId>",
 			Short: "Get Push Data",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemGetPushData"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <pushId>: %w", err) }
+				resp, err := getClient().AnnotationSystemGetPushDataWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemGetShapeParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-shape <shapeId>",
 			Short: "Get Shape",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemGetShape"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <shapeId>: %w", err) }
+				resp, err := getClient().AnnotationSystemGetShapeWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemGetShapeWithLabelParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-shape-with-label <shapeId>",
 			Short: "Get Shape With Label",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemGetShapeWithLabel"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <shapeId>: %w", err) }
+				resp, err := getClient().AnnotationSystemGetShapeWithLabelWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemGetVideoFramesParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-video-frames <mediaId>",
 			Short: "Get Video Frames",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemGetVideoFrames"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <mediaId>: %w", err) }
+				resp, err := getClient().AnnotationSystemGetVideoFramesWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemInitializeDefaultLabelsParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "initialize-default-labels <projectId>",
 			Short: "Initialize Default Labels",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemInitializeDefaultLabels"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				resp, err := getClient().AnnotationSystemInitializeDefaultLabelsWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemInterpolateShapesParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "interpolate-shapes <annotationMediaId>",
 			Short: "Interpolate Shapes",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemInterpolateShapes"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <annotationMediaId>: %w", err) }
+				resp, err := getClient().AnnotationSystemInterpolateShapesWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemListLabelsParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "list-labels",
 			Short: "List Labels",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemListLabels"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AnnotationSystemListLabelsWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemListMediaParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "list-media",
 			Short: "List Media",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemListMedia"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AnnotationSystemListMediaWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemListProjectDeviceLinksParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "list-project-device-links",
 			Short: "List Project Device Links",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemListProjectDeviceLinks"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AnnotationSystemListProjectDeviceLinksWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemListProjectsParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "list-projects",
 			Short: "List Projects",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemListProjects"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AnnotationSystemListProjectsWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemListPushesParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "list-pushes",
 			Short: "List Pushes",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemListPushes"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AnnotationSystemListPushesWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemListShapesParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "list-shapes",
 			Short: "List Shapes",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemListShapes"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AnnotationSystemListShapesWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemMoveMediaToProjectParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "move-media-to-project <mediaId> <projectId>",
 			Short: "Move Media To Project",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemMoveMediaToProject"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <mediaId>: %w", err) }
+				_arg1, err := uuid.Parse(args[1])
+				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				resp, err := getClient().AnnotationSystemMoveMediaToProjectWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemPreviewPushParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "preview-push",
 			Short: "Preview Push",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemPreviewPush"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().AnnotationSystemPreviewPushWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemPushToAllLinkedParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "push-to-all-linked",
 			Short: "Push To All Linked",
+			Long: "Push To All Linked.\n\nRequest body fields:\n  device_group_ids  array  optional\n  device_ids        array  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemPushToAllLinked"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"device_group_ids\": null,\n  \"device_ids\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.AnnotationSystemPushToAllLinkedJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AnnotationSystemPushToAllLinkedWithResponse(ctx, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemQuickLinkDeviceParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "quick-link-device <projectId> <deviceId>",
 			Short: "Quick Link Device",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemQuickLinkDevice"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				_arg1, err := uuid.Parse(args[1])
+				if err != nil { return fmt.Errorf("path arg <deviceId>: %w", err) }
+				resp, err := getClient().AnnotationSystemQuickLinkDeviceWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemQuickLinkDeviceGroupParams
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "quick-link-device-group <projectId> <deviceGroupId>",
 			Short: "Quick Link Device Group",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemQuickLinkDeviceGroup"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				_arg1, err := uuid.Parse(args[1])
+				if err != nil { return fmt.Errorf("path arg <deviceGroupId>: %w", err) }
+				resp, err := getClient().AnnotationSystemQuickLinkDeviceGroupWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemUpdateLabelParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update-label <labelId>",
 			Short: "Update Label",
+			Long: "Update Label.\n\nRequest body fields:\n  category       string   optional\n  color          string   optional\n  description    string   optional\n  display_name   string   optional\n  display_order  integer  optional\n  hotkey         string   optional\n  is_active      boolean  optional\n  name           string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemUpdateLabel"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"category\": null,\n  \"color\": null,\n  \"description\": null,\n  \"display_name\": null,\n  \"display_order\": null,\n  \"hotkey\": null,\n  \"is_active\": null,\n  \"name\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <labelId>: %w", err) }
+				var body client.AnnotationSystemUpdateLabelJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AnnotationSystemUpdateLabelWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemUpdateMediaParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update-media <mediaId>",
 			Short: "Update Media",
+			Long: "Update Media.\n\nRequest body fields:\n  description  string   optional\n  fps          number   optional\n  frame_count  integer  optional\n  height       integer  optional\n  title        string   optional\n  width        integer  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemUpdateMedia"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"fps\": null,\n  \"frame_count\": null,\n  \"height\": null,\n  \"title\": null,\n  \"width\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <mediaId>: %w", err) }
+				var body client.AnnotationSystemUpdateMediaJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AnnotationSystemUpdateMediaWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemUpdateProjectParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update-project <projectId>",
 			Short: "Update Project",
+			Long: "Update Project.\n\nRequest body fields:\n  description  string   optional\n  is_active    boolean  optional\n  name         string   optional\n  version      string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemUpdateProject"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"is_active\": null,\n  \"name\": null,\n  \"version\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <projectId>: %w", err) }
+				var body client.AnnotationSystemUpdateProjectJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AnnotationSystemUpdateProjectWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemUpdateProjectDeviceLinkParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update-project-device-link <linkId>",
 			Short: "Update Project Device Link",
+			Long: "Update Project Device Link.\n\nRequest body fields:\n  is_active  boolean  optional\n  is_canary  boolean  optional\n  priority   integer  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemUpdateProjectDeviceLink"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"is_active\": null,\n  \"is_canary\": null,\n  \"priority\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <linkId>: %w", err) }
+				var body client.AnnotationSystemUpdateProjectDeviceLinkJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AnnotationSystemUpdateProjectDeviceLinkWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AnnotationSystemUpdateShapeParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "update-shape <shapeId>",
 			Short: "Update Shape",
+			Long: "Update Shape.\n\nRequest body fields:\n  attributes    object   optional\n  color         string   optional\n  confidence    number   optional\n  frame_index   integer  optional\n  geometry      object   optional\n  is_keyframe   boolean  optional\n  label_id      uuid     optional\n  shape_type    string   optional\n  stroke_width  integer  optional\n  track_id      string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemUpdateShape"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"attributes\": null,\n  \"color\": null,\n  \"confidence\": null,\n  \"frame_index\": null,\n  \"geometry\": null,\n  \"is_keyframe\": null,\n  \"label_id\": null,\n  \"shape_type\": null,\n  \"stroke_width\": null,\n  \"track_id\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <shapeId>: %w", err) }
+				var body client.AnnotationSystemUpdateShapeJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().AnnotationSystemUpdateShapeWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "upload-media",
 			Short: "Upload Media",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AnnotationSystemUploadMedia"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				return fmt.Errorf("operation AnnotationSystemUploadMedia is not exposed by the generated client (multipart body or unsupported schema); use the platform UI or REST directly")
 			},
 		}
 		root.AddCommand(cmd)

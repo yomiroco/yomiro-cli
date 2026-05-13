@@ -2,62 +2,81 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewAgentWorkspaceCmd returns the cobra command tree for agent-workspace.
-func NewAgentWorkspaceCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewAgentWorkspaceCmd returns the cobra command tree for agent-workspace. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewAgentWorkspaceCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "agent-workspace",
 		Short: "Manage agent-workspace",
 	}
 
 	{
+		var params client.AgentWorkspaceGetWorkspaceFileParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-workspace-file <configId> <filename>",
 			Short: "Get Workspace File",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentWorkspaceGetWorkspaceFile"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				_arg1 := args[1]
+				resp, err := getClient().AgentWorkspaceGetWorkspaceFileWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentWorkspaceListWorkspaceFilesParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "list-workspace-files <configId>",
 			Short: "List Workspace Files",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentWorkspaceListWorkspaceFiles"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				resp, err := getClient().AgentWorkspaceListWorkspaceFilesWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.AgentWorkspacePutWorkspaceFileParams
 		cmd := &cobra.Command{
-			Use:   "update",
+			Use:   "put-workspace-file <configId> <filename>",
 			Short: "Put Workspace File",
+			Args:  cobra.ExactArgs(2),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "AgentWorkspacePutWorkspaceFile"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil { return fmt.Errorf("path arg <configId>: %w", err) }
+				_arg1 := args[1]
+				resp, err := getClient().AgentWorkspacePutWorkspaceFileWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 

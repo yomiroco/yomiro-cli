@@ -2,137 +2,189 @@
 package generated
 
 import (
-	"context"
-	"encoding/json"
+	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 	"github.com/spf13/cobra"
+
+	"github.com/yomiroco/yomiro-cli/internal/output"
+	"github.com/yomiroco/yomiro-cli/internal/platform/bindings"
+	"github.com/yomiroco/yomiro-cli/internal/platform/client"
 )
 
-// NewJetsonNanoCmd returns the cobra command tree for jetson-nano.
-func NewJetsonNanoCmd(c *client.ClientWithResponses) *cobra.Command {
+// NewJetsonNanoCmd returns the cobra command tree for jetson-nano. The
+// getClient factory is consulted at request time so the persistent
+// --api-url / --token flags can override the credentials-store defaults.
+func NewJetsonNanoCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	root := &cobra.Command{
 		Use:   "jetson-nano",
 		Short: "Manage jetson-nano",
 	}
 
 	{
+		var params client.JetsonNanoCheckJetsonOnlineParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "check-jetson-online <deviceId>",
 			Short: "Check Jetson Online",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "JetsonNanoCheckJetsonOnline"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				resp, err := getClient().JetsonNanoCheckJetsonOnlineWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.JetsonNanoGetDetectionDigestParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-detection-digest <deviceId>",
 			Short: "Get Detection Digest",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "JetsonNanoGetDetectionDigest"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				resp, err := getClient().JetsonNanoGetDetectionDigestWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.JetsonNanoGetDetectionStatusParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-detection-status <deviceId>",
 			Short: "Get Detection Status",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "JetsonNanoGetDetectionStatus"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				resp, err := getClient().JetsonNanoGetDetectionStatusWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.JetsonNanoGetJetsonConfigParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-jetson-config <deviceId>",
 			Short: "Get Jetson Config",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "JetsonNanoGetJetsonConfig"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				resp, err := getClient().JetsonNanoGetJetsonConfigWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.JetsonNanoGetJetsonDeviceStatusParams
 		cmd := &cobra.Command{
-			Use:   "get",
+			Use:   "get-jetson-device-status <deviceId>",
 			Short: "Get Jetson Device Status",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "JetsonNanoGetJetsonDeviceStatus"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				resp, err := getClient().JetsonNanoGetJetsonDeviceStatusWithResponse(ctx, _arg0, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.JetsonNanoGetJetsonDevicesParams
 		cmd := &cobra.Command{
-			Use:   "list",
+			Use:   "get-jetson-devices",
 			Short: "Get Jetson Devices",
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "JetsonNanoGetJetsonDevices"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				ctx := cmd.Context()
+				resp, err := getClient().JetsonNanoGetJetsonDevicesWithResponse(ctx, &params)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.JetsonNanoSendJetsonConfigParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "send-jetson-config <deviceId>",
 			Short: "Send Jetson Config",
+			Long: "Send Jetson Config.\n\nRequest body fields:\n  camera_index  integer  optional\n  extra_config  object   optional\n  fps           integer  optional\n  resolution    string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "JetsonNanoSendJetsonConfig"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"camera_index\": null,\n  \"extra_config\": null,\n  \"fps\": null,\n  \"resolution\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				var body client.JetsonNanoSendJetsonConfigJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().JetsonNanoSendJetsonConfigWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
 	{
+		var params client.JetsonNanoSendJetsonControlParams
+		var bodyJSON string
+		var skeleton bool
 		cmd := &cobra.Command{
-			Use:   "create",
+			Use:   "send-jetson-control <deviceId>",
 			Short: "Send Jetson Control",
+			Long: "Send Jetson Control.\n\nRequest body fields:\n  command     string  required\n  parameters  object  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
-				ctx := context.Background()
-				_ = ctx
-				_ = c
-				out := map[string]string{"todo": "JetsonNanoSendJetsonControl"}
-				return json.NewEncoder(cmd.OutOrStdout()).Encode(out)
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"command\": \"\",\n  \"parameters\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				var body client.JetsonNanoSendJetsonControlJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil { return err }
+				resp, err := getClient().JetsonNanoSendJetsonControlWithResponse(ctx, _arg0, &params, body)
+				if err != nil { return err }
+				return output.RenderResponse(cmd, resp)
 			},
 		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 
