@@ -11,27 +11,13 @@ connectivity and a control surface for the Yomiro platform.
 
 ## Install
 
-### macOS / Linux (Homebrew)
-
 ```sh
 brew install yomiroco/yomiro/yomiro
 ```
 
-### Direct download
-
-Grab a release archive for your OS/arch from
-[Releases](https://github.com/yomiroco/yomiro-cli/releases) and extract the
-`yomiro` binary into your `$PATH`.
-
-### From source
-
-```sh
-git clone https://github.com/yomiroco/yomiro-cli
-cd yomiro-cli
-go install ./cmd/yomiro
-```
-
-Requires Go 1.25+.
+Other methods — Docker, pre-built binaries, `go install`, build from
+source, shell completions, signature verification — are documented in
+**[INSTALL.md](INSTALL.md)**.
 
 ## Quickstart
 
