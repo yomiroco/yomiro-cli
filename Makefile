@@ -3,9 +3,9 @@ VERSION ?= dev
 COMMIT  ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo none)
 DATE    ?= $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 
-LDFLAGS := -X github.com/yomiroco/yomiro-cli/internal/buildinfo.Version=$(VERSION) \
-           -X github.com/yomiroco/yomiro-cli/internal/buildinfo.Commit=$(COMMIT) \
-           -X github.com/yomiroco/yomiro-cli/internal/buildinfo.Date=$(DATE)
+LDFLAGS := -X github.com/hojland/yomiro/cli/internal/buildinfo.Version=$(VERSION) \
+           -X github.com/hojland/yomiro/cli/internal/buildinfo.Commit=$(COMMIT) \
+           -X github.com/hojland/yomiro/cli/internal/buildinfo.Date=$(DATE)
 
 OAPI_CODEGEN_VERSION ?= v2.6.0
 
