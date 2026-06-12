@@ -6,6 +6,7 @@ import (
 
 	"github.com/pingcap/tidb/pkg/parser"
 	"github.com/pingcap/tidb/pkg/parser/ast"
+	"github.com/pingcap/tidb/pkg/parser/mysql"
 	_ "github.com/pingcap/tidb/pkg/parser/test_driver" // required for parser to handle literals
 )
 
@@ -24,6 +25,12 @@ type Allowlist struct {
 //   - No column reference may match a BlockedColumns entry.
 func (a *Allowlist) Check(sql string) error {
 	p := parser.New()
+	// The gateway proxies PostgreSQL, whose identifiers are double-quoted
+	// ("schema"."table"). The TiDB parser defaults to MySQL semantics, where
+	// double quotes are string literals — so a Postgres-quoted FROM clause
+	// fails to parse. ANSI_QUOTES makes the parser treat double-quoted tokens
+	// as identifiers, matching what the platform sends over the tunnel.
+	p.SetSQLMode(mysql.ModeANSIQuotes)
 	stmts, _, err := p.Parse(sql, "", "")
 	if err != nil {
 		return fmt.Errorf("sql parse: %w", err)
@@ -87,12 +94,32 @@ func (v *tableVisitor) Enter(n ast.Node) (ast.Node, bool) {
 }
 func (v *tableVisitor) Leave(n ast.Node) (ast.Node, bool) { return n, true }
 
-func (a *Allowlist) walkColumns(node ast.Node) error {
-	blocked := map[string]struct{}{}
-	for _, c := range a.BlockedColumns {
-		blocked[strings.ToLower(c)] = struct{}{}
+// isColumnBlocked reports whether the given table.column pair is in the
+// BlockedColumns list. Matching is case-insensitive and uses only the
+// unqualified table name (no schema prefix), which is the same convention
+// used when the query-path walks column references. Both Schema and walkColumns
+// MUST use this function so the two paths can never drift.
+func isColumnBlocked(blockedColumns []string, table, column string) bool {
+	if len(blockedColumns) == 0 {
+		return false
 	}
-	if len(blocked) == 0 {
+	fqn := strings.ToLower(table) + "." + strings.ToLower(column)
+	for _, c := range blockedColumns {
+		cl := strings.ToLower(c)
+		// Match both the canonical "table.column" and a schema-qualified
+		// "schema.table.column" form (the natural convention, and what the
+		// docs show). Without the suffix match a schema-qualified entry would
+		// silently fail to block — a security footgun. The leading "." anchors
+		// the table boundary so "xcustomers.email" can't match "customers.email".
+		if cl == fqn || strings.HasSuffix(cl, "."+fqn) {
+			return true
+		}
+	}
+	return false
+}
+
+func (a *Allowlist) walkColumns(node ast.Node) error {
+	if len(a.BlockedColumns) == 0 {
 		return nil
 	}
 	var firstErr error
@@ -103,8 +130,8 @@ func (a *Allowlist) walkColumns(node ast.Node) error {
 		if table == "" {
 			return
 		}
-		fqn := strings.ToLower(table) + "." + strings.ToLower(name)
-		if _, ok := blocked[fqn]; ok {
+		if isColumnBlocked(a.BlockedColumns, table, name) {
+			fqn := strings.ToLower(table) + "." + strings.ToLower(name)
 			firstErr = fmt.Errorf("column %q is blocked by gateway config", fqn)
 		}
 	}}

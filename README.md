@@ -15,6 +15,12 @@ connectivity and a control surface for the Yomiro platform.
 brew install yomiroco/yomiro/yomiro
 ```
 
+Or, without a package manager (macOS / Linux):
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/yomiroco/yomiro-cli/main/install.sh | sh
+```
+
 Other methods — Docker, pre-built binaries, `go install`, build from
 source, shell completions, signature verification — are documented in
 **[INSTALL.md](INSTALL.md)**.
@@ -22,21 +28,35 @@ source, shell completions, signature verification — are documented in
 ## Quickstart
 
 ```sh
-yomiro login                 # device-code flow against Auth0
-yomiro whoami                # confirm you're authenticated
+yomiro auth login            # device-code flow against Auth0
+yomiro auth whoami           # confirm you're authenticated
 yomiro --help                # list commands
 ```
 
-`yomiro login` opens a browser for the Auth0 device-code grant. The resulting
+`yomiro auth login` opens a browser for the Auth0 device-code grant. The resulting
 access token is stored in your OS keychain (via `zalando/go-keyring`).
+
+### Choosing scopes: `--web` vs `--scopes`
+
+`yomiro auth login` mints a scoped API key. How you choose those scopes
+depends on whether a human is present:
+
+- **Interactive shells — use `--web` (recommended).** It opens the platform
+  web app to pick the key's scopes and lifetime before it's minted, so you
+  grant exactly what you need. `--web` needs a resolvable frontend, so target
+  a public API (e.g. `--api-url https://api.dev.yomiro.io`).
+- **Headless / CI — use the default silent mint with `--scopes`.** No browser
+  is involved; pass scopes explicitly and select the tenant via the
+  `YOMIRO_API_URL` / `YOMIRO_AUTH0_*` env vars below
+  (`yomiro auth login --scopes agents:read,dashboards:read`).
 
 ### Pointing at a non-prod tenant
 
 ```sh
-export YOMIRO_API_BASE_URL=https://api.dev.yomiro.io
+export YOMIRO_API_URL=https://api.dev.yomiro.io
 export YOMIRO_AUTH0_CLIENT_ID=<dev-client-id>
 export YOMIRO_AUTH0_AUDIENCE=https://api.dev.yomiro.io
-yomiro login
+yomiro auth login
 ```
 
 The compiled-in defaults target prod; dev requires explicit overrides so that

@@ -19,26 +19,14 @@ func NewCmd() *cobra.Command {
 	return cmd
 }
 
-// Defaults — these are baked-in for the public Auth0 tenant; can be
-// overridden via env (`YOMIRO_AUTH0_DOMAIN`, `YOMIRO_AUTH0_CLIENT_ID`,
-// `YOMIRO_AUTH0_AUDIENCE`, `YOMIRO_API_URL`) or flags.
-//
-// defaultAuth0ClientID is the prod CLI client (provisioned via
-// infrastructure/live/prod/auth0-app on 2026-05-13). Operators running
-// against dev override with --auth0-client-id / YOMIRO_AUTH0_CLIENT_ID
-// = oGQgnpBtymVPMJMkHbvP433o6n8sqO4e (and --api-url / YOMIRO_API_URL =
-// https://api.dev.yomiro.io, --audience / YOMIRO_AUTH0_AUDIENCE =
-// https://api.dev.yomiro.io).
+// The per-environment Auth0 domain/client-id/audience defaults now live in the
+// envprofile package (one profile per --env value); operators select them with
+// --env {local|dev|prod} or override individual fields via --auth0-domain /
+// --auth0-client-id / --audience or the YOMIRO_AUTH0_* env vars.
 //
 // Note: the Auth0 tenant must also have "Device Code" enabled in Tenant
 // Settings → Advanced (the auth0/auth0 provider has no resource for that
 // toggle). Without it, the device-code flow returns `unauthorized_client`.
-const (
-	defaultAuth0Domain   = "yomiro.eu.auth0.com"
-	defaultAuth0ClientID = "sUIOMvj0aaIRFbOPDcYUZ8bM5yCbWnA5"
-	defaultAudience      = "https://api.yomiro.io"
-	defaultAPIURL        = "https://api.yomiro.io"
-)
 
 // defaultCLIScopes is the least-privileged set granted to a freshly-logged-in
 // CLI: enough to inspect every resource the wired groups expose, nothing
@@ -69,7 +57,7 @@ func newSetTokenCmd() *cobra.Command {
 			return store.Save(credentials.Credentials{APIURL: apiURL, Token: token, User: user, Tenant: tenant})
 		},
 	}
-	cmd.Flags().StringVar(&apiURL, "api-url", defaultAPIURL, "Platform API URL")
+	cmd.Flags().StringVar(&apiURL, "api-url", credentials.DefaultAPIURL, "Platform API URL")
 	cmd.Flags().StringVar(&token, "token", "", "API token (yom_pat_*)")
 	cmd.Flags().StringVar(&user, "user", "", "User email (display only)")
 	cmd.Flags().StringVar(&tenant, "tenant", "", "Tenant name (display only)")

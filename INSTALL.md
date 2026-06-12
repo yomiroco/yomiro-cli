@@ -9,6 +9,8 @@ Pick the method that fits your environment:
 
 - [Homebrew (macOS / Linux)](#homebrew-macos--linux) — recommended for
   workstations
+- [Install script (`curl | sh`)](#install-script-curl--sh) — one-liner for
+  macOS / Linux without Homebrew
 - [Docker](#docker) — recommended for running the gateway daemon
 - [Pre-built binaries](#pre-built-binaries) — air-gapped / no package manager
 - [`go install`](#go-install) — if you already have a Go toolchain
@@ -38,6 +40,37 @@ brew install yomiro
 
 > Prerelease tags (e.g. `v0.1.0-rc1`) intentionally do **not** update the
 > Homebrew formula — Homebrew always tracks the latest stable release.
+
+## Install script (`curl | sh`)
+
+For macOS / Linux without a package manager, the install script downloads the
+right release archive for your OS/arch, verifies it against the signed
+`checksums.txt`, and drops the binary on your `PATH`:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/yomiroco/yomiro-cli/main/install.sh | sh
+```
+
+(`wget -qO- <url> | sh` works too.) It installs to `/usr/local/bin`, falling
+back to `~/.local/bin` when that isn't writable. Override behaviour with env
+vars:
+
+```sh
+# pin a version and choose the install dir
+YOMIRO_VERSION=v0.0.1 YOMIRO_INSTALL_DIR="$HOME/bin" \
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/yomiroco/yomiro-cli/main/install.sh)"
+```
+
+| Variable             | Effect                                                    |
+| -------------------- | --------------------------------------------------------- |
+| `YOMIRO_VERSION`     | Release tag to install (default: latest, e.g. `v0.0.1`)   |
+| `YOMIRO_INSTALL_DIR` | Target dir (default `/usr/local/bin` → `~/.local/bin`)    |
+| `YOMIRO_NO_VERIFY`   | Set to skip checksum verification                         |
+
+The script covers Linux and macOS (`amd64` / `arm64`). On Windows, use the
+[pre-built binary](#pre-built-binaries). For stronger guarantees than the
+checksum (cosign signature verification), see
+[Verifying release artifacts](#verifying-release-artifacts).
 
 ## Docker
 

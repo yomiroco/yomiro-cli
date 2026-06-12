@@ -13,6 +13,7 @@ require (
 	github.com/oapi-codegen/runtime v1.4.0
 	github.com/pb33f/libopenapi v0.36.3
 	github.com/pingcap/tidb/pkg/parser v0.0.0-20260430044939-9d1ac814ecda
+	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/simonvetter/modbus v1.6.4
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.9

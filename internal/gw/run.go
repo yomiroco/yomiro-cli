@@ -3,8 +3,10 @@ package gw
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 
 	"github.com/yomiroco/yomiro-cli/internal/config"
@@ -30,6 +32,20 @@ func newRunCmd() *cobra.Command {
 			ctx, cancel := context.WithCancel(cmd.Context())
 			defer cancel()
 
+			// Tee daemon output to the log file `gw logs` tails (the service
+			// manager captures stdout elsewhere, e.g. launchd's StandardOutPath).
+			out := io.Writer(cmd.OutOrStdout())
+			if stateDir, derr := config.StateDir(); derr == nil {
+				logFile := filepath.Join(stateDir, "daemon.log")
+				if f, ferr := os.OpenFile(logFile,
+					os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o600); ferr == nil {
+					defer f.Close()
+					out = io.MultiWriter(cmd.OutOrStdout(), f)
+				} else {
+					fmt.Fprintf(os.Stderr, "warning: could not open %s (%v); `yomiro gw logs` will be empty\n", logFile, ferr)
+				}
+			}
+
 			pool, err := dbproxy.NewPgProxy(ctx, cfg.Database.URL, cfg.Database.MaxConnections)
 			if err != nil {
 				return fmt.Errorf("connect to customer DB: %w", err)
@@ -37,16 +53,18 @@ func newRunCmd() *cobra.Command {
 			defer pool.Close()
 
 			d := daemon.New(cfg, pool)
+			d.Log = out
+			d.ConfigPath = path
 
 			sigs := make(chan os.Signal, 1)
 			signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 			go func() {
 				<-sigs
-				fmt.Fprintln(cmd.OutOrStdout(), "shutting down...")
+				fmt.Fprintln(out, "shutting down...")
 				cancel()
 			}()
 
-			fmt.Fprintf(cmd.OutOrStdout(), "✓ Connecting to %s as %s\n", cfg.Platform.Endpoint, cfg.Gateway.ID)
+			fmt.Fprintf(out, "✓ Connecting to %s as %s\n", cfg.Platform.Endpoint, cfg.Gateway.ID)
 			return d.Run(ctx)
 		},
 	}

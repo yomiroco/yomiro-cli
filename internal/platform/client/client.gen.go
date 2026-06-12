@@ -1881,6 +1881,41 @@ type CapturesListResponse struct {
 	Items []CaptureEventListItem `json:"items"`
 }
 
+// CliPairAuthorize Request body for authorizing a pairing (POST /cli-pair/{code}/authorize).
+type CliPairAuthorize struct {
+	Scopes []ApiKeyScope `json:"scopes"`
+}
+
+// CliPairCreate Request body for starting a pairing (POST /cli-pair).
+type CliPairCreate struct {
+	DefaultScopes []ApiKeyScope `json:"default_scopes"`
+	Hostname      string        `json:"hostname"`
+}
+
+// CliPairCreatedResponse Response from POST /cli-pair — the code to open in the browser.
+type CliPairCreatedResponse struct {
+	Code      string `json:"code"`
+	ExpiresAt string `json:"expires_at"`
+}
+
+// CliPairPublic Pairing record returned by GET /cli-pair/{code}.
+//
+// “api_key_token“ is populated only when the originating CLI polls after
+// authorization; the browser/picker never sees it. “grantable_scopes“ lets
+// the picker disable scopes the current operator is not allowed to grant.
+type CliPairPublic struct {
+	ApiKeyToken     *string   `json:"api_key_token,omitempty"`
+	AuthorizedAt    *string   `json:"authorized_at"`
+	Code            string    `json:"code"`
+	CreatedAt       string    `json:"created_at"`
+	DefaultScopes   []string  `json:"default_scopes"`
+	DeniedAt        *string   `json:"denied_at"`
+	ExpiresAt       string    `json:"expires_at"`
+	GrantableScopes []string  `json:"grantable_scopes"`
+	Hostname        string    `json:"hostname"`
+	SelectedScopes  *[]string `json:"selected_scopes"`
+}
+
 // ColumnMetadata Column metadata as exposed by the explore API.
 type ColumnMetadata struct {
 	Aggregatable *bool   `json:"aggregatable,omitempty"`
@@ -2812,6 +2847,11 @@ type ModelPipeline string
 
 // ModelType Supported AI model types.
 type ModelType string
+
+// OkResponse Minimal success acknowledgement (“{"ok": true}“).
+type OkResponse struct {
+	Ok *bool `json:"ok,omitempty"`
+}
 
 // OtelEndpointCreate Properties to receive on endpoint creation.
 type OtelEndpointCreate struct {
@@ -4337,6 +4377,26 @@ type LoginAuthCallbackParams struct {
 	ErrorDescription *string `form:"error_description,omitempty" json:"error_description,omitempty"`
 }
 
+// AuthStartCliPairParams defines parameters for AuthStartCliPair.
+type AuthStartCliPairParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// AuthGetCliPairParams defines parameters for AuthGetCliPair.
+type AuthGetCliPairParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// AuthAuthorizeCliPairParams defines parameters for AuthAuthorizeCliPair.
+type AuthAuthorizeCliPairParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// AuthDenyCliPairParams defines parameters for AuthDenyCliPair.
+type AuthDenyCliPairParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
 // LoginAuthLoginParams defines parameters for LoginAuthLogin.
 type LoginAuthLoginParams struct {
 	// RedirectUri Frontend URL to redirect after login (defaults to FRONTEND_HOST)
@@ -5526,6 +5586,12 @@ type AnnotationSystemUpdateShapeJSONRequestBody = AnnotationShapeUpdate
 // AuthCreateApiKeyJSONRequestBody defines body for AuthCreateApiKey for application/json ContentType.
 type AuthCreateApiKeyJSONRequestBody = ApiKeyCreate
 
+// AuthStartCliPairJSONRequestBody defines body for AuthStartCliPair for application/json ContentType.
+type AuthStartCliPairJSONRequestBody = CliPairCreate
+
+// AuthAuthorizeCliPairJSONRequestBody defines body for AuthAuthorizeCliPair for application/json ContentType.
+type AuthAuthorizeCliPairJSONRequestBody = CliPairAuthorize
+
 // CapturesBulkDeleteCapturesJSONRequestBody defines body for CapturesBulkDeleteCaptures for application/json ContentType.
 type CapturesBulkDeleteCapturesJSONRequestBody = BulkDeleteRequest
 
@@ -6309,6 +6375,22 @@ type ClientInterface interface {
 
 	// LoginAuthCallback request
 	LoginAuthCallback(ctx context.Context, params *LoginAuthCallbackParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AuthStartCliPairWithBody request with any body
+	AuthStartCliPairWithBody(ctx context.Context, params *AuthStartCliPairParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AuthStartCliPair(ctx context.Context, params *AuthStartCliPairParams, body AuthStartCliPairJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AuthGetCliPair request
+	AuthGetCliPair(ctx context.Context, code string, params *AuthGetCliPairParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AuthAuthorizeCliPairWithBody request with any body
+	AuthAuthorizeCliPairWithBody(ctx context.Context, code string, params *AuthAuthorizeCliPairParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AuthAuthorizeCliPair(ctx context.Context, code string, params *AuthAuthorizeCliPairParams, body AuthAuthorizeCliPairJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AuthDenyCliPair request
+	AuthDenyCliPair(ctx context.Context, code string, params *AuthDenyCliPairParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// LoginAuthLogin request
 	LoginAuthLogin(ctx context.Context, params *LoginAuthLoginParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -9021,6 +9103,78 @@ func (c *Client) AuthRevokeApiKey(ctx context.Context, keyId openapi_types.UUID,
 
 func (c *Client) LoginAuthCallback(ctx context.Context, params *LoginAuthCallbackParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewLoginAuthCallbackRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthStartCliPairWithBody(ctx context.Context, params *AuthStartCliPairParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthStartCliPairRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthStartCliPair(ctx context.Context, params *AuthStartCliPairParams, body AuthStartCliPairJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthStartCliPairRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthGetCliPair(ctx context.Context, code string, params *AuthGetCliPairParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthGetCliPairRequest(c.Server, code, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthAuthorizeCliPairWithBody(ctx context.Context, code string, params *AuthAuthorizeCliPairParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthAuthorizeCliPairRequestWithBody(c.Server, code, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthAuthorizeCliPair(ctx context.Context, code string, params *AuthAuthorizeCliPairParams, body AuthAuthorizeCliPairJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthAuthorizeCliPairRequest(c.Server, code, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AuthDenyCliPair(ctx context.Context, code string, params *AuthDenyCliPairParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthDenyCliPairRequest(c.Server, code, params)
 	if err != nil {
 		return nil, err
 	}
@@ -20983,6 +21137,229 @@ func NewLoginAuthCallbackRequest(server string, params *LoginAuthCallbackParams)
 		return nil, err
 	}
 
+	return req, nil
+}
+
+// NewAuthStartCliPairRequest calls the generic AuthStartCliPair builder with application/json body
+func NewAuthStartCliPairRequest(server string, params *AuthStartCliPairParams, body AuthStartCliPairJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAuthStartCliPairRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewAuthStartCliPairRequestWithBody generates requests for AuthStartCliPair with any type of body
+func NewAuthStartCliPairRequestWithBody(server string, params *AuthStartCliPairParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/auth/cli-pair")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewAuthGetCliPairRequest generates requests for AuthGetCliPair
+func NewAuthGetCliPairRequest(server string, code string, params *AuthGetCliPairParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "code", code, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/auth/cli-pair/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewAuthAuthorizeCliPairRequest calls the generic AuthAuthorizeCliPair builder with application/json body
+func NewAuthAuthorizeCliPairRequest(server string, code string, params *AuthAuthorizeCliPairParams, body AuthAuthorizeCliPairJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAuthAuthorizeCliPairRequestWithBody(server, code, params, "application/json", bodyReader)
+}
+
+// NewAuthAuthorizeCliPairRequestWithBody generates requests for AuthAuthorizeCliPair with any type of body
+func NewAuthAuthorizeCliPairRequestWithBody(server string, code string, params *AuthAuthorizeCliPairParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "code", code, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/auth/cli-pair/%s/authorize", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewAuthDenyCliPairRequest generates requests for AuthDenyCliPair
+func NewAuthDenyCliPairRequest(server string, code string, params *AuthDenyCliPairParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "code", code, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/auth/cli-pair/%s/deny", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
 	return req, nil
 }
 
@@ -33528,6 +33905,22 @@ type ClientWithResponsesInterface interface {
 	// LoginAuthCallbackWithResponse request
 	LoginAuthCallbackWithResponse(ctx context.Context, params *LoginAuthCallbackParams, reqEditors ...RequestEditorFn) (*LoginAuthCallbackResponse, error)
 
+	// AuthStartCliPairWithBodyWithResponse request with any body
+	AuthStartCliPairWithBodyWithResponse(ctx context.Context, params *AuthStartCliPairParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthStartCliPairResponse, error)
+
+	AuthStartCliPairWithResponse(ctx context.Context, params *AuthStartCliPairParams, body AuthStartCliPairJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthStartCliPairResponse, error)
+
+	// AuthGetCliPairWithResponse request
+	AuthGetCliPairWithResponse(ctx context.Context, code string, params *AuthGetCliPairParams, reqEditors ...RequestEditorFn) (*AuthGetCliPairResponse, error)
+
+	// AuthAuthorizeCliPairWithBodyWithResponse request with any body
+	AuthAuthorizeCliPairWithBodyWithResponse(ctx context.Context, code string, params *AuthAuthorizeCliPairParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthAuthorizeCliPairResponse, error)
+
+	AuthAuthorizeCliPairWithResponse(ctx context.Context, code string, params *AuthAuthorizeCliPairParams, body AuthAuthorizeCliPairJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthAuthorizeCliPairResponse, error)
+
+	// AuthDenyCliPairWithResponse request
+	AuthDenyCliPairWithResponse(ctx context.Context, code string, params *AuthDenyCliPairParams, reqEditors ...RequestEditorFn) (*AuthDenyCliPairResponse, error)
+
 	// LoginAuthLoginWithResponse request
 	LoginAuthLoginWithResponse(ctx context.Context, params *LoginAuthLoginParams, reqEditors ...RequestEditorFn) (*LoginAuthLoginResponse, error)
 
@@ -37337,6 +37730,98 @@ func (r LoginAuthCallbackResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r LoginAuthCallbackResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AuthStartCliPairResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *CliPairCreatedResponse
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AuthStartCliPairResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AuthStartCliPairResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AuthGetCliPairResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *CliPairPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AuthGetCliPairResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AuthGetCliPairResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AuthAuthorizeCliPairResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *OkResponse
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AuthAuthorizeCliPairResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AuthAuthorizeCliPairResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AuthDenyCliPairResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *OkResponse
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AuthDenyCliPairResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AuthDenyCliPairResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -43620,6 +44105,58 @@ func (c *ClientWithResponses) LoginAuthCallbackWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseLoginAuthCallbackResponse(rsp)
+}
+
+// AuthStartCliPairWithBodyWithResponse request with arbitrary body returning *AuthStartCliPairResponse
+func (c *ClientWithResponses) AuthStartCliPairWithBodyWithResponse(ctx context.Context, params *AuthStartCliPairParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthStartCliPairResponse, error) {
+	rsp, err := c.AuthStartCliPairWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthStartCliPairResponse(rsp)
+}
+
+func (c *ClientWithResponses) AuthStartCliPairWithResponse(ctx context.Context, params *AuthStartCliPairParams, body AuthStartCliPairJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthStartCliPairResponse, error) {
+	rsp, err := c.AuthStartCliPair(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthStartCliPairResponse(rsp)
+}
+
+// AuthGetCliPairWithResponse request returning *AuthGetCliPairResponse
+func (c *ClientWithResponses) AuthGetCliPairWithResponse(ctx context.Context, code string, params *AuthGetCliPairParams, reqEditors ...RequestEditorFn) (*AuthGetCliPairResponse, error) {
+	rsp, err := c.AuthGetCliPair(ctx, code, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthGetCliPairResponse(rsp)
+}
+
+// AuthAuthorizeCliPairWithBodyWithResponse request with arbitrary body returning *AuthAuthorizeCliPairResponse
+func (c *ClientWithResponses) AuthAuthorizeCliPairWithBodyWithResponse(ctx context.Context, code string, params *AuthAuthorizeCliPairParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthAuthorizeCliPairResponse, error) {
+	rsp, err := c.AuthAuthorizeCliPairWithBody(ctx, code, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthAuthorizeCliPairResponse(rsp)
+}
+
+func (c *ClientWithResponses) AuthAuthorizeCliPairWithResponse(ctx context.Context, code string, params *AuthAuthorizeCliPairParams, body AuthAuthorizeCliPairJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthAuthorizeCliPairResponse, error) {
+	rsp, err := c.AuthAuthorizeCliPair(ctx, code, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthAuthorizeCliPairResponse(rsp)
+}
+
+// AuthDenyCliPairWithResponse request returning *AuthDenyCliPairResponse
+func (c *ClientWithResponses) AuthDenyCliPairWithResponse(ctx context.Context, code string, params *AuthDenyCliPairParams, reqEditors ...RequestEditorFn) (*AuthDenyCliPairResponse, error) {
+	rsp, err := c.AuthDenyCliPair(ctx, code, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthDenyCliPairResponse(rsp)
 }
 
 // LoginAuthLoginWithResponse request returning *LoginAuthLoginResponse
@@ -50313,6 +50850,138 @@ func ParseLoginAuthCallbackResponse(rsp *http.Response) (*LoginAuthCallbackRespo
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAuthStartCliPairResponse parses an HTTP response from a AuthStartCliPairWithResponse call
+func ParseAuthStartCliPairResponse(rsp *http.Response) (*AuthStartCliPairResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AuthStartCliPairResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest CliPairCreatedResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAuthGetCliPairResponse parses an HTTP response from a AuthGetCliPairWithResponse call
+func ParseAuthGetCliPairResponse(rsp *http.Response) (*AuthGetCliPairResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AuthGetCliPairResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CliPairPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAuthAuthorizeCliPairResponse parses an HTTP response from a AuthAuthorizeCliPairWithResponse call
+func ParseAuthAuthorizeCliPairResponse(rsp *http.Response) (*AuthAuthorizeCliPairResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AuthAuthorizeCliPairResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest OkResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAuthDenyCliPairResponse parses an HTTP response from a AuthDenyCliPairWithResponse call
+func ParseAuthDenyCliPairResponse(rsp *http.Response) (*AuthDenyCliPairResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AuthDenyCliPairResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest OkResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
