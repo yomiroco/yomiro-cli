@@ -22,6 +22,41 @@ func NewAuthCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	}
 
 	{
+		var params client.AuthAuthorizeCliPairParams
+		var bodyJSON string
+		var skeleton bool
+		cmd := &cobra.Command{
+			Use:   "authorize-cli-pair <code>",
+			Short: "Authorize Cli Pair",
+			Long:  "Authorize Cli Pair.\n\nRequest body fields:\n  scopes  array  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"scopes\": []\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				var body client.AuthAuthorizeCliPairJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
+				resp, err := getClient().AuthAuthorizeCliPairWithResponse(ctx, _arg0, &params, body)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
+		root.AddCommand(cmd)
+	}
+
+	{
 		var params client.AuthCreateApiKeyParams
 		var bodyJSON string
 		var skeleton bool
@@ -51,6 +86,46 @@ func NewAuthCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
 		cmd.MarkFlagsOneRequired("json-body", "skeleton")
 		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
+		root.AddCommand(cmd)
+	}
+
+	{
+		var params client.AuthDenyCliPairParams
+		cmd := &cobra.Command{
+			Use:   "deny-cli-pair <code>",
+			Short: "Deny Cli Pair",
+			Args:  cobra.ExactArgs(1),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				resp, err := getClient().AuthDenyCliPairWithResponse(ctx, _arg0, &params)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		root.AddCommand(cmd)
+	}
+
+	{
+		var params client.AuthGetCliPairParams
+		cmd := &cobra.Command{
+			Use:   "get-cli-pair <code>",
+			Short: "Get Cli Pair",
+			Args:  cobra.ExactArgs(1),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				resp, err := getClient().AuthGetCliPairWithResponse(ctx, _arg0, &params)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
@@ -92,6 +167,39 @@ func NewAuthCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			},
 		}
 		bindings.DefineQueryFlags(cmd, &params)
+		root.AddCommand(cmd)
+	}
+
+	{
+		var params client.AuthStartCliPairParams
+		var bodyJSON string
+		var skeleton bool
+		cmd := &cobra.Command{
+			Use:   "start-cli-pair",
+			Short: "Start Cli Pair",
+			Long:  "Start Cli Pair.\n\nRequest body fields:\n  default_scopes  array   required\n  hostname        string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			RunE: func(cmd *cobra.Command, args []string) error {
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"default_scopes\": [],\n  \"hostname\": \"\"\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.AuthStartCliPairJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
+				resp, err := getClient().AuthStartCliPairWithResponse(ctx, &params, body)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 

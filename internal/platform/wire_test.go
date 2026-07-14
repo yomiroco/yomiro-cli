@@ -26,7 +26,7 @@ func TestAddTo_WiresIntendedGroups(t *testing.T) {
 		"device-group", "incident", "location", "skill", "user",
 		"agent", "team", "alert", "ai-provider", "inspection-profile",
 		"model", "ref-sheet", "otel-endpoint", "analytics", "organization",
-		"entity-history",
+		"entity-history", "jetson-nano",
 	}
 	sort.Strings(want)
 
@@ -49,8 +49,8 @@ func TestAddTo_WiresIntendedGroups(t *testing.T) {
 // TestPublicGroupsCount guards the allowlist size so adding or removing an
 // entry forces a conscious update to the wired-set expectation above.
 func TestPublicGroupsCount(t *testing.T) {
-	if len(publicGroups) != 20 {
-		t.Fatalf("len(publicGroups) = %d, want 20", len(publicGroups))
+	if len(publicGroups) != 21 {
+		t.Fatalf("len(publicGroups) = %d, want 21", len(publicGroups))
 	}
 }
 

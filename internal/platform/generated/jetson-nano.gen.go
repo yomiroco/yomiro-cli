@@ -139,17 +139,37 @@ func NewJetsonNanoCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 	}
 
 	{
+		var params client.JetsonNanoRevealJetsonStreamUrlsParams
+		cmd := &cobra.Command{
+			Use:   "reveal-jetson-stream-urls <deviceId>",
+			Short: "Reveal Jetson Stream Urls",
+			Args:  cobra.ExactArgs(1),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				resp, err := getClient().JetsonNanoRevealJetsonStreamUrlsWithResponse(ctx, _arg0, &params)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		root.AddCommand(cmd)
+	}
+
+	{
 		var params client.JetsonNanoSendJetsonConfigParams
 		var bodyJSON string
 		var skeleton bool
 		cmd := &cobra.Command{
 			Use:   "send-jetson-config <deviceId>",
 			Short: "Send Jetson Config",
-			Long:  "Send Jetson Config.\n\nRequest body fields:\n  camera_index  integer  optional\n  extra_config  object   optional\n  fps           integer  optional\n  resolution    string   optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Send Jetson Config.\n\nRequest body fields:\n  camera_index  integer  optional\n  extra_config  object   optional\n  fps           integer  optional\n  resolution    string   optional\n  streams       array    optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
-					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"camera_index\": null,\n  \"extra_config\": null,\n  \"fps\": null,\n  \"resolution\": null\n}")
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"camera_index\": null,\n  \"extra_config\": null,\n  \"fps\": null,\n  \"resolution\": null,\n  \"streams\": null\n}")
 					return nil
 				}
 				ctx := cmd.Context()
