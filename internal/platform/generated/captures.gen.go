@@ -55,6 +55,24 @@ func NewCapturesCmd(getClient func() *client.ClientWithResponses) *cobra.Command
 	}
 
 	{
+		var params client.CapturesCaptureFacetsParams
+		cmd := &cobra.Command{
+			Use:   "facets",
+			Short: "Capture Facets",
+			RunE: func(cmd *cobra.Command, args []string) error {
+				ctx := cmd.Context()
+				resp, err := getClient().CapturesCaptureFacetsWithResponse(ctx, &params)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		root.AddCommand(cmd)
+	}
+
+	{
 		var params client.CapturesDeleteCaptureParams
 		cmd := &cobra.Command{
 			Use:   "delete <captureId>",

@@ -139,6 +139,42 @@ func NewJetsonNanoCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 	}
 
 	{
+		var params client.JetsonNanoMoveCameraParams
+		var bodyJSON string
+		var skeleton bool
+		cmd := &cobra.Command{
+			Use:   "move-camera <deviceId> <cameraId>",
+			Short: "Move Camera",
+			Long:  "Move Camera.\n\nRequest body fields:\n  pan   number  optional\n  tilt  number  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(2),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"pan\": null,\n  \"tilt\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				_arg1 := args[1]
+				var body client.JetsonNanoMoveCameraJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
+				resp, err := getClient().JetsonNanoMoveCameraWithResponse(ctx, _arg0, _arg1, &params, body)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
+		root.AddCommand(cmd)
+	}
+
+	{
 		var params client.JetsonNanoRevealJetsonStreamUrlsParams
 		cmd := &cobra.Command{
 			Use:   "reveal-jetson-stream-urls <deviceId>",

@@ -44,6 +44,39 @@ func NewImagesCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	}
 
 	{
+		var params client.ImagesCaptureRawImageParams
+		var bodyJSON string
+		var skeleton bool
+		cmd := &cobra.Command{
+			Use:   "capture-raw",
+			Short: "Capture Raw Image",
+			Long:  "Capture Raw Image.\n\nRequest body fields:\n  camera_id  string  optional\n  device_id  uuid    required\n  title      string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			RunE: func(cmd *cobra.Command, args []string) error {
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"camera_id\": null,\n  \"device_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"title\": null\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.ImagesCaptureRawImageJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
+				resp, err := getClient().ImagesCaptureRawImageWithResponse(ctx, &params, body)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
+		root.AddCommand(cmd)
+	}
+
+	{
 		var params client.ImagesDeleteCameraImageParams
 		cmd := &cobra.Command{
 			Use:   "delete-camera <imageId>",
