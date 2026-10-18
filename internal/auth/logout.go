@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/spf13/cobra"
 	"github.com/yomiroco/yomiro-cli/internal/credentials"
 	"github.com/yomiroco/yomiro-cli/internal/platform"
-	"github.com/spf13/cobra"
 )
 
 func newLogoutCmd() *cobra.Command {

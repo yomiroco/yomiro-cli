@@ -51,10 +51,10 @@ func NewDevicesCmd(getClient func() *client.ClientWithResponses) *cobra.Command 
 		cmd := &cobra.Command{
 			Use:   "create",
 			Short: "Create Device",
-			Long:  "Create Device.\n\nRequest body fields:\n  configuration    object  optional\n  device_group_id  uuid    required  The device group this device belongs to\n  device_type      string  optional\n  location_id      uuid    required  The location this device belongs to (line or unit level)\n  name             string  required\n  status           string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Device.\n\nRequest body fields:\n  configuration     object  optional\n  device_group_id   uuid    optional  The device group this device belongs to; inherited from parent_device_id when o…\n  device_type       string  optional\n  location_id       uuid    required  The location this device belongs to (line or unit level)\n  name              string  required\n  parent_device_id  uuid    optional  The gateway device responsible for reaching this device\n  status            string  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
-					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"configuration\": null,\n  \"device_group_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"device_type\": null,\n  \"location_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"name\": \"\",\n  \"status\": null\n}")
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"configuration\": null,\n  \"device_group_id\": null,\n  \"device_type\": null,\n  \"location_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"name\": \"\",\n  \"parent_device_id\": null,\n  \"status\": null\n}")
 					return nil
 				}
 				ctx := cmd.Context()

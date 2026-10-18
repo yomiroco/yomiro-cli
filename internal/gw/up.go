@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/yomiroco/yomiro-cli/internal/gw/svcwrap"
 	"github.com/kardianos/service"
 	"github.com/spf13/cobra"
+	"github.com/yomiroco/yomiro-cli/internal/gw/svcwrap"
 )
 
 func newUpCmd() *cobra.Command {

@@ -28,7 +28,7 @@ func NewAiProvidersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 		cmd := &cobra.Command{
 			Use:   "create",
 			Short: "Create Ai Provider",
-			Long:  "Create Ai Provider.\n\nRequest body fields:\n  api_key           string   optional  Plaintext API key — will be encrypted before storage\n  available_models  array    optional\n  base_url          string   optional\n  is_active         boolean  optional\n  name              string   required\n  provider_type     string   required  one of: anthropic, openai, google, mistral, ollama, openai_compatible, platform\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Ai Provider.\n\nRequest body fields:\n  api_key           string   optional  Plaintext API key — will be encrypted before storage\n  available_models  array    optional\n  base_url          string   optional\n  is_active         boolean  optional\n  name              string   required\n  provider_type     string   required  one of: anthropic, openai, google, mistral, ollama, openai_compatible, openrout…\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
 					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"api_key\": null,\n  \"available_models\": null,\n  \"base_url\": null,\n  \"is_active\": null,\n  \"name\": \"\",\n  \"provider_type\": \"anthropic\"\n}")
@@ -111,6 +111,24 @@ func NewAiProvidersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 	}
 
 	{
+		var params client.AiProvidersExportAiUsageCsvParams
+		cmd := &cobra.Command{
+			Use:   "export-ai-usage-csv",
+			Short: "Export Ai Usage Csv",
+			RunE: func(cmd *cobra.Command, args []string) error {
+				ctx := cmd.Context()
+				resp, err := getClient().AiProvidersExportAiUsageCsvWithResponse(ctx, &params)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		root.AddCommand(cmd)
+	}
+
+	{
 		var params client.AiProvidersGetAiProviderParams
 		cmd := &cobra.Command{
 			Use:   "get <providerId>",
@@ -123,6 +141,24 @@ func NewAiProvidersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 					return fmt.Errorf("path arg <providerId>: %w", err)
 				}
 				resp, err := getClient().AiProvidersGetAiProviderWithResponse(ctx, _arg0, &params)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		root.AddCommand(cmd)
+	}
+
+	{
+		var params client.AiProvidersGetAiUsageParams
+		cmd := &cobra.Command{
+			Use:   "get-ai-usage",
+			Short: "Get Ai Usage",
+			RunE: func(cmd *cobra.Command, args []string) error {
+				ctx := cmd.Context()
+				resp, err := getClient().AiProvidersGetAiUsageWithResponse(ctx, &params)
 				if err != nil {
 					return err
 				}
@@ -164,6 +200,24 @@ func NewAiProvidersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 					return fmt.Errorf("path arg <providerId>: %w", err)
 				}
 				resp, err := getClient().AiProvidersListProviderModelsWithResponse(ctx, _arg0, &params)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		root.AddCommand(cmd)
+	}
+
+	{
+		var params client.AiProvidersProvisionPlatformProviderParams
+		cmd := &cobra.Command{
+			Use:   "provision-platform-provider",
+			Short: "Provision Platform Provider",
+			RunE: func(cmd *cobra.Command, args []string) error {
+				ctx := cmd.Context()
+				resp, err := getClient().AiProvidersProvisionPlatformProviderWithResponse(ctx, &params)
 				if err != nil {
 					return err
 				}

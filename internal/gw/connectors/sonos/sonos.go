@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	c "github.com/yomiroco/yomiro-cli/internal/gw/connectors"
 	"github.com/huin/goupnp"
+	c "github.com/yomiroco/yomiro-cli/internal/gw/connectors"
 )
 
 type Handler struct{}

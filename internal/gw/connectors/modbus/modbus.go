@@ -8,8 +8,8 @@ import (
 	"net/url"
 	"time"
 
-	c "github.com/yomiroco/yomiro-cli/internal/gw/connectors"
 	mb "github.com/simonvetter/modbus"
+	c "github.com/yomiroco/yomiro-cli/internal/gw/connectors"
 )
 
 type Handler struct{}

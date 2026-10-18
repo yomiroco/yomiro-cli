@@ -3,8 +3,8 @@ package gw
 import (
 	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/gw/svcwrap"
 	"github.com/spf13/cobra"
+	"github.com/yomiroco/yomiro-cli/internal/gw/svcwrap"
 )
 
 func newDownCmd() *cobra.Command {

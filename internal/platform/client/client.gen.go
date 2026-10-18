@@ -30,6 +30,7 @@ const (
 	Ollama           AIProviderType = "ollama"
 	Openai           AIProviderType = "openai"
 	OpenaiCompatible AIProviderType = "openai_compatible"
+	Openrouter       AIProviderType = "openrouter"
 	Platform         AIProviderType = "platform"
 )
 
@@ -48,7 +49,27 @@ func (e AIProviderType) Valid() bool {
 		return true
 	case OpenaiCompatible:
 		return true
+	case Openrouter:
+		return true
 	case Platform:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AgentPersistence.
+const (
+	Memory    AgentPersistence = "memory"
+	Workspace AgentPersistence = "workspace"
+)
+
+// Valid indicates whether the value is a known member of the AgentPersistence enum.
+func (e AgentPersistence) Valid() bool {
+	switch e {
+	case Memory:
+		return true
+	case Workspace:
 		return true
 	default:
 		return false
@@ -124,6 +145,24 @@ func (e ApiKeyScope) Valid() bool {
 	case InspectionWrite:
 		return true
 	case TenantAdmin:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ArtifactVisibility.
+const (
+	ArtifactVisibilityDraft  ArtifactVisibility = "draft"
+	ArtifactVisibilityShared ArtifactVisibility = "shared"
+)
+
+// Valid indicates whether the value is a known member of the ArtifactVisibility enum.
+func (e ArtifactVisibility) Valid() bool {
+	switch e {
+	case ArtifactVisibilityDraft:
+		return true
+	case ArtifactVisibilityShared:
 		return true
 	default:
 		return false
@@ -379,6 +418,30 @@ func (e OutputTarget) Valid() bool {
 	}
 }
 
+// Defines values for PtzCapabilitiesSchemaOutcome.
+const (
+	Denied      PtzCapabilitiesSchemaOutcome = "denied"
+	Motors      PtzCapabilitiesSchemaOutcome = "motors"
+	NoMotors    PtzCapabilitiesSchemaOutcome = "no_motors"
+	Unreachable PtzCapabilitiesSchemaOutcome = "unreachable"
+)
+
+// Valid indicates whether the value is a known member of the PtzCapabilitiesSchemaOutcome enum.
+func (e PtzCapabilitiesSchemaOutcome) Valid() bool {
+	switch e {
+	case Denied:
+		return true
+	case Motors:
+		return true
+	case NoMotors:
+		return true
+	case Unreachable:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ReviewPayloadState.
 const (
 	Approved ReviewPayloadState = "approved"
@@ -438,25 +501,25 @@ func (e ReviewTargetSource) Valid() bool {
 
 // Defines values for SessionStatus.
 const (
-	SessionStatusActive            SessionStatus = "active"
-	SessionStatusCompleted         SessionStatus = "completed"
-	SessionStatusFailed            SessionStatus = "failed"
-	SessionStatusPausedForApproval SessionStatus = "paused_for_approval"
-	SessionStatusStopped           SessionStatus = "stopped"
+	Active            SessionStatus = "active"
+	Completed         SessionStatus = "completed"
+	Failed            SessionStatus = "failed"
+	PausedForApproval SessionStatus = "paused_for_approval"
+	Stopped           SessionStatus = "stopped"
 )
 
 // Valid indicates whether the value is a known member of the SessionStatus enum.
 func (e SessionStatus) Valid() bool {
 	switch e {
-	case SessionStatusActive:
+	case Active:
 		return true
-	case SessionStatusCompleted:
+	case Completed:
 		return true
-	case SessionStatusFailed:
+	case Failed:
 		return true
-	case SessionStatusPausedForApproval:
+	case PausedForApproval:
 		return true
-	case SessionStatusStopped:
+	case Stopped:
 		return true
 	default:
 		return false
@@ -505,18 +568,33 @@ func (e SkillStatus) Valid() bool {
 	}
 }
 
-// Defines values for TTSRequestLanguage.
+// Defines values for WorkspaceKind.
 const (
-	Da TTSRequestLanguage = "da"
-	En TTSRequestLanguage = "en"
+	Project WorkspaceKind = "project"
 )
 
-// Valid indicates whether the value is a known member of the TTSRequestLanguage enum.
-func (e TTSRequestLanguage) Valid() bool {
+// Valid indicates whether the value is a known member of the WorkspaceKind enum.
+func (e WorkspaceKind) Valid() bool {
 	switch e {
-	case Da:
+	case Project:
 		return true
-	case En:
+	default:
+		return false
+	}
+}
+
+// Defines values for ArtifactsListArtifactsParamsScope.
+const (
+	Mine   ArtifactsListArtifactsParamsScope = "mine"
+	Shared ArtifactsListArtifactsParamsScope = "shared"
+)
+
+// Valid indicates whether the value is a known member of the ArtifactsListArtifactsParamsScope enum.
+func (e ArtifactsListArtifactsParamsScope) Valid() bool {
+	switch e {
+	case Mine:
+		return true
+	case Shared:
 		return true
 	default:
 		return false
@@ -535,6 +613,24 @@ func (e ImagesReadCameraImagesParamsSource) Valid() bool {
 	case Live:
 		return true
 	case Sandbox:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SensorsListSensorReadingsParamsBucket.
+const (
+	Hour SensorsListSensorReadingsParamsBucket = "hour"
+	Raw  SensorsListSensorReadingsParamsBucket = "raw"
+)
+
+// Valid indicates whether the value is a known member of the SensorsListSensorReadingsParamsBucket enum.
+func (e SensorsListSensorReadingsParamsBucket) Valid() bool {
+	switch e {
+	case Hour:
+		return true
+	case Raw:
 		return true
 	default:
 		return false
@@ -776,28 +872,36 @@ type AgentConfigCreate struct {
 	IsDefault      *bool          `json:"is_default,omitempty"`
 	Model          *string        `json:"model,omitempty"`
 	Name           string         `json:"name"`
-	Skills         *[]string      `json:"skills,omitempty"`
+
+	// Persistence Where an agent keeps what it writes. Exactly one side; the toolsets never overlap.
+	Persistence *AgentPersistence `json:"persistence,omitempty"`
+	Skills      *[]string         `json:"skills,omitempty"`
 
 	// SoulMdContent Optional SOUL.md content to upload
 	SoulMdContent *string `json:"soul_md_content,omitempty"`
+	VoiceModel    *string `json:"voice_model,omitempty"`
 }
 
 // AgentConfigPublic defines model for AgentConfigPublic.
 type AgentConfigPublic struct {
-	AgentRole         *AgentRole              `json:"agent_role,omitempty"`
-	CostBudgetUsd     *float32                `json:"cost_budget_usd,omitempty"`
-	CreatedAt         string                  `json:"created_at"`
-	CreatedById       *openapi_types.UUID     `json:"created_by_id,omitempty"`
-	CustomerDomain    *string                 `json:"customer_domain,omitempty"`
-	DataSources       *[]string               `json:"data_sources,omitempty"`
-	Description       *string                 `json:"description,omitempty"`
-	ExecutionTier     *ExecutionTier          `json:"execution_tier,omitempty"`
-	Id                openapi_types.UUID      `json:"id"`
-	IsActive          *bool                   `json:"is_active,omitempty"`
-	IsDefault         *bool                   `json:"is_default,omitempty"`
-	Model             *string                 `json:"model,omitempty"`
-	Name              string                  `json:"name"`
-	PageType          *string                 `json:"page_type,omitempty"`
+	AgentRole          *AgentRole          `json:"agent_role,omitempty"`
+	CostBudgetUsd      *float32            `json:"cost_budget_usd,omitempty"`
+	CreatedAt          string              `json:"created_at"`
+	CreatedById        *openapi_types.UUID `json:"created_by_id,omitempty"`
+	CustomerDomain     *string             `json:"customer_domain,omitempty"`
+	DataSources        *[]string           `json:"data_sources,omitempty"`
+	DefaultWorkspaceId *openapi_types.UUID `json:"default_workspace_id,omitempty"`
+	Description        *string             `json:"description,omitempty"`
+	ExecutionTier      *ExecutionTier      `json:"execution_tier,omitempty"`
+	Id                 openapi_types.UUID  `json:"id"`
+	IsActive           *bool               `json:"is_active,omitempty"`
+	IsDefault          *bool               `json:"is_default,omitempty"`
+	Model              *string             `json:"model,omitempty"`
+	Name               string              `json:"name"`
+	PageType           *string             `json:"page_type,omitempty"`
+
+	// Persistence Where an agent keeps what it writes. Exactly one side; the toolsets never overlap.
+	Persistence       *AgentPersistence       `json:"persistence,omitempty"`
 	RefLookupCap      *int                    `json:"ref_lookup_cap,omitempty"`
 	RefMaxK           *int                    `json:"ref_max_k,omitempty"`
 	RefOverlayCap     *int                    `json:"ref_overlay_cap,omitempty"`
@@ -806,6 +910,7 @@ type AgentConfigPublic struct {
 	TenantId          openapi_types.UUID      `json:"tenant_id"`
 	UpdatedAt         string                  `json:"updated_at"`
 	UsesDefaultSoulMd *bool                   `json:"uses_default_soul_md,omitempty"`
+	VoiceModel        *string                 `json:"voice_model,omitempty"`
 
 	// WorkspaceStoragePrefix S3 prefix: tenants/{tid}/agents/{aid}/
 	WorkspaceStoragePrefix string `json:"workspace_storage_prefix"`
@@ -826,27 +931,32 @@ type AgentConfigPublicRestricted struct {
 	Skills        *[]string           `json:"skills,omitempty"`
 	TenantId      openapi_types.UUID  `json:"tenant_id"`
 	UpdatedAt     string              `json:"updated_at"`
+	VoiceModel    *string             `json:"voice_model,omitempty"`
 }
 
 // AgentConfigUpdate defines model for AgentConfigUpdate.
 type AgentConfigUpdate struct {
 	// AgentMdContent Updated AGENT.md content
-	AgentMdContent *string                 `json:"agent_md_content,omitempty"`
-	AgentRole      *AgentRole              `json:"agent_role,omitempty"`
-	CostBudgetUsd  *float32                `json:"cost_budget_usd,omitempty"`
-	DataSources    *[]string               `json:"data_sources,omitempty"`
-	Description    *string                 `json:"description,omitempty"`
-	ExecutionTier  *ExecutionTier          `json:"execution_tier,omitempty"`
-	IsActive       *bool                   `json:"is_active,omitempty"`
-	IsDefault      *bool                   `json:"is_default,omitempty"`
-	Model          *string                 `json:"model,omitempty"`
-	Name           *string                 `json:"name,omitempty"`
+	AgentMdContent *string        `json:"agent_md_content,omitempty"`
+	AgentRole      *AgentRole     `json:"agent_role,omitempty"`
+	CostBudgetUsd  *float32       `json:"cost_budget_usd,omitempty"`
+	DataSources    *[]string      `json:"data_sources,omitempty"`
+	Description    *string        `json:"description,omitempty"`
+	ExecutionTier  *ExecutionTier `json:"execution_tier,omitempty"`
+	IsActive       *bool          `json:"is_active,omitempty"`
+	IsDefault      *bool          `json:"is_default,omitempty"`
+	Model          *string        `json:"model,omitempty"`
+	Name           *string        `json:"name,omitempty"`
+
+	// Persistence Where an agent keeps what it writes. Exactly one side; the toolsets never overlap.
+	Persistence    *AgentPersistence       `json:"persistence,omitempty"`
 	SecurityPolicy *map[string]interface{} `json:"security_policy,omitempty"`
 	Skills         *[]string               `json:"skills,omitempty"`
 
 	// SoulMdContent Updated SOUL.md content
 	SoulMdContent     *string `json:"soul_md_content,omitempty"`
 	UsesDefaultSoulMd *bool   `json:"uses_default_soul_md,omitempty"`
+	VoiceModel        *string `json:"voice_model,omitempty"`
 }
 
 // AgentConfigsPublic defines model for AgentConfigsPublic.
@@ -1024,12 +1134,17 @@ type AgentHooksPublic struct {
 	Data  []AgentHookPublic `json:"data"`
 }
 
+// AgentPersistence Where an agent keeps what it writes. Exactly one side; the toolsets never overlap.
+type AgentPersistence string
+
 // AgentRole defines model for AgentRole.
 type AgentRole string
 
 // AgentSessionPublic defines model for AgentSessionPublic.
 type AgentSessionPublic struct {
 	AgentConfigId      openapi_types.UUID      `json:"agent_config_id"`
+	CacheReadTokens    *int                    `json:"cache_read_tokens,omitempty"`
+	CacheWriteTokens   *int                    `json:"cache_write_tokens,omitempty"`
 	CostUsd            string                  `json:"cost_usd"`
 	CreatedAt          string                  `json:"created_at"`
 	Id                 openapi_types.UUID      `json:"id"`
@@ -1631,6 +1746,42 @@ type ApiKeysPublic struct {
 	Data  []ApiKeyPublic `json:"data"`
 }
 
+// ArtifactDocumentOut defines model for ArtifactDocumentOut.
+type ArtifactDocumentOut struct {
+	Html string `json:"html"`
+}
+
+// ArtifactPublic defines model for ArtifactPublic.
+type ArtifactPublic struct {
+	CreatedBy   UserRef            `json:"created_by"`
+	Description string             `json:"description"`
+	Id          openapi_types.UUID `json:"id"`
+	Name        string             `json:"name"`
+	Title       string             `json:"title"`
+	UpdatedAt   string             `json:"updated_at"`
+	UrlPath     string             `json:"url_path"`
+	Visibility  ArtifactVisibility `json:"visibility"`
+	WorkspaceId openapi_types.UUID `json:"workspace_id"`
+}
+
+// ArtifactSnapshotPublic defines model for ArtifactSnapshotPublic.
+type ArtifactSnapshotPublic struct {
+	CreatedAt time.Time          `json:"created_at"`
+	CreatedBy UserRef            `json:"created_by"`
+	Id        openapi_types.UUID `json:"id"`
+	Size      int                `json:"size"`
+}
+
+// ArtifactUpdate defines model for ArtifactUpdate.
+type ArtifactUpdate struct {
+	Description *string             `json:"description,omitempty"`
+	Title       *string             `json:"title,omitempty"`
+	Visibility  *ArtifactVisibility `json:"visibility,omitempty"`
+}
+
+// ArtifactVisibility defines model for ArtifactVisibility.
+type ArtifactVisibility string
+
 // BodyAnnotationSystemBulkAddMediaToProject defines model for Body_annotation-system-bulk_add_media_to_project.
 type BodyAnnotationSystemBulkAddMediaToProject struct {
 	CameraImageIds *[]openapi_types.UUID `json:"camera_image_ids,omitempty"`
@@ -1742,6 +1893,12 @@ type BodyVideosUploadCameraVideo struct {
 	Title string `json:"title"`
 }
 
+// BodyWorkspacesImportWorkspace defines model for Body_workspaces-import_workspace.
+type BodyWorkspacesImportWorkspace struct {
+	File openapi_types.File `json:"file"`
+	Name string             `json:"name"`
+}
+
 // BulkDeleteRequest defines model for BulkDeleteRequest.
 type BulkDeleteRequest struct {
 	CaptureIds []openapi_types.UUID `json:"capture_ids"`
@@ -1749,9 +1906,18 @@ type BulkDeleteRequest struct {
 
 // BulkDeleteResponse defines model for BulkDeleteResponse.
 type BulkDeleteResponse struct {
-	Deleted         int                `json:"deleted"`
-	DeletionGroupId openapi_types.UUID `json:"deletion_group_id"`
-	Message         string             `json:"message"`
+	Deleted         int                 `json:"deleted"`
+	DeletionGroupId *openapi_types.UUID `json:"deletion_group_id,omitempty"`
+	Message         string              `json:"message"`
+}
+
+// CameraCapabilitiesSchema Everything the device discovered about one camera.
+//
+// “ptz=None“ means not probed yet; a populated group with all-false flags means probed
+// and unsupported. Collapsing the two is the bug this schema exists to prevent.
+type CameraCapabilitiesSchema struct {
+	// Ptz What a camera's motors can do, as reported by the device after probing.
+	Ptz *PtzCapabilitiesSchema `json:"ptz,omitempty"`
 }
 
 // CameraImagePublic Public schema for camera image responses.
@@ -2132,9 +2298,13 @@ type DayCount struct {
 // `platform.capture_entity_deletion` trigger during this request's
 // transaction. Frontends push it onto the undo stack so `cmd+z` can call
 // `POST /entity-history/{group_id}/restore` without a follow-up roundtrip.
+//
+// `None` means the delete is not undoable, because restoring the row would not
+// restore what it pointed at — releasing a built-in AI provider gives its key
+// back to OpenRouter, and a restored row would hold a dead credential.
 type DeletedResponse struct {
-	DeletionGroupId openapi_types.UUID `json:"deletion_group_id"`
-	Message         string             `json:"message"`
+	DeletionGroupId *openapi_types.UUID `json:"deletion_group_id,omitempty"`
+	Message         string              `json:"message"`
 }
 
 // DemoConfigResponse Response with demo configuration.
@@ -2270,14 +2440,17 @@ type DeviceControl struct {
 type DeviceCreate struct {
 	Configuration *map[string]interface{} `json:"configuration,omitempty"`
 
-	// DeviceGroupId The device group this device belongs to
-	DeviceGroupId openapi_types.UUID `json:"device_group_id"`
-	DeviceType    *string            `json:"device_type,omitempty"`
+	// DeviceGroupId The device group this device belongs to; inherited from parent_device_id when omitted
+	DeviceGroupId *openapi_types.UUID `json:"device_group_id,omitempty"`
+	DeviceType    *string             `json:"device_type,omitempty"`
 
 	// LocationId The location this device belongs to (line or unit level)
 	LocationId openapi_types.UUID `json:"location_id"`
 	Name       string             `json:"name"`
-	Status     *string            `json:"status,omitempty"`
+
+	// ParentDeviceId The gateway device responsible for reaching this device
+	ParentDeviceId *openapi_types.UUID `json:"parent_device_id,omitempty"`
+	Status         *string             `json:"status,omitempty"`
 }
 
 // DeviceGroupCreate Properties to receive on device group creation.
@@ -2382,6 +2555,7 @@ type DevicePublic struct {
 	ModelInventory        *map[string]interface{} `json:"model_inventory,omitempty"`
 	ModelSyncVersion      *string                 `json:"model_sync_version,omitempty"`
 	Name                  string                  `json:"name"`
+	ParentDeviceId        *openapi_types.UUID     `json:"parent_device_id"`
 	Status                *string                 `json:"status,omitempty"`
 	Temperature           *float32                `json:"temperature,omitempty"`
 	TenantId              openapi_types.UUID      `json:"tenant_id"`
@@ -2451,6 +2625,11 @@ type EventType string
 
 // ExecutionTier defines model for ExecutionTier.
 type ExecutionTier string
+
+// FileContentIn defines model for FileContentIn.
+type FileContentIn struct {
+	Content string `json:"content"`
+}
 
 // FleetBroadcast Fleet broadcast message.
 type FleetBroadcast struct {
@@ -2732,9 +2911,12 @@ type InspectionProfileWithImages struct {
 // JetsonNanoConfigPublic Public schema for Jetson Nano config responses.
 type JetsonNanoConfigPublic struct {
 	// CameraIndex Camera index on the Jetson device
-	CameraIndex *int               `json:"camera_index,omitempty"`
-	CreatedAt   string             `json:"created_at"`
-	DeviceId    openapi_types.UUID `json:"device_id"`
+	CameraIndex *int `json:"camera_index,omitempty"`
+
+	// Capabilities camera_id -> capabilities discovered by the device. Absent means not probed yet.
+	Capabilities *map[string]CameraCapabilitiesSchema `json:"capabilities,omitempty"`
+	CreatedAt    string                               `json:"created_at"`
+	DeviceId     openapi_types.UUID                   `json:"device_id"`
 
 	// ExtraConfig Additional Jetson-specific configuration
 	ExtraConfig *map[string]interface{} `json:"extra_config,omitempty"`
@@ -2982,10 +3164,14 @@ type ProjectDeviceLinksPublic struct {
 
 // PtzCapabilitiesSchema What a camera's motors can do, as reported by the device after probing.
 type PtzCapabilitiesSchema struct {
-	Pan  *bool `json:"pan,omitempty"`
-	Tilt *bool `json:"tilt,omitempty"`
-	Zoom *bool `json:"zoom,omitempty"`
+	Outcome *PtzCapabilitiesSchemaOutcome `json:"outcome,omitempty"`
+	Pan     *bool                         `json:"pan,omitempty"`
+	Tilt    *bool                         `json:"tilt,omitempty"`
+	Zoom    *bool                         `json:"zoom,omitempty"`
 }
+
+// PtzCapabilitiesSchemaOutcome defines model for PtzCapabilitiesSchema.Outcome.
+type PtzCapabilitiesSchemaOutcome string
 
 // PtzMoveRequest A relative nudge as a fraction of the camera's full range.
 type PtzMoveRequest struct {
@@ -3037,6 +3223,21 @@ type RecentDeletion struct {
 // RecentDeletionsResponse defines model for RecentDeletionsResponse.
 type RecentDeletionsResponse struct {
 	Items []RecentDeletion `json:"items"`
+}
+
+// RecordIn defines model for RecordIn.
+type RecordIn struct {
+	Data map[string]interface{} `json:"data"`
+}
+
+// RecordOut defines model for RecordOut.
+type RecordOut struct {
+	Collection string                 `json:"collection"`
+	Data       map[string]interface{} `json:"data"`
+	DocId      string                 `json:"doc_id"`
+	UpdatedAt  string                 `json:"updated_at"`
+	UpdatedBy  UserRef                `json:"updated_by"`
+	Version    int                    `json:"version"`
 }
 
 // ReferenceSheetPublic Public schema for reference sheet responses.
@@ -3160,6 +3361,54 @@ type SearchResult struct {
 	Type  string                  `json:"type"`
 }
 
+// SensorPublic Public schema for sensor responses.
+type SensorPublic struct {
+	CreatedAt string `json:"created_at"`
+
+	// DeviceClass e.g. 'temperature', 'power'
+	DeviceClass    *string            `json:"device_class,omitempty"`
+	DeviceId       openapi_types.UUID `json:"device_id"`
+	DisplayName    string             `json:"display_name"`
+	Id             openapi_types.UUID `json:"id"`
+	LastRecordedAt *string            `json:"last_recorded_at"`
+	LastValueBool  *bool              `json:"last_value_bool"`
+	LastValueNum   *float32           `json:"last_value_num"`
+	LastValueText  *string            `json:"last_value_text"`
+
+	// SensorKey Stable identifier reported by the device
+	SensorKey string             `json:"sensor_key"`
+	TenantId  openapi_types.UUID `json:"tenant_id"`
+
+	// Unit e.g. 'C', 'kWh', 'ppm'
+	Unit      *string `json:"unit,omitempty"`
+	UpdatedAt string  `json:"updated_at"`
+
+	// ValueType numeric | text | bool — which last_value_* is populated
+	ValueType string `json:"value_type"`
+}
+
+// SensorReadingPublic Public schema for reading responses.
+type SensorReadingPublic struct {
+	Attributes map[string]interface{} `json:"attributes"`
+	RecordedAt time.Time              `json:"recorded_at"`
+	SensorId   openapi_types.UUID     `json:"sensor_id"`
+	ValueBool  *bool                  `json:"value_bool"`
+	ValueNum   *float32               `json:"value_num"`
+	ValueText  *string                `json:"value_text"`
+}
+
+// SensorReadingsPublic Schema for listing readings.
+type SensorReadingsPublic struct {
+	Count int                   `json:"count"`
+	Data  []SensorReadingPublic `json:"data"`
+}
+
+// SensorsPublic Schema for listing sensors.
+type SensorsPublic struct {
+	Count int            `json:"count"`
+	Data  []SensorPublic `json:"data"`
+}
+
 // SessionStatus defines model for SessionStatus.
 type SessionStatus string
 
@@ -3262,15 +3511,6 @@ type SweepRequest struct {
 type SweepResponse struct {
 	Deleted int `json:"deleted"`
 }
-
-// TTSRequest defines model for TTSRequest.
-type TTSRequest struct {
-	Language TTSRequestLanguage `json:"language"`
-	Text     string             `json:"text"`
-}
-
-// TTSRequestLanguage defines model for TTSRequest.Language.
-type TTSRequestLanguage string
 
 // TableMetadata Table metadata as exposed by the explore API.
 type TableMetadata struct {
@@ -3397,11 +3637,15 @@ type TenantAIProviderPublic struct {
 	Id          openapi_types.UUID  `json:"id"`
 	IsActive    *bool               `json:"is_active,omitempty"`
 
+	// IsPlatformManaged Yomiro minted and pays for this key; the tenant did not supply it
+	IsPlatformManaged *bool `json:"is_platform_managed,omitempty"`
+
 	// Name User-facing label, e.g. 'Local vLLM cluster'
-	Name         string             `json:"name"`
-	ProviderType AIProviderType     `json:"provider_type"`
-	TenantId     openapi_types.UUID `json:"tenant_id"`
-	UpdatedAt    string             `json:"updated_at"`
+	Name             string                  `json:"name"`
+	ProviderMetadata *map[string]interface{} `json:"provider_metadata,omitempty"`
+	ProviderType     AIProviderType          `json:"provider_type"`
+	TenantId         openapi_types.UUID      `json:"tenant_id"`
+	UpdatedAt        string                  `json:"updated_at"`
 }
 
 // TenantAIProviderUpdate defines model for TenantAIProviderUpdate.
@@ -3418,6 +3662,27 @@ type TenantAIProviderUpdate struct {
 type TenantAIProvidersPublic struct {
 	Count int                      `json:"count"`
 	Data  []TenantAIProviderPublic `json:"data"`
+}
+
+// TenantAIUsage AI spend for a tenant over one billing period.
+//
+// “billed_usd“ comes from OpenRouter's own meter on the tenant's key and is
+// the invoiceable number. “metered_usd“ is our per-session accounting over
+// the same window. “drift_usd“ is the gap: a non-trivial value means
+// sessions are being charged to the wrong key or cost attribution is broken,
+// so it is reported rather than reconciled away.
+type TenantAIUsage struct {
+	BilledUsd         *float32  `json:"billed_usd,omitempty"`
+	CacheReadTokens   int       `json:"cache_read_tokens"`
+	CacheWriteTokens  int       `json:"cache_write_tokens"`
+	DriftUsd          *float32  `json:"drift_usd,omitempty"`
+	LimitRemainingUsd *float32  `json:"limit_remaining_usd,omitempty"`
+	LimitUsd          *float32  `json:"limit_usd,omitempty"`
+	MeteredUsd        float32   `json:"metered_usd"`
+	PeriodEnd         time.Time `json:"period_end"`
+	PeriodStart       time.Time `json:"period_start"`
+	SessionCount      int       `json:"session_count"`
+	TotalTokens       int       `json:"total_tokens"`
 }
 
 // TenantPublic Public schema for tenant responses.
@@ -3602,6 +3867,12 @@ type UserPublic struct {
 	UploadedProfilePicturePath *string            `json:"uploaded_profile_picture_path,omitempty"`
 }
 
+// UserRef defines model for UserRef.
+type UserRef struct {
+	Id   openapi_types.UUID `json:"id"`
+	Name string             `json:"name"`
+}
+
 // UserUpdate Properties to receive via API on update, all are optional.
 type UserUpdate struct {
 	// Auth0Sub Auth0 user ID
@@ -3630,9 +3901,11 @@ type UsersPublic struct {
 
 // ValidationError defines model for ValidationError.
 type ValidationError struct {
-	Loc  []ValidationError_Loc_Item `json:"loc"`
-	Msg  string                     `json:"msg"`
-	Type string                     `json:"type"`
+	Ctx   *map[string]interface{}    `json:"ctx,omitempty"`
+	Input interface{}                `json:"input,omitempty"`
+	Loc   []ValidationError_Loc_Item `json:"loc"`
+	Msg   string                     `json:"msg"`
+	Type  string                     `json:"type"`
 }
 
 // ValidationErrorLoc0 defines model for .
@@ -3644,6 +3917,49 @@ type ValidationErrorLoc1 = int
 // ValidationError_Loc_Item defines model for ValidationError.loc.Item.
 type ValidationError_Loc_Item struct {
 	union json.RawMessage
+}
+
+// WorkspaceAssignmentCreate defines model for WorkspaceAssignmentCreate.
+type WorkspaceAssignmentCreate struct {
+	AgentConfigId openapi_types.UUID `json:"agent_config_id"`
+}
+
+// WorkspaceAssignmentPublic defines model for WorkspaceAssignmentPublic.
+type WorkspaceAssignmentPublic struct {
+	AgentConfigId openapi_types.UUID `json:"agent_config_id"`
+	CreatedAt     string             `json:"created_at"`
+	Id            openapi_types.UUID `json:"id"`
+	WorkspaceId   openapi_types.UUID `json:"workspace_id"`
+}
+
+// WorkspaceCreate defines model for WorkspaceCreate.
+type WorkspaceCreate struct {
+	Description *string `json:"description,omitempty"`
+	Name        string  `json:"name"`
+}
+
+// WorkspaceKind defines model for WorkspaceKind.
+type WorkspaceKind string
+
+// WorkspacePublic defines model for WorkspacePublic.
+type WorkspacePublic struct {
+	CreatedAt   string             `json:"created_at"`
+	Description *string            `json:"description,omitempty"`
+	HeadCommit  *string            `json:"head_commit,omitempty"`
+	Id          openapi_types.UUID `json:"id"`
+	Kind        *WorkspaceKind     `json:"kind,omitempty"`
+	Name        string             `json:"name"`
+
+	// StoragePrefix S3 prefix: tenants/{slug}/workspaces/{wid}/
+	StoragePrefix string             `json:"storage_prefix"`
+	TenantId      openapi_types.UUID `json:"tenant_id"`
+	UpdatedAt     string             `json:"updated_at"`
+}
+
+// WorkspaceUpdate defines model for WorkspaceUpdate.
+type WorkspaceUpdate struct {
+	Description *string `json:"description,omitempty"`
+	Name        *string `json:"name,omitempty"`
 }
 
 // ActivityListActivityParams defines parameters for ActivityListActivity.
@@ -3690,6 +4006,24 @@ type AgentsGetAgentConfigParams struct {
 
 // AgentsUpdateAgentConfigParams defines parameters for AgentsUpdateAgentConfig.
 type AgentsUpdateAgentConfigParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// AgentMdPatchFrontmatterJSONBody defines parameters for AgentMdPatchFrontmatter.
+type AgentMdPatchFrontmatterJSONBody map[string]interface{}
+
+// AgentMdPatchFrontmatterParams defines parameters for AgentMdPatchFrontmatter.
+type AgentMdPatchFrontmatterParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// AgentMdGetSchemaParams defines parameters for AgentMdGetSchema.
+type AgentMdGetSchemaParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// AgentMdValidateParams defines parameters for AgentMdValidate.
+type AgentMdValidateParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
@@ -4000,6 +4334,21 @@ type AiProvidersCreateAiProviderParams struct {
 
 // AiProvidersDiscoverModelsParams defines parameters for AiProvidersDiscoverModels.
 type AiProvidersDiscoverModelsParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// AiProvidersProvisionPlatformProviderParams defines parameters for AiProvidersProvisionPlatformProvider.
+type AiProvidersProvisionPlatformProviderParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// AiProvidersGetAiUsageParams defines parameters for AiProvidersGetAiUsage.
+type AiProvidersGetAiUsageParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// AiProvidersExportAiUsageCsvParams defines parameters for AiProvidersExportAiUsageCsv.
+type AiProvidersExportAiUsageCsvParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
@@ -4423,6 +4772,74 @@ type AnnotationSystemUpdateShapeParams struct {
 
 // AnnotationSystemGetShapeWithLabelParams defines parameters for AnnotationSystemGetShapeWithLabel.
 type AnnotationSystemGetShapeWithLabelParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// ArtifactsListArtifactsParams defines parameters for ArtifactsListArtifacts.
+type ArtifactsListArtifactsParams struct {
+	Scope       *ArtifactsListArtifactsParamsScope `form:"scope,omitempty" json:"scope,omitempty"`
+	AccessToken *string                            `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// ArtifactsListArtifactsParamsScope defines parameters for ArtifactsListArtifacts.
+type ArtifactsListArtifactsParamsScope string
+
+// ArtifactsDeleteArtifactParams defines parameters for ArtifactsDeleteArtifact.
+type ArtifactsDeleteArtifactParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// ArtifactsGetArtifactParams defines parameters for ArtifactsGetArtifact.
+type ArtifactsGetArtifactParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// ArtifactsUpdateArtifactParams defines parameters for ArtifactsUpdateArtifact.
+type ArtifactsUpdateArtifactParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// ArtifactsGetDocumentParams defines parameters for ArtifactsGetDocument.
+type ArtifactsGetDocumentParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// ArtifactsListRecordsParams defines parameters for ArtifactsListRecords.
+type ArtifactsListRecordsParams struct {
+	Collection string `form:"collection" json:"collection"`
+
+	// Where JSON object of scalar equality filters
+	Where       *string `form:"where,omitempty" json:"where,omitempty"`
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// ArtifactsDeleteRecordParams defines parameters for ArtifactsDeleteRecord.
+type ArtifactsDeleteRecordParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// ArtifactsUpdateRecordParams defines parameters for ArtifactsUpdateRecord.
+type ArtifactsUpdateRecordParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// ArtifactsSetRecordParams defines parameters for ArtifactsSetRecord.
+type ArtifactsSetRecordParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// ArtifactsListSnapshotsParams defines parameters for ArtifactsListSnapshots.
+type ArtifactsListSnapshotsParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// ArtifactsCreateSnapshotParams defines parameters for ArtifactsCreateSnapshot.
+type ArtifactsCreateSnapshotParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// ArtifactsDownloadSnapshotParams defines parameters for ArtifactsDownloadSnapshot.
+type ArtifactsDownloadSnapshotParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
@@ -4857,6 +5274,11 @@ type DevicesUpdateDeviceParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
+// SensorsListDeviceChildrenParams defines parameters for SensorsListDeviceChildren.
+type SensorsListDeviceChildrenParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
 // DevicesCheckDeviceHealthParams defines parameters for DevicesCheckDeviceHealth.
 type DevicesCheckDeviceHealthParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
@@ -4864,6 +5286,11 @@ type DevicesCheckDeviceHealthParams struct {
 
 // DevicesPushModelToDeviceParams defines parameters for DevicesPushModelToDevice.
 type DevicesPushModelToDeviceParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// SensorsListDeviceSensorsParams defines parameters for SensorsListDeviceSensors.
+type SensorsListDeviceSensorsParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
@@ -5398,6 +5825,19 @@ type SearchSearchEntitiesParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
+// SensorsListSensorReadingsParams defines parameters for SensorsListSensorReadings.
+type SensorsListSensorReadingsParams struct {
+	Start time.Time `form:"start" json:"start"`
+	End   time.Time `form:"end" json:"end"`
+
+	// Bucket 'raw' for individual readings, 'hour' for the rollup
+	Bucket      *SensorsListSensorReadingsParamsBucket `form:"bucket,omitempty" json:"bucket,omitempty"`
+	AccessToken *string                                `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// SensorsListSensorReadingsParamsBucket defines parameters for SensorsListSensorReadings.
+type SensorsListSensorReadingsParamsBucket string
+
 // StarsListStarsParams defines parameters for StarsListStars.
 type StarsListStarsParams struct {
 	Type        *string `form:"type,omitempty" json:"type,omitempty"`
@@ -5595,8 +6035,80 @@ type VideosReprocessCameraVideoParams struct {
 	AccessToken     *string             `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
-// VoiceTtsParams defines parameters for VoiceTts.
-type VoiceTtsParams struct {
+// WorkspacesListWorkspacesParams defines parameters for WorkspacesListWorkspaces.
+type WorkspacesListWorkspacesParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// WorkspacesCreateWorkspaceParams defines parameters for WorkspacesCreateWorkspace.
+type WorkspacesCreateWorkspaceParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// WorkspacesImportWorkspaceParams defines parameters for WorkspacesImportWorkspace.
+type WorkspacesImportWorkspaceParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// WorkspacesDeleteWorkspaceParams defines parameters for WorkspacesDeleteWorkspace.
+type WorkspacesDeleteWorkspaceParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// WorkspacesGetWorkspaceParams defines parameters for WorkspacesGetWorkspace.
+type WorkspacesGetWorkspaceParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// WorkspacesUpdateWorkspaceParams defines parameters for WorkspacesUpdateWorkspace.
+type WorkspacesUpdateWorkspaceParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// WorkspacesCreateWorkspaceAssignmentParams defines parameters for WorkspacesCreateWorkspaceAssignment.
+type WorkspacesCreateWorkspaceAssignmentParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// WorkspacesGetWorkspaceBlobParams defines parameters for WorkspacesGetWorkspaceBlob.
+type WorkspacesGetWorkspaceBlobParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// WorkspacesGetWorkspaceDiffParams defines parameters for WorkspacesGetWorkspaceDiff.
+type WorkspacesGetWorkspaceDiffParams struct {
+	From        string  `form:"from" json:"from"`
+	To          string  `form:"to" json:"to"`
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// WorkspacesExportWorkspaceParams defines parameters for WorkspacesExportWorkspace.
+type WorkspacesExportWorkspaceParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// WorkspacesListWorkspaceFilesParams defines parameters for WorkspacesListWorkspaceFiles.
+type WorkspacesListWorkspaceFilesParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// WorkspacesDeleteWorkspaceFileParams defines parameters for WorkspacesDeleteWorkspaceFile.
+type WorkspacesDeleteWorkspaceFileParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// WorkspacesGetWorkspaceFileParams defines parameters for WorkspacesGetWorkspaceFile.
+type WorkspacesGetWorkspaceFileParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// WorkspacesPutWorkspaceFileParams defines parameters for WorkspacesPutWorkspaceFile.
+type WorkspacesPutWorkspaceFileParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// WorkspacesGetWorkspaceHistoryParams defines parameters for WorkspacesGetWorkspaceHistory.
+type WorkspacesGetWorkspaceHistoryParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
@@ -5605,6 +6117,9 @@ type AgentsCreateAgentConfigJSONRequestBody = AgentConfigCreate
 
 // AgentsUpdateAgentConfigJSONRequestBody defines body for AgentsUpdateAgentConfig for application/json ContentType.
 type AgentsUpdateAgentConfigJSONRequestBody = AgentConfigUpdate
+
+// AgentMdPatchFrontmatterJSONRequestBody defines body for AgentMdPatchFrontmatter for application/json ContentType.
+type AgentMdPatchFrontmatterJSONRequestBody AgentMdPatchFrontmatterJSONBody
 
 // AgentEvalsCreateEvalDatasetJSONRequestBody defines body for AgentEvalsCreateEvalDataset for application/json ContentType.
 type AgentEvalsCreateEvalDatasetJSONRequestBody = AgentEvalDatasetCreate
@@ -5695,6 +6210,15 @@ type AnnotationSystemCreateShapesBulkJSONRequestBody = AnnotationShapeBulkCreate
 
 // AnnotationSystemUpdateShapeJSONRequestBody defines body for AnnotationSystemUpdateShape for application/json ContentType.
 type AnnotationSystemUpdateShapeJSONRequestBody = AnnotationShapeUpdate
+
+// ArtifactsUpdateArtifactJSONRequestBody defines body for ArtifactsUpdateArtifact for application/json ContentType.
+type ArtifactsUpdateArtifactJSONRequestBody = ArtifactUpdate
+
+// ArtifactsUpdateRecordJSONRequestBody defines body for ArtifactsUpdateRecord for application/json ContentType.
+type ArtifactsUpdateRecordJSONRequestBody = RecordIn
+
+// ArtifactsSetRecordJSONRequestBody defines body for ArtifactsSetRecord for application/json ContentType.
+type ArtifactsSetRecordJSONRequestBody = RecordIn
 
 // AuthCreateApiKeyJSONRequestBody defines body for AuthCreateApiKey for application/json ContentType.
 type AuthCreateApiKeyJSONRequestBody = ApiKeyCreate
@@ -5891,8 +6415,20 @@ type VideosUploadCameraVideoMultipartRequestBody = BodyVideosUploadCameraVideo
 // VideosUpdateCameraVideoJSONRequestBody defines body for VideosUpdateCameraVideo for application/json ContentType.
 type VideosUpdateCameraVideoJSONRequestBody = CameraVideoUpdate
 
-// VoiceTtsJSONRequestBody defines body for VoiceTts for application/json ContentType.
-type VoiceTtsJSONRequestBody = TTSRequest
+// WorkspacesCreateWorkspaceJSONRequestBody defines body for WorkspacesCreateWorkspace for application/json ContentType.
+type WorkspacesCreateWorkspaceJSONRequestBody = WorkspaceCreate
+
+// WorkspacesImportWorkspaceMultipartRequestBody defines body for WorkspacesImportWorkspace for multipart/form-data ContentType.
+type WorkspacesImportWorkspaceMultipartRequestBody = BodyWorkspacesImportWorkspace
+
+// WorkspacesUpdateWorkspaceJSONRequestBody defines body for WorkspacesUpdateWorkspace for application/json ContentType.
+type WorkspacesUpdateWorkspaceJSONRequestBody = WorkspaceUpdate
+
+// WorkspacesCreateWorkspaceAssignmentJSONRequestBody defines body for WorkspacesCreateWorkspaceAssignment for application/json ContentType.
+type WorkspacesCreateWorkspaceAssignmentJSONRequestBody = WorkspaceAssignmentCreate
+
+// WorkspacesPutWorkspaceFileJSONRequestBody defines body for WorkspacesPutWorkspaceFile for application/json ContentType.
+type WorkspacesPutWorkspaceFileJSONRequestBody = FileContentIn
 
 // AsValidationErrorLoc0 returns the union data inside the ValidationError_Loc_Item as a ValidationErrorLoc0
 func (t ValidationError_Loc_Item) AsValidationErrorLoc0() (ValidationErrorLoc0, error) {
@@ -6053,6 +6589,17 @@ type ClientInterface interface {
 	AgentsUpdateAgentConfigWithBody(ctx context.Context, configId openapi_types.UUID, params *AgentsUpdateAgentConfigParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	AgentsUpdateAgentConfig(ctx context.Context, configId openapi_types.UUID, params *AgentsUpdateAgentConfigParams, body AgentsUpdateAgentConfigJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AgentMdPatchFrontmatterWithBody request with any body
+	AgentMdPatchFrontmatterWithBody(ctx context.Context, configId openapi_types.UUID, params *AgentMdPatchFrontmatterParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AgentMdPatchFrontmatter(ctx context.Context, configId openapi_types.UUID, params *AgentMdPatchFrontmatterParams, body AgentMdPatchFrontmatterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AgentMdGetSchema request
+	AgentMdGetSchema(ctx context.Context, configId openapi_types.UUID, params *AgentMdGetSchemaParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AgentMdValidate request
+	AgentMdValidate(ctx context.Context, configId openapi_types.UUID, params *AgentMdValidateParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// AgentEvalsListEvalDatasets request
 	AgentEvalsListEvalDatasets(ctx context.Context, configId openapi_types.UUID, params *AgentEvalsListEvalDatasetsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -6239,6 +6786,15 @@ type ClientInterface interface {
 	AiProvidersDiscoverModelsWithBody(ctx context.Context, params *AiProvidersDiscoverModelsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	AiProvidersDiscoverModels(ctx context.Context, params *AiProvidersDiscoverModelsParams, body AiProvidersDiscoverModelsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AiProvidersProvisionPlatformProvider request
+	AiProvidersProvisionPlatformProvider(ctx context.Context, params *AiProvidersProvisionPlatformProviderParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AiProvidersGetAiUsage request
+	AiProvidersGetAiUsage(ctx context.Context, params *AiProvidersGetAiUsageParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AiProvidersExportAiUsageCsv request
+	AiProvidersExportAiUsageCsv(ctx context.Context, params *AiProvidersExportAiUsageCsvParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// AiProvidersDeleteAiProvider request
 	AiProvidersDeleteAiProvider(ctx context.Context, providerId openapi_types.UUID, params *AiProvidersDeleteAiProviderParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -6480,6 +7036,48 @@ type ClientInterface interface {
 
 	// AnnotationSystemGetShapeWithLabel request
 	AnnotationSystemGetShapeWithLabel(ctx context.Context, shapeId openapi_types.UUID, params *AnnotationSystemGetShapeWithLabelParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ArtifactsListArtifacts request
+	ArtifactsListArtifacts(ctx context.Context, params *ArtifactsListArtifactsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ArtifactsDeleteArtifact request
+	ArtifactsDeleteArtifact(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsDeleteArtifactParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ArtifactsGetArtifact request
+	ArtifactsGetArtifact(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsGetArtifactParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ArtifactsUpdateArtifactWithBody request with any body
+	ArtifactsUpdateArtifactWithBody(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsUpdateArtifactParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ArtifactsUpdateArtifact(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsUpdateArtifactParams, body ArtifactsUpdateArtifactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ArtifactsGetDocument request
+	ArtifactsGetDocument(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsGetDocumentParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ArtifactsListRecords request
+	ArtifactsListRecords(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsListRecordsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ArtifactsDeleteRecord request
+	ArtifactsDeleteRecord(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsDeleteRecordParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ArtifactsUpdateRecordWithBody request with any body
+	ArtifactsUpdateRecordWithBody(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsUpdateRecordParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ArtifactsUpdateRecord(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsUpdateRecordParams, body ArtifactsUpdateRecordJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ArtifactsSetRecordWithBody request with any body
+	ArtifactsSetRecordWithBody(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsSetRecordParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ArtifactsSetRecord(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsSetRecordParams, body ArtifactsSetRecordJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ArtifactsListSnapshots request
+	ArtifactsListSnapshots(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsListSnapshotsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ArtifactsCreateSnapshot request
+	ArtifactsCreateSnapshot(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsCreateSnapshotParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ArtifactsDownloadSnapshot request
+	ArtifactsDownloadSnapshot(ctx context.Context, artifactId openapi_types.UUID, snapshotId openapi_types.UUID, params *ArtifactsDownloadSnapshotParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// AuthListApiKeys request
 	AuthListApiKeys(ctx context.Context, params *AuthListApiKeysParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -6762,11 +7360,17 @@ type ClientInterface interface {
 
 	DevicesUpdateDevice(ctx context.Context, deviceId openapi_types.UUID, params *DevicesUpdateDeviceParams, body DevicesUpdateDeviceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// SensorsListDeviceChildren request
+	SensorsListDeviceChildren(ctx context.Context, deviceId openapi_types.UUID, params *SensorsListDeviceChildrenParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DevicesCheckDeviceHealth request
 	DevicesCheckDeviceHealth(ctx context.Context, deviceId openapi_types.UUID, params *DevicesCheckDeviceHealthParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DevicesPushModelToDevice request
 	DevicesPushModelToDevice(ctx context.Context, deviceId openapi_types.UUID, modelId openapi_types.UUID, params *DevicesPushModelToDeviceParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SensorsListDeviceSensors request
+	SensorsListDeviceSensors(ctx context.Context, deviceId openapi_types.UUID, params *SensorsListDeviceSensorsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DevicesTriggerDeviceSync request
 	DevicesTriggerDeviceSync(ctx context.Context, deviceId openapi_types.UUID, params *DevicesTriggerDeviceSyncParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -7106,6 +7710,9 @@ type ClientInterface interface {
 	// SearchSearchEntities request
 	SearchSearchEntities(ctx context.Context, params *SearchSearchEntitiesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// SensorsListSensorReadings request
+	SensorsListSensorReadings(ctx context.Context, sensorId openapi_types.UUID, params *SensorsListSensorReadingsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// StarsListStars request
 	StarsListStars(ctx context.Context, params *StarsListStarsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -7250,10 +7857,58 @@ type ClientInterface interface {
 	// VideosReprocessCameraVideo request
 	VideosReprocessCameraVideo(ctx context.Context, videoId openapi_types.UUID, params *VideosReprocessCameraVideoParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// VoiceTtsWithBody request with any body
-	VoiceTtsWithBody(ctx context.Context, params *VoiceTtsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// WorkspacesListWorkspaces request
+	WorkspacesListWorkspaces(ctx context.Context, params *WorkspacesListWorkspacesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	VoiceTts(ctx context.Context, params *VoiceTtsParams, body VoiceTtsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// WorkspacesCreateWorkspaceWithBody request with any body
+	WorkspacesCreateWorkspaceWithBody(ctx context.Context, params *WorkspacesCreateWorkspaceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WorkspacesCreateWorkspace(ctx context.Context, params *WorkspacesCreateWorkspaceParams, body WorkspacesCreateWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WorkspacesImportWorkspaceWithBody request with any body
+	WorkspacesImportWorkspaceWithBody(ctx context.Context, params *WorkspacesImportWorkspaceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WorkspacesDeleteWorkspace request
+	WorkspacesDeleteWorkspace(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesDeleteWorkspaceParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WorkspacesGetWorkspace request
+	WorkspacesGetWorkspace(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesGetWorkspaceParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WorkspacesUpdateWorkspaceWithBody request with any body
+	WorkspacesUpdateWorkspaceWithBody(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesUpdateWorkspaceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WorkspacesUpdateWorkspace(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesUpdateWorkspaceParams, body WorkspacesUpdateWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WorkspacesCreateWorkspaceAssignmentWithBody request with any body
+	WorkspacesCreateWorkspaceAssignmentWithBody(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesCreateWorkspaceAssignmentParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WorkspacesCreateWorkspaceAssignment(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesCreateWorkspaceAssignmentParams, body WorkspacesCreateWorkspaceAssignmentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WorkspacesGetWorkspaceBlob request
+	WorkspacesGetWorkspaceBlob(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesGetWorkspaceBlobParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WorkspacesGetWorkspaceDiff request
+	WorkspacesGetWorkspaceDiff(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesGetWorkspaceDiffParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WorkspacesExportWorkspace request
+	WorkspacesExportWorkspace(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesExportWorkspaceParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WorkspacesListWorkspaceFiles request
+	WorkspacesListWorkspaceFiles(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesListWorkspaceFilesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WorkspacesDeleteWorkspaceFile request
+	WorkspacesDeleteWorkspaceFile(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesDeleteWorkspaceFileParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WorkspacesGetWorkspaceFile request
+	WorkspacesGetWorkspaceFile(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesGetWorkspaceFileParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WorkspacesPutWorkspaceFileWithBody request with any body
+	WorkspacesPutWorkspaceFileWithBody(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesPutWorkspaceFileParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	WorkspacesPutWorkspaceFile(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesPutWorkspaceFileParams, body WorkspacesPutWorkspaceFileJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// WorkspacesGetWorkspaceHistory request
+	WorkspacesGetWorkspaceHistory(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesGetWorkspaceHistoryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) ActivityListActivity(ctx context.Context, params *ActivityListActivityParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -7354,6 +8009,54 @@ func (c *Client) AgentsUpdateAgentConfigWithBody(ctx context.Context, configId o
 
 func (c *Client) AgentsUpdateAgentConfig(ctx context.Context, configId openapi_types.UUID, params *AgentsUpdateAgentConfigParams, body AgentsUpdateAgentConfigJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAgentsUpdateAgentConfigRequest(c.Server, configId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AgentMdPatchFrontmatterWithBody(ctx context.Context, configId openapi_types.UUID, params *AgentMdPatchFrontmatterParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAgentMdPatchFrontmatterRequestWithBody(c.Server, configId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AgentMdPatchFrontmatter(ctx context.Context, configId openapi_types.UUID, params *AgentMdPatchFrontmatterParams, body AgentMdPatchFrontmatterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAgentMdPatchFrontmatterRequest(c.Server, configId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AgentMdGetSchema(ctx context.Context, configId openapi_types.UUID, params *AgentMdGetSchemaParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAgentMdGetSchemaRequest(c.Server, configId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AgentMdValidate(ctx context.Context, configId openapi_types.UUID, params *AgentMdValidateParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAgentMdValidateRequest(c.Server, configId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -8146,6 +8849,42 @@ func (c *Client) AiProvidersDiscoverModelsWithBody(ctx context.Context, params *
 
 func (c *Client) AiProvidersDiscoverModels(ctx context.Context, params *AiProvidersDiscoverModelsParams, body AiProvidersDiscoverModelsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAiProvidersDiscoverModelsRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AiProvidersProvisionPlatformProvider(ctx context.Context, params *AiProvidersProvisionPlatformProviderParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAiProvidersProvisionPlatformProviderRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AiProvidersGetAiUsage(ctx context.Context, params *AiProvidersGetAiUsageParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAiProvidersGetAiUsageRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AiProvidersExportAiUsageCsv(ctx context.Context, params *AiProvidersExportAiUsageCsvParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAiProvidersExportAiUsageCsvRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -9178,6 +9917,186 @@ func (c *Client) AnnotationSystemUpdateShape(ctx context.Context, shapeId openap
 
 func (c *Client) AnnotationSystemGetShapeWithLabel(ctx context.Context, shapeId openapi_types.UUID, params *AnnotationSystemGetShapeWithLabelParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAnnotationSystemGetShapeWithLabelRequest(c.Server, shapeId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ArtifactsListArtifacts(ctx context.Context, params *ArtifactsListArtifactsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewArtifactsListArtifactsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ArtifactsDeleteArtifact(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsDeleteArtifactParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewArtifactsDeleteArtifactRequest(c.Server, artifactId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ArtifactsGetArtifact(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsGetArtifactParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewArtifactsGetArtifactRequest(c.Server, artifactId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ArtifactsUpdateArtifactWithBody(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsUpdateArtifactParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewArtifactsUpdateArtifactRequestWithBody(c.Server, artifactId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ArtifactsUpdateArtifact(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsUpdateArtifactParams, body ArtifactsUpdateArtifactJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewArtifactsUpdateArtifactRequest(c.Server, artifactId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ArtifactsGetDocument(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsGetDocumentParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewArtifactsGetDocumentRequest(c.Server, artifactId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ArtifactsListRecords(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsListRecordsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewArtifactsListRecordsRequest(c.Server, artifactId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ArtifactsDeleteRecord(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsDeleteRecordParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewArtifactsDeleteRecordRequest(c.Server, artifactId, collection, docId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ArtifactsUpdateRecordWithBody(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsUpdateRecordParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewArtifactsUpdateRecordRequestWithBody(c.Server, artifactId, collection, docId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ArtifactsUpdateRecord(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsUpdateRecordParams, body ArtifactsUpdateRecordJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewArtifactsUpdateRecordRequest(c.Server, artifactId, collection, docId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ArtifactsSetRecordWithBody(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsSetRecordParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewArtifactsSetRecordRequestWithBody(c.Server, artifactId, collection, docId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ArtifactsSetRecord(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsSetRecordParams, body ArtifactsSetRecordJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewArtifactsSetRecordRequest(c.Server, artifactId, collection, docId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ArtifactsListSnapshots(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsListSnapshotsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewArtifactsListSnapshotsRequest(c.Server, artifactId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ArtifactsCreateSnapshot(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsCreateSnapshotParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewArtifactsCreateSnapshotRequest(c.Server, artifactId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ArtifactsDownloadSnapshot(ctx context.Context, artifactId openapi_types.UUID, snapshotId openapi_types.UUID, params *ArtifactsDownloadSnapshotParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewArtifactsDownloadSnapshotRequest(c.Server, artifactId, snapshotId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -10400,6 +11319,18 @@ func (c *Client) DevicesUpdateDevice(ctx context.Context, deviceId openapi_types
 	return c.Client.Do(req)
 }
 
+func (c *Client) SensorsListDeviceChildren(ctx context.Context, deviceId openapi_types.UUID, params *SensorsListDeviceChildrenParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSensorsListDeviceChildrenRequest(c.Server, deviceId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) DevicesCheckDeviceHealth(ctx context.Context, deviceId openapi_types.UUID, params *DevicesCheckDeviceHealthParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDevicesCheckDeviceHealthRequest(c.Server, deviceId, params)
 	if err != nil {
@@ -10414,6 +11345,18 @@ func (c *Client) DevicesCheckDeviceHealth(ctx context.Context, deviceId openapi_
 
 func (c *Client) DevicesPushModelToDevice(ctx context.Context, deviceId openapi_types.UUID, modelId openapi_types.UUID, params *DevicesPushModelToDeviceParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDevicesPushModelToDeviceRequest(c.Server, deviceId, modelId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SensorsListDeviceSensors(ctx context.Context, deviceId openapi_types.UUID, params *SensorsListDeviceSensorsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSensorsListDeviceSensorsRequest(c.Server, deviceId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -11864,6 +12807,18 @@ func (c *Client) SearchSearchEntities(ctx context.Context, params *SearchSearchE
 	return c.Client.Do(req)
 }
 
+func (c *Client) SensorsListSensorReadings(ctx context.Context, sensorId openapi_types.UUID, params *SensorsListSensorReadingsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSensorsListSensorReadingsRequest(c.Server, sensorId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) StarsListStars(ctx context.Context, params *StarsListStarsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewStarsListStarsRequest(c.Server, params)
 	if err != nil {
@@ -12476,8 +13431,8 @@ func (c *Client) VideosReprocessCameraVideo(ctx context.Context, videoId openapi
 	return c.Client.Do(req)
 }
 
-func (c *Client) VoiceTtsWithBody(ctx context.Context, params *VoiceTtsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewVoiceTtsRequestWithBody(c.Server, params, contentType, body)
+func (c *Client) WorkspacesListWorkspaces(ctx context.Context, params *WorkspacesListWorkspacesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesListWorkspacesRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -12488,8 +13443,212 @@ func (c *Client) VoiceTtsWithBody(ctx context.Context, params *VoiceTtsParams, c
 	return c.Client.Do(req)
 }
 
-func (c *Client) VoiceTts(ctx context.Context, params *VoiceTtsParams, body VoiceTtsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewVoiceTtsRequest(c.Server, params, body)
+func (c *Client) WorkspacesCreateWorkspaceWithBody(ctx context.Context, params *WorkspacesCreateWorkspaceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesCreateWorkspaceRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) WorkspacesCreateWorkspace(ctx context.Context, params *WorkspacesCreateWorkspaceParams, body WorkspacesCreateWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesCreateWorkspaceRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) WorkspacesImportWorkspaceWithBody(ctx context.Context, params *WorkspacesImportWorkspaceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesImportWorkspaceRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) WorkspacesDeleteWorkspace(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesDeleteWorkspaceParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesDeleteWorkspaceRequest(c.Server, workspaceId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) WorkspacesGetWorkspace(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesGetWorkspaceParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesGetWorkspaceRequest(c.Server, workspaceId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) WorkspacesUpdateWorkspaceWithBody(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesUpdateWorkspaceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesUpdateWorkspaceRequestWithBody(c.Server, workspaceId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) WorkspacesUpdateWorkspace(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesUpdateWorkspaceParams, body WorkspacesUpdateWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesUpdateWorkspaceRequest(c.Server, workspaceId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) WorkspacesCreateWorkspaceAssignmentWithBody(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesCreateWorkspaceAssignmentParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesCreateWorkspaceAssignmentRequestWithBody(c.Server, workspaceId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) WorkspacesCreateWorkspaceAssignment(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesCreateWorkspaceAssignmentParams, body WorkspacesCreateWorkspaceAssignmentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesCreateWorkspaceAssignmentRequest(c.Server, workspaceId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) WorkspacesGetWorkspaceBlob(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesGetWorkspaceBlobParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesGetWorkspaceBlobRequest(c.Server, workspaceId, filePath, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) WorkspacesGetWorkspaceDiff(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesGetWorkspaceDiffParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesGetWorkspaceDiffRequest(c.Server, workspaceId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) WorkspacesExportWorkspace(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesExportWorkspaceParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesExportWorkspaceRequest(c.Server, workspaceId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) WorkspacesListWorkspaceFiles(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesListWorkspaceFilesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesListWorkspaceFilesRequest(c.Server, workspaceId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) WorkspacesDeleteWorkspaceFile(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesDeleteWorkspaceFileParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesDeleteWorkspaceFileRequest(c.Server, workspaceId, filePath, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) WorkspacesGetWorkspaceFile(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesGetWorkspaceFileParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesGetWorkspaceFileRequest(c.Server, workspaceId, filePath, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) WorkspacesPutWorkspaceFileWithBody(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesPutWorkspaceFileParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesPutWorkspaceFileRequestWithBody(c.Server, workspaceId, filePath, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) WorkspacesPutWorkspaceFile(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesPutWorkspaceFileParams, body WorkspacesPutWorkspaceFileJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesPutWorkspaceFileRequest(c.Server, workspaceId, filePath, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) WorkspacesGetWorkspaceHistory(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesGetWorkspaceHistoryParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewWorkspacesGetWorkspaceHistoryRequest(c.Server, workspaceId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -12949,6 +14108,172 @@ func NewAgentsUpdateAgentConfigRequestWithBody(server string, configId openapi_t
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewAgentMdPatchFrontmatterRequest calls the generic AgentMdPatchFrontmatter builder with application/json body
+func NewAgentMdPatchFrontmatterRequest(server string, configId openapi_types.UUID, params *AgentMdPatchFrontmatterParams, body AgentMdPatchFrontmatterJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAgentMdPatchFrontmatterRequestWithBody(server, configId, params, "application/json", bodyReader)
+}
+
+// NewAgentMdPatchFrontmatterRequestWithBody generates requests for AgentMdPatchFrontmatter with any type of body
+func NewAgentMdPatchFrontmatterRequestWithBody(server string, configId openapi_types.UUID, params *AgentMdPatchFrontmatterParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "config_id", configId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/agents/configs/%s/agent-md/frontmatter", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewAgentMdGetSchemaRequest generates requests for AgentMdGetSchema
+func NewAgentMdGetSchemaRequest(server string, configId openapi_types.UUID, params *AgentMdGetSchemaParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "config_id", configId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/agents/configs/%s/agent-md/schema", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewAgentMdValidateRequest generates requests for AgentMdValidate
+func NewAgentMdValidateRequest(server string, configId openapi_types.UUID, params *AgentMdValidateParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "config_id", configId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/agents/configs/%s/agent-md/validate", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	if params != nil {
 
@@ -16386,6 +17711,138 @@ func NewAiProvidersDiscoverModelsRequestWithBody(server string, params *AiProvid
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewAiProvidersProvisionPlatformProviderRequest generates requests for AiProvidersProvisionPlatformProvider
+func NewAiProvidersProvisionPlatformProviderRequest(server string, params *AiProvidersProvisionPlatformProviderParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/ai-providers/provision")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewAiProvidersGetAiUsageRequest generates requests for AiProvidersGetAiUsage
+func NewAiProvidersGetAiUsageRequest(server string, params *AiProvidersGetAiUsageParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/ai-providers/usage")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewAiProvidersExportAiUsageCsvRequest generates requests for AiProvidersExportAiUsageCsv
+func NewAiProvidersExportAiUsageCsvRequest(server string, params *AiProvidersExportAiUsageCsvParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/ai-providers/usage.csv")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	if params != nil {
 
@@ -21068,6 +22525,755 @@ func NewAnnotationSystemGetShapeWithLabelRequest(server string, shapeId openapi_
 	}
 
 	operationPath := fmt.Sprintf("/api/v1/annotation-system/shapes/%s/with-label", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewArtifactsListArtifactsRequest generates requests for ArtifactsListArtifacts
+func NewArtifactsListArtifactsRequest(server string, params *ArtifactsListArtifactsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/artifacts")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Scope != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "scope", *params.Scope, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewArtifactsDeleteArtifactRequest generates requests for ArtifactsDeleteArtifact
+func NewArtifactsDeleteArtifactRequest(server string, artifactId openapi_types.UUID, params *ArtifactsDeleteArtifactParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "artifact_id", artifactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/artifacts/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewArtifactsGetArtifactRequest generates requests for ArtifactsGetArtifact
+func NewArtifactsGetArtifactRequest(server string, artifactId openapi_types.UUID, params *ArtifactsGetArtifactParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "artifact_id", artifactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/artifacts/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewArtifactsUpdateArtifactRequest calls the generic ArtifactsUpdateArtifact builder with application/json body
+func NewArtifactsUpdateArtifactRequest(server string, artifactId openapi_types.UUID, params *ArtifactsUpdateArtifactParams, body ArtifactsUpdateArtifactJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewArtifactsUpdateArtifactRequestWithBody(server, artifactId, params, "application/json", bodyReader)
+}
+
+// NewArtifactsUpdateArtifactRequestWithBody generates requests for ArtifactsUpdateArtifact with any type of body
+func NewArtifactsUpdateArtifactRequestWithBody(server string, artifactId openapi_types.UUID, params *ArtifactsUpdateArtifactParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "artifact_id", artifactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/artifacts/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewArtifactsGetDocumentRequest generates requests for ArtifactsGetDocument
+func NewArtifactsGetDocumentRequest(server string, artifactId openapi_types.UUID, params *ArtifactsGetDocumentParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "artifact_id", artifactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/artifacts/%s/document", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewArtifactsListRecordsRequest generates requests for ArtifactsListRecords
+func NewArtifactsListRecordsRequest(server string, artifactId openapi_types.UUID, params *ArtifactsListRecordsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "artifact_id", artifactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/artifacts/%s/records", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "collection", params.Collection, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Where != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "where", *params.Where, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewArtifactsDeleteRecordRequest generates requests for ArtifactsDeleteRecord
+func NewArtifactsDeleteRecordRequest(server string, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsDeleteRecordParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "artifact_id", artifactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "collection", collection, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithOptions("simple", false, "doc_id", docId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/artifacts/%s/records/%s/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewArtifactsUpdateRecordRequest calls the generic ArtifactsUpdateRecord builder with application/json body
+func NewArtifactsUpdateRecordRequest(server string, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsUpdateRecordParams, body ArtifactsUpdateRecordJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewArtifactsUpdateRecordRequestWithBody(server, artifactId, collection, docId, params, "application/json", bodyReader)
+}
+
+// NewArtifactsUpdateRecordRequestWithBody generates requests for ArtifactsUpdateRecord with any type of body
+func NewArtifactsUpdateRecordRequestWithBody(server string, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsUpdateRecordParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "artifact_id", artifactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "collection", collection, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithOptions("simple", false, "doc_id", docId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/artifacts/%s/records/%s/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewArtifactsSetRecordRequest calls the generic ArtifactsSetRecord builder with application/json body
+func NewArtifactsSetRecordRequest(server string, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsSetRecordParams, body ArtifactsSetRecordJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewArtifactsSetRecordRequestWithBody(server, artifactId, collection, docId, params, "application/json", bodyReader)
+}
+
+// NewArtifactsSetRecordRequestWithBody generates requests for ArtifactsSetRecord with any type of body
+func NewArtifactsSetRecordRequestWithBody(server string, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsSetRecordParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "artifact_id", artifactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "collection", collection, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithOptions("simple", false, "doc_id", docId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/artifacts/%s/records/%s/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewArtifactsListSnapshotsRequest generates requests for ArtifactsListSnapshots
+func NewArtifactsListSnapshotsRequest(server string, artifactId openapi_types.UUID, params *ArtifactsListSnapshotsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "artifact_id", artifactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/artifacts/%s/snapshots", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewArtifactsCreateSnapshotRequest generates requests for ArtifactsCreateSnapshot
+func NewArtifactsCreateSnapshotRequest(server string, artifactId openapi_types.UUID, params *ArtifactsCreateSnapshotParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "artifact_id", artifactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/artifacts/%s/snapshots", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewArtifactsDownloadSnapshotRequest generates requests for ArtifactsDownloadSnapshot
+func NewArtifactsDownloadSnapshotRequest(server string, artifactId openapi_types.UUID, snapshotId openapi_types.UUID, params *ArtifactsDownloadSnapshotParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "artifact_id", artifactId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "snapshot_id", snapshotId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/artifacts/%s/snapshots/%s", pathParam0, pathParam1)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -25919,6 +28125,57 @@ func NewDevicesUpdateDeviceRequestWithBody(server string, deviceId openapi_types
 	return req, nil
 }
 
+// NewSensorsListDeviceChildrenRequest generates requests for SensorsListDeviceChildren
+func NewSensorsListDeviceChildrenRequest(server string, deviceId openapi_types.UUID, params *SensorsListDeviceChildrenParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "device_id", deviceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/devices/%s/children", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
 // NewDevicesCheckDeviceHealthRequest generates requests for DevicesCheckDeviceHealth
 func NewDevicesCheckDeviceHealthRequest(server string, deviceId openapi_types.UUID, params *DevicesCheckDeviceHealthParams) (*http.Request, error) {
 	var err error
@@ -26004,6 +28261,57 @@ func NewDevicesPushModelToDeviceRequest(server string, deviceId openapi_types.UU
 	}
 
 	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewSensorsListDeviceSensorsRequest generates requests for SensorsListDeviceSensors
+func NewSensorsListDeviceSensorsRequest(server string, deviceId openapi_types.UUID, params *SensorsListDeviceSensorsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "device_id", deviceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/devices/%s/sensors", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -31632,6 +33940,103 @@ func NewSearchSearchEntitiesRequest(server string, params *SearchSearchEntitiesP
 	return req, nil
 }
 
+// NewSensorsListSensorReadingsRequest generates requests for SensorsListSensorReadings
+func NewSensorsListSensorReadingsRequest(server string, sensorId openapi_types.UUID, params *SensorsListSensorReadingsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "sensor_id", sensorId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/sensors/%s/readings", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "start", params.Start, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date-time"}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "end", params.End, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "date-time"}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Bucket != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "bucket", *params.Bucket, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
 // NewStarsListStarsRequest generates requests for StarsListStars
 func NewStarsListStarsRequest(server string, params *StarsListStarsParams) (*http.Request, error) {
 	var err error
@@ -33979,19 +36384,8 @@ func NewVideosReprocessCameraVideoRequest(server string, videoId openapi_types.U
 	return req, nil
 }
 
-// NewVoiceTtsRequest calls the generic VoiceTts builder with application/json body
-func NewVoiceTtsRequest(server string, params *VoiceTtsParams, body VoiceTtsJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewVoiceTtsRequestWithBody(server, params, "application/json", bodyReader)
-}
-
-// NewVoiceTtsRequestWithBody generates requests for VoiceTts with any type of body
-func NewVoiceTtsRequestWithBody(server string, params *VoiceTtsParams, contentType string, body io.Reader) (*http.Request, error) {
+// NewWorkspacesListWorkspacesRequest generates requests for WorkspacesListWorkspaces
+func NewWorkspacesListWorkspacesRequest(server string, params *WorkspacesListWorkspacesParams) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -33999,7 +36393,62 @@ func NewVoiceTtsRequestWithBody(server string, params *VoiceTtsParams, contentTy
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/api/v1/voice/tts")
+	operationPath := fmt.Sprintf("/api/v1/workspaces")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewWorkspacesCreateWorkspaceRequest calls the generic WorkspacesCreateWorkspace builder with application/json body
+func NewWorkspacesCreateWorkspaceRequest(server string, params *WorkspacesCreateWorkspaceParams, body WorkspacesCreateWorkspaceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWorkspacesCreateWorkspaceRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewWorkspacesCreateWorkspaceRequestWithBody generates requests for WorkspacesCreateWorkspace with any type of body
+func NewWorkspacesCreateWorkspaceRequestWithBody(server string, params *WorkspacesCreateWorkspaceParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/workspaces")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -34015,6 +36464,761 @@ func NewVoiceTtsRequestWithBody(server string, params *VoiceTtsParams, contentTy
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewWorkspacesImportWorkspaceRequestWithBody generates requests for WorkspacesImportWorkspace with any type of body
+func NewWorkspacesImportWorkspaceRequestWithBody(server string, params *WorkspacesImportWorkspaceParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/workspaces/import")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewWorkspacesDeleteWorkspaceRequest generates requests for WorkspacesDeleteWorkspace
+func NewWorkspacesDeleteWorkspaceRequest(server string, workspaceId openapi_types.UUID, params *WorkspacesDeleteWorkspaceParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workspace_id", workspaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/workspaces/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewWorkspacesGetWorkspaceRequest generates requests for WorkspacesGetWorkspace
+func NewWorkspacesGetWorkspaceRequest(server string, workspaceId openapi_types.UUID, params *WorkspacesGetWorkspaceParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workspace_id", workspaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/workspaces/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewWorkspacesUpdateWorkspaceRequest calls the generic WorkspacesUpdateWorkspace builder with application/json body
+func NewWorkspacesUpdateWorkspaceRequest(server string, workspaceId openapi_types.UUID, params *WorkspacesUpdateWorkspaceParams, body WorkspacesUpdateWorkspaceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWorkspacesUpdateWorkspaceRequestWithBody(server, workspaceId, params, "application/json", bodyReader)
+}
+
+// NewWorkspacesUpdateWorkspaceRequestWithBody generates requests for WorkspacesUpdateWorkspace with any type of body
+func NewWorkspacesUpdateWorkspaceRequestWithBody(server string, workspaceId openapi_types.UUID, params *WorkspacesUpdateWorkspaceParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workspace_id", workspaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/workspaces/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewWorkspacesCreateWorkspaceAssignmentRequest calls the generic WorkspacesCreateWorkspaceAssignment builder with application/json body
+func NewWorkspacesCreateWorkspaceAssignmentRequest(server string, workspaceId openapi_types.UUID, params *WorkspacesCreateWorkspaceAssignmentParams, body WorkspacesCreateWorkspaceAssignmentJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWorkspacesCreateWorkspaceAssignmentRequestWithBody(server, workspaceId, params, "application/json", bodyReader)
+}
+
+// NewWorkspacesCreateWorkspaceAssignmentRequestWithBody generates requests for WorkspacesCreateWorkspaceAssignment with any type of body
+func NewWorkspacesCreateWorkspaceAssignmentRequestWithBody(server string, workspaceId openapi_types.UUID, params *WorkspacesCreateWorkspaceAssignmentParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workspace_id", workspaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/workspaces/%s/assignments", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewWorkspacesGetWorkspaceBlobRequest generates requests for WorkspacesGetWorkspaceBlob
+func NewWorkspacesGetWorkspaceBlobRequest(server string, workspaceId openapi_types.UUID, filePath string, params *WorkspacesGetWorkspaceBlobParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workspace_id", workspaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "file_path", filePath, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/workspaces/%s/blob/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewWorkspacesGetWorkspaceDiffRequest generates requests for WorkspacesGetWorkspaceDiff
+func NewWorkspacesGetWorkspaceDiffRequest(server string, workspaceId openapi_types.UUID, params *WorkspacesGetWorkspaceDiffParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workspace_id", workspaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/workspaces/%s/diff", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "from", params.From, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "to", params.To, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewWorkspacesExportWorkspaceRequest generates requests for WorkspacesExportWorkspace
+func NewWorkspacesExportWorkspaceRequest(server string, workspaceId openapi_types.UUID, params *WorkspacesExportWorkspaceParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workspace_id", workspaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/workspaces/%s/export", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewWorkspacesListWorkspaceFilesRequest generates requests for WorkspacesListWorkspaceFiles
+func NewWorkspacesListWorkspaceFilesRequest(server string, workspaceId openapi_types.UUID, params *WorkspacesListWorkspaceFilesParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workspace_id", workspaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/workspaces/%s/files", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewWorkspacesDeleteWorkspaceFileRequest generates requests for WorkspacesDeleteWorkspaceFile
+func NewWorkspacesDeleteWorkspaceFileRequest(server string, workspaceId openapi_types.UUID, filePath string, params *WorkspacesDeleteWorkspaceFileParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workspace_id", workspaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "file_path", filePath, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/workspaces/%s/files/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewWorkspacesGetWorkspaceFileRequest generates requests for WorkspacesGetWorkspaceFile
+func NewWorkspacesGetWorkspaceFileRequest(server string, workspaceId openapi_types.UUID, filePath string, params *WorkspacesGetWorkspaceFileParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workspace_id", workspaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "file_path", filePath, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/workspaces/%s/files/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewWorkspacesPutWorkspaceFileRequest calls the generic WorkspacesPutWorkspaceFile builder with application/json body
+func NewWorkspacesPutWorkspaceFileRequest(server string, workspaceId openapi_types.UUID, filePath string, params *WorkspacesPutWorkspaceFileParams, body WorkspacesPutWorkspaceFileJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewWorkspacesPutWorkspaceFileRequestWithBody(server, workspaceId, filePath, params, "application/json", bodyReader)
+}
+
+// NewWorkspacesPutWorkspaceFileRequestWithBody generates requests for WorkspacesPutWorkspaceFile with any type of body
+func NewWorkspacesPutWorkspaceFileRequestWithBody(server string, workspaceId openapi_types.UUID, filePath string, params *WorkspacesPutWorkspaceFileParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workspace_id", workspaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "file_path", filePath, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/workspaces/%s/files/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewWorkspacesGetWorkspaceHistoryRequest generates requests for WorkspacesGetWorkspaceHistory
+func NewWorkspacesGetWorkspaceHistoryRequest(server string, workspaceId openapi_types.UUID, params *WorkspacesGetWorkspaceHistoryParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "workspace_id", workspaceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/workspaces/%s/history", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	if params != nil {
 
@@ -34103,6 +37307,17 @@ type ClientWithResponsesInterface interface {
 	AgentsUpdateAgentConfigWithBodyWithResponse(ctx context.Context, configId openapi_types.UUID, params *AgentsUpdateAgentConfigParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AgentsUpdateAgentConfigResponse, error)
 
 	AgentsUpdateAgentConfigWithResponse(ctx context.Context, configId openapi_types.UUID, params *AgentsUpdateAgentConfigParams, body AgentsUpdateAgentConfigJSONRequestBody, reqEditors ...RequestEditorFn) (*AgentsUpdateAgentConfigResponse, error)
+
+	// AgentMdPatchFrontmatterWithBodyWithResponse request with any body
+	AgentMdPatchFrontmatterWithBodyWithResponse(ctx context.Context, configId openapi_types.UUID, params *AgentMdPatchFrontmatterParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AgentMdPatchFrontmatterResponse, error)
+
+	AgentMdPatchFrontmatterWithResponse(ctx context.Context, configId openapi_types.UUID, params *AgentMdPatchFrontmatterParams, body AgentMdPatchFrontmatterJSONRequestBody, reqEditors ...RequestEditorFn) (*AgentMdPatchFrontmatterResponse, error)
+
+	// AgentMdGetSchemaWithResponse request
+	AgentMdGetSchemaWithResponse(ctx context.Context, configId openapi_types.UUID, params *AgentMdGetSchemaParams, reqEditors ...RequestEditorFn) (*AgentMdGetSchemaResponse, error)
+
+	// AgentMdValidateWithResponse request
+	AgentMdValidateWithResponse(ctx context.Context, configId openapi_types.UUID, params *AgentMdValidateParams, reqEditors ...RequestEditorFn) (*AgentMdValidateResponse, error)
 
 	// AgentEvalsListEvalDatasetsWithResponse request
 	AgentEvalsListEvalDatasetsWithResponse(ctx context.Context, configId openapi_types.UUID, params *AgentEvalsListEvalDatasetsParams, reqEditors ...RequestEditorFn) (*AgentEvalsListEvalDatasetsResponse, error)
@@ -34289,6 +37504,15 @@ type ClientWithResponsesInterface interface {
 	AiProvidersDiscoverModelsWithBodyWithResponse(ctx context.Context, params *AiProvidersDiscoverModelsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AiProvidersDiscoverModelsResponse, error)
 
 	AiProvidersDiscoverModelsWithResponse(ctx context.Context, params *AiProvidersDiscoverModelsParams, body AiProvidersDiscoverModelsJSONRequestBody, reqEditors ...RequestEditorFn) (*AiProvidersDiscoverModelsResponse, error)
+
+	// AiProvidersProvisionPlatformProviderWithResponse request
+	AiProvidersProvisionPlatformProviderWithResponse(ctx context.Context, params *AiProvidersProvisionPlatformProviderParams, reqEditors ...RequestEditorFn) (*AiProvidersProvisionPlatformProviderResponse, error)
+
+	// AiProvidersGetAiUsageWithResponse request
+	AiProvidersGetAiUsageWithResponse(ctx context.Context, params *AiProvidersGetAiUsageParams, reqEditors ...RequestEditorFn) (*AiProvidersGetAiUsageResponse, error)
+
+	// AiProvidersExportAiUsageCsvWithResponse request
+	AiProvidersExportAiUsageCsvWithResponse(ctx context.Context, params *AiProvidersExportAiUsageCsvParams, reqEditors ...RequestEditorFn) (*AiProvidersExportAiUsageCsvResponse, error)
 
 	// AiProvidersDeleteAiProviderWithResponse request
 	AiProvidersDeleteAiProviderWithResponse(ctx context.Context, providerId openapi_types.UUID, params *AiProvidersDeleteAiProviderParams, reqEditors ...RequestEditorFn) (*AiProvidersDeleteAiProviderResponse, error)
@@ -34530,6 +37754,48 @@ type ClientWithResponsesInterface interface {
 
 	// AnnotationSystemGetShapeWithLabelWithResponse request
 	AnnotationSystemGetShapeWithLabelWithResponse(ctx context.Context, shapeId openapi_types.UUID, params *AnnotationSystemGetShapeWithLabelParams, reqEditors ...RequestEditorFn) (*AnnotationSystemGetShapeWithLabelResponse, error)
+
+	// ArtifactsListArtifactsWithResponse request
+	ArtifactsListArtifactsWithResponse(ctx context.Context, params *ArtifactsListArtifactsParams, reqEditors ...RequestEditorFn) (*ArtifactsListArtifactsResponse, error)
+
+	// ArtifactsDeleteArtifactWithResponse request
+	ArtifactsDeleteArtifactWithResponse(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsDeleteArtifactParams, reqEditors ...RequestEditorFn) (*ArtifactsDeleteArtifactResponse, error)
+
+	// ArtifactsGetArtifactWithResponse request
+	ArtifactsGetArtifactWithResponse(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsGetArtifactParams, reqEditors ...RequestEditorFn) (*ArtifactsGetArtifactResponse, error)
+
+	// ArtifactsUpdateArtifactWithBodyWithResponse request with any body
+	ArtifactsUpdateArtifactWithBodyWithResponse(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsUpdateArtifactParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ArtifactsUpdateArtifactResponse, error)
+
+	ArtifactsUpdateArtifactWithResponse(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsUpdateArtifactParams, body ArtifactsUpdateArtifactJSONRequestBody, reqEditors ...RequestEditorFn) (*ArtifactsUpdateArtifactResponse, error)
+
+	// ArtifactsGetDocumentWithResponse request
+	ArtifactsGetDocumentWithResponse(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsGetDocumentParams, reqEditors ...RequestEditorFn) (*ArtifactsGetDocumentResponse, error)
+
+	// ArtifactsListRecordsWithResponse request
+	ArtifactsListRecordsWithResponse(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsListRecordsParams, reqEditors ...RequestEditorFn) (*ArtifactsListRecordsResponse, error)
+
+	// ArtifactsDeleteRecordWithResponse request
+	ArtifactsDeleteRecordWithResponse(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsDeleteRecordParams, reqEditors ...RequestEditorFn) (*ArtifactsDeleteRecordResponse, error)
+
+	// ArtifactsUpdateRecordWithBodyWithResponse request with any body
+	ArtifactsUpdateRecordWithBodyWithResponse(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsUpdateRecordParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ArtifactsUpdateRecordResponse, error)
+
+	ArtifactsUpdateRecordWithResponse(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsUpdateRecordParams, body ArtifactsUpdateRecordJSONRequestBody, reqEditors ...RequestEditorFn) (*ArtifactsUpdateRecordResponse, error)
+
+	// ArtifactsSetRecordWithBodyWithResponse request with any body
+	ArtifactsSetRecordWithBodyWithResponse(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsSetRecordParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ArtifactsSetRecordResponse, error)
+
+	ArtifactsSetRecordWithResponse(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsSetRecordParams, body ArtifactsSetRecordJSONRequestBody, reqEditors ...RequestEditorFn) (*ArtifactsSetRecordResponse, error)
+
+	// ArtifactsListSnapshotsWithResponse request
+	ArtifactsListSnapshotsWithResponse(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsListSnapshotsParams, reqEditors ...RequestEditorFn) (*ArtifactsListSnapshotsResponse, error)
+
+	// ArtifactsCreateSnapshotWithResponse request
+	ArtifactsCreateSnapshotWithResponse(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsCreateSnapshotParams, reqEditors ...RequestEditorFn) (*ArtifactsCreateSnapshotResponse, error)
+
+	// ArtifactsDownloadSnapshotWithResponse request
+	ArtifactsDownloadSnapshotWithResponse(ctx context.Context, artifactId openapi_types.UUID, snapshotId openapi_types.UUID, params *ArtifactsDownloadSnapshotParams, reqEditors ...RequestEditorFn) (*ArtifactsDownloadSnapshotResponse, error)
 
 	// AuthListApiKeysWithResponse request
 	AuthListApiKeysWithResponse(ctx context.Context, params *AuthListApiKeysParams, reqEditors ...RequestEditorFn) (*AuthListApiKeysResponse, error)
@@ -34812,11 +38078,17 @@ type ClientWithResponsesInterface interface {
 
 	DevicesUpdateDeviceWithResponse(ctx context.Context, deviceId openapi_types.UUID, params *DevicesUpdateDeviceParams, body DevicesUpdateDeviceJSONRequestBody, reqEditors ...RequestEditorFn) (*DevicesUpdateDeviceResponse, error)
 
+	// SensorsListDeviceChildrenWithResponse request
+	SensorsListDeviceChildrenWithResponse(ctx context.Context, deviceId openapi_types.UUID, params *SensorsListDeviceChildrenParams, reqEditors ...RequestEditorFn) (*SensorsListDeviceChildrenResponse, error)
+
 	// DevicesCheckDeviceHealthWithResponse request
 	DevicesCheckDeviceHealthWithResponse(ctx context.Context, deviceId openapi_types.UUID, params *DevicesCheckDeviceHealthParams, reqEditors ...RequestEditorFn) (*DevicesCheckDeviceHealthResponse, error)
 
 	// DevicesPushModelToDeviceWithResponse request
 	DevicesPushModelToDeviceWithResponse(ctx context.Context, deviceId openapi_types.UUID, modelId openapi_types.UUID, params *DevicesPushModelToDeviceParams, reqEditors ...RequestEditorFn) (*DevicesPushModelToDeviceResponse, error)
+
+	// SensorsListDeviceSensorsWithResponse request
+	SensorsListDeviceSensorsWithResponse(ctx context.Context, deviceId openapi_types.UUID, params *SensorsListDeviceSensorsParams, reqEditors ...RequestEditorFn) (*SensorsListDeviceSensorsResponse, error)
 
 	// DevicesTriggerDeviceSyncWithResponse request
 	DevicesTriggerDeviceSyncWithResponse(ctx context.Context, deviceId openapi_types.UUID, params *DevicesTriggerDeviceSyncParams, reqEditors ...RequestEditorFn) (*DevicesTriggerDeviceSyncResponse, error)
@@ -35156,6 +38428,9 @@ type ClientWithResponsesInterface interface {
 	// SearchSearchEntitiesWithResponse request
 	SearchSearchEntitiesWithResponse(ctx context.Context, params *SearchSearchEntitiesParams, reqEditors ...RequestEditorFn) (*SearchSearchEntitiesResponse, error)
 
+	// SensorsListSensorReadingsWithResponse request
+	SensorsListSensorReadingsWithResponse(ctx context.Context, sensorId openapi_types.UUID, params *SensorsListSensorReadingsParams, reqEditors ...RequestEditorFn) (*SensorsListSensorReadingsResponse, error)
+
 	// StarsListStarsWithResponse request
 	StarsListStarsWithResponse(ctx context.Context, params *StarsListStarsParams, reqEditors ...RequestEditorFn) (*StarsListStarsResponse, error)
 
@@ -35300,10 +38575,58 @@ type ClientWithResponsesInterface interface {
 	// VideosReprocessCameraVideoWithResponse request
 	VideosReprocessCameraVideoWithResponse(ctx context.Context, videoId openapi_types.UUID, params *VideosReprocessCameraVideoParams, reqEditors ...RequestEditorFn) (*VideosReprocessCameraVideoResponse, error)
 
-	// VoiceTtsWithBodyWithResponse request with any body
-	VoiceTtsWithBodyWithResponse(ctx context.Context, params *VoiceTtsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*VoiceTtsResponse, error)
+	// WorkspacesListWorkspacesWithResponse request
+	WorkspacesListWorkspacesWithResponse(ctx context.Context, params *WorkspacesListWorkspacesParams, reqEditors ...RequestEditorFn) (*WorkspacesListWorkspacesResponse, error)
 
-	VoiceTtsWithResponse(ctx context.Context, params *VoiceTtsParams, body VoiceTtsJSONRequestBody, reqEditors ...RequestEditorFn) (*VoiceTtsResponse, error)
+	// WorkspacesCreateWorkspaceWithBodyWithResponse request with any body
+	WorkspacesCreateWorkspaceWithBodyWithResponse(ctx context.Context, params *WorkspacesCreateWorkspaceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*WorkspacesCreateWorkspaceResponse, error)
+
+	WorkspacesCreateWorkspaceWithResponse(ctx context.Context, params *WorkspacesCreateWorkspaceParams, body WorkspacesCreateWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*WorkspacesCreateWorkspaceResponse, error)
+
+	// WorkspacesImportWorkspaceWithBodyWithResponse request with any body
+	WorkspacesImportWorkspaceWithBodyWithResponse(ctx context.Context, params *WorkspacesImportWorkspaceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*WorkspacesImportWorkspaceResponse, error)
+
+	// WorkspacesDeleteWorkspaceWithResponse request
+	WorkspacesDeleteWorkspaceWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesDeleteWorkspaceParams, reqEditors ...RequestEditorFn) (*WorkspacesDeleteWorkspaceResponse, error)
+
+	// WorkspacesGetWorkspaceWithResponse request
+	WorkspacesGetWorkspaceWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesGetWorkspaceParams, reqEditors ...RequestEditorFn) (*WorkspacesGetWorkspaceResponse, error)
+
+	// WorkspacesUpdateWorkspaceWithBodyWithResponse request with any body
+	WorkspacesUpdateWorkspaceWithBodyWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesUpdateWorkspaceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*WorkspacesUpdateWorkspaceResponse, error)
+
+	WorkspacesUpdateWorkspaceWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesUpdateWorkspaceParams, body WorkspacesUpdateWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*WorkspacesUpdateWorkspaceResponse, error)
+
+	// WorkspacesCreateWorkspaceAssignmentWithBodyWithResponse request with any body
+	WorkspacesCreateWorkspaceAssignmentWithBodyWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesCreateWorkspaceAssignmentParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*WorkspacesCreateWorkspaceAssignmentResponse, error)
+
+	WorkspacesCreateWorkspaceAssignmentWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesCreateWorkspaceAssignmentParams, body WorkspacesCreateWorkspaceAssignmentJSONRequestBody, reqEditors ...RequestEditorFn) (*WorkspacesCreateWorkspaceAssignmentResponse, error)
+
+	// WorkspacesGetWorkspaceBlobWithResponse request
+	WorkspacesGetWorkspaceBlobWithResponse(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesGetWorkspaceBlobParams, reqEditors ...RequestEditorFn) (*WorkspacesGetWorkspaceBlobResponse, error)
+
+	// WorkspacesGetWorkspaceDiffWithResponse request
+	WorkspacesGetWorkspaceDiffWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesGetWorkspaceDiffParams, reqEditors ...RequestEditorFn) (*WorkspacesGetWorkspaceDiffResponse, error)
+
+	// WorkspacesExportWorkspaceWithResponse request
+	WorkspacesExportWorkspaceWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesExportWorkspaceParams, reqEditors ...RequestEditorFn) (*WorkspacesExportWorkspaceResponse, error)
+
+	// WorkspacesListWorkspaceFilesWithResponse request
+	WorkspacesListWorkspaceFilesWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesListWorkspaceFilesParams, reqEditors ...RequestEditorFn) (*WorkspacesListWorkspaceFilesResponse, error)
+
+	// WorkspacesDeleteWorkspaceFileWithResponse request
+	WorkspacesDeleteWorkspaceFileWithResponse(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesDeleteWorkspaceFileParams, reqEditors ...RequestEditorFn) (*WorkspacesDeleteWorkspaceFileResponse, error)
+
+	// WorkspacesGetWorkspaceFileWithResponse request
+	WorkspacesGetWorkspaceFileWithResponse(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesGetWorkspaceFileParams, reqEditors ...RequestEditorFn) (*WorkspacesGetWorkspaceFileResponse, error)
+
+	// WorkspacesPutWorkspaceFileWithBodyWithResponse request with any body
+	WorkspacesPutWorkspaceFileWithBodyWithResponse(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesPutWorkspaceFileParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*WorkspacesPutWorkspaceFileResponse, error)
+
+	WorkspacesPutWorkspaceFileWithResponse(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesPutWorkspaceFileParams, body WorkspacesPutWorkspaceFileJSONRequestBody, reqEditors ...RequestEditorFn) (*WorkspacesPutWorkspaceFileResponse, error)
+
+	// WorkspacesGetWorkspaceHistoryWithResponse request
+	WorkspacesGetWorkspaceHistoryWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesGetWorkspaceHistoryParams, reqEditors ...RequestEditorFn) (*WorkspacesGetWorkspaceHistoryResponse, error)
 }
 
 type ActivityListActivityResponse struct {
@@ -35465,6 +38788,75 @@ func (r AgentsUpdateAgentConfigResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r AgentsUpdateAgentConfigResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AgentMdPatchFrontmatterResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *map[string]interface{}
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AgentMdPatchFrontmatterResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AgentMdPatchFrontmatterResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AgentMdGetSchemaResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *map[string]interface{}
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AgentMdGetSchemaResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AgentMdGetSchemaResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AgentMdValidateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *map[string]interface{}
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AgentMdValidateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AgentMdValidateResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -36707,6 +40099,75 @@ func (r AiProvidersDiscoverModelsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r AiProvidersDiscoverModelsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AiProvidersProvisionPlatformProviderResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *TenantAIProviderPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AiProvidersProvisionPlatformProviderResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AiProvidersProvisionPlatformProviderResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AiProvidersGetAiUsageResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *TenantAIUsage
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AiProvidersGetAiUsageResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AiProvidersGetAiUsageResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AiProvidersExportAiUsageCsvResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *interface{}
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AiProvidersExportAiUsageCsvResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AiProvidersExportAiUsageCsvResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -38294,6 +41755,279 @@ func (r AnnotationSystemGetShapeWithLabelResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r AnnotationSystemGetShapeWithLabelResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ArtifactsListArtifactsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]ArtifactPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r ArtifactsListArtifactsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ArtifactsListArtifactsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ArtifactsDeleteArtifactResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r ArtifactsDeleteArtifactResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ArtifactsDeleteArtifactResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ArtifactsGetArtifactResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ArtifactPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r ArtifactsGetArtifactResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ArtifactsGetArtifactResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ArtifactsUpdateArtifactResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ArtifactPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r ArtifactsUpdateArtifactResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ArtifactsUpdateArtifactResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ArtifactsGetDocumentResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ArtifactDocumentOut
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r ArtifactsGetDocumentResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ArtifactsGetDocumentResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ArtifactsListRecordsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]RecordOut
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r ArtifactsListRecordsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ArtifactsListRecordsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ArtifactsDeleteRecordResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r ArtifactsDeleteRecordResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ArtifactsDeleteRecordResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ArtifactsUpdateRecordResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RecordOut
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r ArtifactsUpdateRecordResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ArtifactsUpdateRecordResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ArtifactsSetRecordResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RecordOut
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r ArtifactsSetRecordResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ArtifactsSetRecordResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ArtifactsListSnapshotsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]ArtifactSnapshotPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r ArtifactsListSnapshotsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ArtifactsListSnapshotsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ArtifactsCreateSnapshotResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ArtifactSnapshotPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r ArtifactsCreateSnapshotResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ArtifactsCreateSnapshotResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ArtifactsDownloadSnapshotResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r ArtifactsDownloadSnapshotResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ArtifactsDownloadSnapshotResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -40114,6 +43848,29 @@ func (r DevicesUpdateDeviceResponse) StatusCode() int {
 	return 0
 }
 
+type SensorsListDeviceChildrenResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *DevicesPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r SensorsListDeviceChildrenResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SensorsListDeviceChildrenResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type DevicesCheckDeviceHealthResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -40154,6 +43911,29 @@ func (r DevicesPushModelToDeviceResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r DevicesPushModelToDeviceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SensorsListDeviceSensorsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SensorsPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r SensorsListDeviceSensorsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SensorsListDeviceSensorsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -42411,6 +46191,29 @@ func (r SearchSearchEntitiesResponse) StatusCode() int {
 	return 0
 }
 
+type SensorsListSensorReadingsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SensorReadingsPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r SensorsListSensorReadingsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SensorsListSensorReadingsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type StarsListStarsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -43373,15 +47176,15 @@ func (r VideosReprocessCameraVideoResponse) StatusCode() int {
 	return 0
 }
 
-type VoiceTtsResponse struct {
+type WorkspacesListWorkspacesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *interface{}
+	JSON200      *[]WorkspacePublic
 	JSON422      *HTTPValidationError
 }
 
 // Status returns HTTPResponse.Status
-func (r VoiceTtsResponse) Status() string {
+func (r WorkspacesListWorkspacesResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -43389,7 +47192,327 @@ func (r VoiceTtsResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r VoiceTtsResponse) StatusCode() int {
+func (r WorkspacesListWorkspacesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type WorkspacesCreateWorkspaceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *WorkspacePublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r WorkspacesCreateWorkspaceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r WorkspacesCreateWorkspaceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type WorkspacesImportWorkspaceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *WorkspacePublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r WorkspacesImportWorkspaceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r WorkspacesImportWorkspaceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type WorkspacesDeleteWorkspaceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r WorkspacesDeleteWorkspaceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r WorkspacesDeleteWorkspaceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type WorkspacesGetWorkspaceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *WorkspacePublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r WorkspacesGetWorkspaceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r WorkspacesGetWorkspaceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type WorkspacesUpdateWorkspaceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *WorkspacePublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r WorkspacesUpdateWorkspaceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r WorkspacesUpdateWorkspaceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type WorkspacesCreateWorkspaceAssignmentResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *WorkspaceAssignmentPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r WorkspacesCreateWorkspaceAssignmentResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r WorkspacesCreateWorkspaceAssignmentResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type WorkspacesGetWorkspaceBlobResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *interface{}
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r WorkspacesGetWorkspaceBlobResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r WorkspacesGetWorkspaceBlobResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type WorkspacesGetWorkspaceDiffResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *map[string]string
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r WorkspacesGetWorkspaceDiffResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r WorkspacesGetWorkspaceDiffResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type WorkspacesExportWorkspaceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *interface{}
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r WorkspacesExportWorkspaceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r WorkspacesExportWorkspaceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type WorkspacesListWorkspaceFilesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]map[string]interface{}
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r WorkspacesListWorkspaceFilesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r WorkspacesListWorkspaceFilesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type WorkspacesDeleteWorkspaceFileResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r WorkspacesDeleteWorkspaceFileResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r WorkspacesDeleteWorkspaceFileResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type WorkspacesGetWorkspaceFileResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *map[string]string
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r WorkspacesGetWorkspaceFileResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r WorkspacesGetWorkspaceFileResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type WorkspacesPutWorkspaceFileResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *map[string]interface{}
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r WorkspacesPutWorkspaceFileResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r WorkspacesPutWorkspaceFileResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type WorkspacesGetWorkspaceHistoryResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]map[string]string
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r WorkspacesGetWorkspaceHistoryResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r WorkspacesGetWorkspaceHistoryResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -43473,6 +47596,41 @@ func (c *ClientWithResponses) AgentsUpdateAgentConfigWithResponse(ctx context.Co
 		return nil, err
 	}
 	return ParseAgentsUpdateAgentConfigResponse(rsp)
+}
+
+// AgentMdPatchFrontmatterWithBodyWithResponse request with arbitrary body returning *AgentMdPatchFrontmatterResponse
+func (c *ClientWithResponses) AgentMdPatchFrontmatterWithBodyWithResponse(ctx context.Context, configId openapi_types.UUID, params *AgentMdPatchFrontmatterParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AgentMdPatchFrontmatterResponse, error) {
+	rsp, err := c.AgentMdPatchFrontmatterWithBody(ctx, configId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAgentMdPatchFrontmatterResponse(rsp)
+}
+
+func (c *ClientWithResponses) AgentMdPatchFrontmatterWithResponse(ctx context.Context, configId openapi_types.UUID, params *AgentMdPatchFrontmatterParams, body AgentMdPatchFrontmatterJSONRequestBody, reqEditors ...RequestEditorFn) (*AgentMdPatchFrontmatterResponse, error) {
+	rsp, err := c.AgentMdPatchFrontmatter(ctx, configId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAgentMdPatchFrontmatterResponse(rsp)
+}
+
+// AgentMdGetSchemaWithResponse request returning *AgentMdGetSchemaResponse
+func (c *ClientWithResponses) AgentMdGetSchemaWithResponse(ctx context.Context, configId openapi_types.UUID, params *AgentMdGetSchemaParams, reqEditors ...RequestEditorFn) (*AgentMdGetSchemaResponse, error) {
+	rsp, err := c.AgentMdGetSchema(ctx, configId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAgentMdGetSchemaResponse(rsp)
+}
+
+// AgentMdValidateWithResponse request returning *AgentMdValidateResponse
+func (c *ClientWithResponses) AgentMdValidateWithResponse(ctx context.Context, configId openapi_types.UUID, params *AgentMdValidateParams, reqEditors ...RequestEditorFn) (*AgentMdValidateResponse, error) {
+	rsp, err := c.AgentMdValidate(ctx, configId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAgentMdValidateResponse(rsp)
 }
 
 // AgentEvalsListEvalDatasetsWithResponse request returning *AgentEvalsListEvalDatasetsResponse
@@ -44055,6 +48213,33 @@ func (c *ClientWithResponses) AiProvidersDiscoverModelsWithResponse(ctx context.
 		return nil, err
 	}
 	return ParseAiProvidersDiscoverModelsResponse(rsp)
+}
+
+// AiProvidersProvisionPlatformProviderWithResponse request returning *AiProvidersProvisionPlatformProviderResponse
+func (c *ClientWithResponses) AiProvidersProvisionPlatformProviderWithResponse(ctx context.Context, params *AiProvidersProvisionPlatformProviderParams, reqEditors ...RequestEditorFn) (*AiProvidersProvisionPlatformProviderResponse, error) {
+	rsp, err := c.AiProvidersProvisionPlatformProvider(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAiProvidersProvisionPlatformProviderResponse(rsp)
+}
+
+// AiProvidersGetAiUsageWithResponse request returning *AiProvidersGetAiUsageResponse
+func (c *ClientWithResponses) AiProvidersGetAiUsageWithResponse(ctx context.Context, params *AiProvidersGetAiUsageParams, reqEditors ...RequestEditorFn) (*AiProvidersGetAiUsageResponse, error) {
+	rsp, err := c.AiProvidersGetAiUsage(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAiProvidersGetAiUsageResponse(rsp)
+}
+
+// AiProvidersExportAiUsageCsvWithResponse request returning *AiProvidersExportAiUsageCsvResponse
+func (c *ClientWithResponses) AiProvidersExportAiUsageCsvWithResponse(ctx context.Context, params *AiProvidersExportAiUsageCsvParams, reqEditors ...RequestEditorFn) (*AiProvidersExportAiUsageCsvResponse, error) {
+	rsp, err := c.AiProvidersExportAiUsageCsv(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAiProvidersExportAiUsageCsvResponse(rsp)
 }
 
 // AiProvidersDeleteAiProviderWithResponse request returning *AiProvidersDeleteAiProviderResponse
@@ -44812,6 +48997,138 @@ func (c *ClientWithResponses) AnnotationSystemGetShapeWithLabelWithResponse(ctx 
 		return nil, err
 	}
 	return ParseAnnotationSystemGetShapeWithLabelResponse(rsp)
+}
+
+// ArtifactsListArtifactsWithResponse request returning *ArtifactsListArtifactsResponse
+func (c *ClientWithResponses) ArtifactsListArtifactsWithResponse(ctx context.Context, params *ArtifactsListArtifactsParams, reqEditors ...RequestEditorFn) (*ArtifactsListArtifactsResponse, error) {
+	rsp, err := c.ArtifactsListArtifacts(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseArtifactsListArtifactsResponse(rsp)
+}
+
+// ArtifactsDeleteArtifactWithResponse request returning *ArtifactsDeleteArtifactResponse
+func (c *ClientWithResponses) ArtifactsDeleteArtifactWithResponse(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsDeleteArtifactParams, reqEditors ...RequestEditorFn) (*ArtifactsDeleteArtifactResponse, error) {
+	rsp, err := c.ArtifactsDeleteArtifact(ctx, artifactId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseArtifactsDeleteArtifactResponse(rsp)
+}
+
+// ArtifactsGetArtifactWithResponse request returning *ArtifactsGetArtifactResponse
+func (c *ClientWithResponses) ArtifactsGetArtifactWithResponse(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsGetArtifactParams, reqEditors ...RequestEditorFn) (*ArtifactsGetArtifactResponse, error) {
+	rsp, err := c.ArtifactsGetArtifact(ctx, artifactId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseArtifactsGetArtifactResponse(rsp)
+}
+
+// ArtifactsUpdateArtifactWithBodyWithResponse request with arbitrary body returning *ArtifactsUpdateArtifactResponse
+func (c *ClientWithResponses) ArtifactsUpdateArtifactWithBodyWithResponse(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsUpdateArtifactParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ArtifactsUpdateArtifactResponse, error) {
+	rsp, err := c.ArtifactsUpdateArtifactWithBody(ctx, artifactId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseArtifactsUpdateArtifactResponse(rsp)
+}
+
+func (c *ClientWithResponses) ArtifactsUpdateArtifactWithResponse(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsUpdateArtifactParams, body ArtifactsUpdateArtifactJSONRequestBody, reqEditors ...RequestEditorFn) (*ArtifactsUpdateArtifactResponse, error) {
+	rsp, err := c.ArtifactsUpdateArtifact(ctx, artifactId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseArtifactsUpdateArtifactResponse(rsp)
+}
+
+// ArtifactsGetDocumentWithResponse request returning *ArtifactsGetDocumentResponse
+func (c *ClientWithResponses) ArtifactsGetDocumentWithResponse(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsGetDocumentParams, reqEditors ...RequestEditorFn) (*ArtifactsGetDocumentResponse, error) {
+	rsp, err := c.ArtifactsGetDocument(ctx, artifactId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseArtifactsGetDocumentResponse(rsp)
+}
+
+// ArtifactsListRecordsWithResponse request returning *ArtifactsListRecordsResponse
+func (c *ClientWithResponses) ArtifactsListRecordsWithResponse(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsListRecordsParams, reqEditors ...RequestEditorFn) (*ArtifactsListRecordsResponse, error) {
+	rsp, err := c.ArtifactsListRecords(ctx, artifactId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseArtifactsListRecordsResponse(rsp)
+}
+
+// ArtifactsDeleteRecordWithResponse request returning *ArtifactsDeleteRecordResponse
+func (c *ClientWithResponses) ArtifactsDeleteRecordWithResponse(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsDeleteRecordParams, reqEditors ...RequestEditorFn) (*ArtifactsDeleteRecordResponse, error) {
+	rsp, err := c.ArtifactsDeleteRecord(ctx, artifactId, collection, docId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseArtifactsDeleteRecordResponse(rsp)
+}
+
+// ArtifactsUpdateRecordWithBodyWithResponse request with arbitrary body returning *ArtifactsUpdateRecordResponse
+func (c *ClientWithResponses) ArtifactsUpdateRecordWithBodyWithResponse(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsUpdateRecordParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ArtifactsUpdateRecordResponse, error) {
+	rsp, err := c.ArtifactsUpdateRecordWithBody(ctx, artifactId, collection, docId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseArtifactsUpdateRecordResponse(rsp)
+}
+
+func (c *ClientWithResponses) ArtifactsUpdateRecordWithResponse(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsUpdateRecordParams, body ArtifactsUpdateRecordJSONRequestBody, reqEditors ...RequestEditorFn) (*ArtifactsUpdateRecordResponse, error) {
+	rsp, err := c.ArtifactsUpdateRecord(ctx, artifactId, collection, docId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseArtifactsUpdateRecordResponse(rsp)
+}
+
+// ArtifactsSetRecordWithBodyWithResponse request with arbitrary body returning *ArtifactsSetRecordResponse
+func (c *ClientWithResponses) ArtifactsSetRecordWithBodyWithResponse(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsSetRecordParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ArtifactsSetRecordResponse, error) {
+	rsp, err := c.ArtifactsSetRecordWithBody(ctx, artifactId, collection, docId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseArtifactsSetRecordResponse(rsp)
+}
+
+func (c *ClientWithResponses) ArtifactsSetRecordWithResponse(ctx context.Context, artifactId openapi_types.UUID, collection string, docId string, params *ArtifactsSetRecordParams, body ArtifactsSetRecordJSONRequestBody, reqEditors ...RequestEditorFn) (*ArtifactsSetRecordResponse, error) {
+	rsp, err := c.ArtifactsSetRecord(ctx, artifactId, collection, docId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseArtifactsSetRecordResponse(rsp)
+}
+
+// ArtifactsListSnapshotsWithResponse request returning *ArtifactsListSnapshotsResponse
+func (c *ClientWithResponses) ArtifactsListSnapshotsWithResponse(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsListSnapshotsParams, reqEditors ...RequestEditorFn) (*ArtifactsListSnapshotsResponse, error) {
+	rsp, err := c.ArtifactsListSnapshots(ctx, artifactId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseArtifactsListSnapshotsResponse(rsp)
+}
+
+// ArtifactsCreateSnapshotWithResponse request returning *ArtifactsCreateSnapshotResponse
+func (c *ClientWithResponses) ArtifactsCreateSnapshotWithResponse(ctx context.Context, artifactId openapi_types.UUID, params *ArtifactsCreateSnapshotParams, reqEditors ...RequestEditorFn) (*ArtifactsCreateSnapshotResponse, error) {
+	rsp, err := c.ArtifactsCreateSnapshot(ctx, artifactId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseArtifactsCreateSnapshotResponse(rsp)
+}
+
+// ArtifactsDownloadSnapshotWithResponse request returning *ArtifactsDownloadSnapshotResponse
+func (c *ClientWithResponses) ArtifactsDownloadSnapshotWithResponse(ctx context.Context, artifactId openapi_types.UUID, snapshotId openapi_types.UUID, params *ArtifactsDownloadSnapshotParams, reqEditors ...RequestEditorFn) (*ArtifactsDownloadSnapshotResponse, error) {
+	rsp, err := c.ArtifactsDownloadSnapshot(ctx, artifactId, snapshotId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseArtifactsDownloadSnapshotResponse(rsp)
 }
 
 // AuthListApiKeysWithResponse request returning *AuthListApiKeysResponse
@@ -45701,6 +50018,15 @@ func (c *ClientWithResponses) DevicesUpdateDeviceWithResponse(ctx context.Contex
 	return ParseDevicesUpdateDeviceResponse(rsp)
 }
 
+// SensorsListDeviceChildrenWithResponse request returning *SensorsListDeviceChildrenResponse
+func (c *ClientWithResponses) SensorsListDeviceChildrenWithResponse(ctx context.Context, deviceId openapi_types.UUID, params *SensorsListDeviceChildrenParams, reqEditors ...RequestEditorFn) (*SensorsListDeviceChildrenResponse, error) {
+	rsp, err := c.SensorsListDeviceChildren(ctx, deviceId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSensorsListDeviceChildrenResponse(rsp)
+}
+
 // DevicesCheckDeviceHealthWithResponse request returning *DevicesCheckDeviceHealthResponse
 func (c *ClientWithResponses) DevicesCheckDeviceHealthWithResponse(ctx context.Context, deviceId openapi_types.UUID, params *DevicesCheckDeviceHealthParams, reqEditors ...RequestEditorFn) (*DevicesCheckDeviceHealthResponse, error) {
 	rsp, err := c.DevicesCheckDeviceHealth(ctx, deviceId, params, reqEditors...)
@@ -45717,6 +50043,15 @@ func (c *ClientWithResponses) DevicesPushModelToDeviceWithResponse(ctx context.C
 		return nil, err
 	}
 	return ParseDevicesPushModelToDeviceResponse(rsp)
+}
+
+// SensorsListDeviceSensorsWithResponse request returning *SensorsListDeviceSensorsResponse
+func (c *ClientWithResponses) SensorsListDeviceSensorsWithResponse(ctx context.Context, deviceId openapi_types.UUID, params *SensorsListDeviceSensorsParams, reqEditors ...RequestEditorFn) (*SensorsListDeviceSensorsResponse, error) {
+	rsp, err := c.SensorsListDeviceSensors(ctx, deviceId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSensorsListDeviceSensorsResponse(rsp)
 }
 
 // DevicesTriggerDeviceSyncWithResponse request returning *DevicesTriggerDeviceSyncResponse
@@ -46777,6 +51112,15 @@ func (c *ClientWithResponses) SearchSearchEntitiesWithResponse(ctx context.Conte
 	return ParseSearchSearchEntitiesResponse(rsp)
 }
 
+// SensorsListSensorReadingsWithResponse request returning *SensorsListSensorReadingsResponse
+func (c *ClientWithResponses) SensorsListSensorReadingsWithResponse(ctx context.Context, sensorId openapi_types.UUID, params *SensorsListSensorReadingsParams, reqEditors ...RequestEditorFn) (*SensorsListSensorReadingsResponse, error) {
+	rsp, err := c.SensorsListSensorReadings(ctx, sensorId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSensorsListSensorReadingsResponse(rsp)
+}
+
 // StarsListStarsWithResponse request returning *StarsListStarsResponse
 func (c *ClientWithResponses) StarsListStarsWithResponse(ctx context.Context, params *StarsListStarsParams, reqEditors ...RequestEditorFn) (*StarsListStarsResponse, error) {
 	rsp, err := c.StarsListStars(ctx, params, reqEditors...)
@@ -47227,21 +51571,171 @@ func (c *ClientWithResponses) VideosReprocessCameraVideoWithResponse(ctx context
 	return ParseVideosReprocessCameraVideoResponse(rsp)
 }
 
-// VoiceTtsWithBodyWithResponse request with arbitrary body returning *VoiceTtsResponse
-func (c *ClientWithResponses) VoiceTtsWithBodyWithResponse(ctx context.Context, params *VoiceTtsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*VoiceTtsResponse, error) {
-	rsp, err := c.VoiceTtsWithBody(ctx, params, contentType, body, reqEditors...)
+// WorkspacesListWorkspacesWithResponse request returning *WorkspacesListWorkspacesResponse
+func (c *ClientWithResponses) WorkspacesListWorkspacesWithResponse(ctx context.Context, params *WorkspacesListWorkspacesParams, reqEditors ...RequestEditorFn) (*WorkspacesListWorkspacesResponse, error) {
+	rsp, err := c.WorkspacesListWorkspaces(ctx, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseVoiceTtsResponse(rsp)
+	return ParseWorkspacesListWorkspacesResponse(rsp)
 }
 
-func (c *ClientWithResponses) VoiceTtsWithResponse(ctx context.Context, params *VoiceTtsParams, body VoiceTtsJSONRequestBody, reqEditors ...RequestEditorFn) (*VoiceTtsResponse, error) {
-	rsp, err := c.VoiceTts(ctx, params, body, reqEditors...)
+// WorkspacesCreateWorkspaceWithBodyWithResponse request with arbitrary body returning *WorkspacesCreateWorkspaceResponse
+func (c *ClientWithResponses) WorkspacesCreateWorkspaceWithBodyWithResponse(ctx context.Context, params *WorkspacesCreateWorkspaceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*WorkspacesCreateWorkspaceResponse, error) {
+	rsp, err := c.WorkspacesCreateWorkspaceWithBody(ctx, params, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseVoiceTtsResponse(rsp)
+	return ParseWorkspacesCreateWorkspaceResponse(rsp)
+}
+
+func (c *ClientWithResponses) WorkspacesCreateWorkspaceWithResponse(ctx context.Context, params *WorkspacesCreateWorkspaceParams, body WorkspacesCreateWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*WorkspacesCreateWorkspaceResponse, error) {
+	rsp, err := c.WorkspacesCreateWorkspace(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseWorkspacesCreateWorkspaceResponse(rsp)
+}
+
+// WorkspacesImportWorkspaceWithBodyWithResponse request with arbitrary body returning *WorkspacesImportWorkspaceResponse
+func (c *ClientWithResponses) WorkspacesImportWorkspaceWithBodyWithResponse(ctx context.Context, params *WorkspacesImportWorkspaceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*WorkspacesImportWorkspaceResponse, error) {
+	rsp, err := c.WorkspacesImportWorkspaceWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseWorkspacesImportWorkspaceResponse(rsp)
+}
+
+// WorkspacesDeleteWorkspaceWithResponse request returning *WorkspacesDeleteWorkspaceResponse
+func (c *ClientWithResponses) WorkspacesDeleteWorkspaceWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesDeleteWorkspaceParams, reqEditors ...RequestEditorFn) (*WorkspacesDeleteWorkspaceResponse, error) {
+	rsp, err := c.WorkspacesDeleteWorkspace(ctx, workspaceId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseWorkspacesDeleteWorkspaceResponse(rsp)
+}
+
+// WorkspacesGetWorkspaceWithResponse request returning *WorkspacesGetWorkspaceResponse
+func (c *ClientWithResponses) WorkspacesGetWorkspaceWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesGetWorkspaceParams, reqEditors ...RequestEditorFn) (*WorkspacesGetWorkspaceResponse, error) {
+	rsp, err := c.WorkspacesGetWorkspace(ctx, workspaceId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseWorkspacesGetWorkspaceResponse(rsp)
+}
+
+// WorkspacesUpdateWorkspaceWithBodyWithResponse request with arbitrary body returning *WorkspacesUpdateWorkspaceResponse
+func (c *ClientWithResponses) WorkspacesUpdateWorkspaceWithBodyWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesUpdateWorkspaceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*WorkspacesUpdateWorkspaceResponse, error) {
+	rsp, err := c.WorkspacesUpdateWorkspaceWithBody(ctx, workspaceId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseWorkspacesUpdateWorkspaceResponse(rsp)
+}
+
+func (c *ClientWithResponses) WorkspacesUpdateWorkspaceWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesUpdateWorkspaceParams, body WorkspacesUpdateWorkspaceJSONRequestBody, reqEditors ...RequestEditorFn) (*WorkspacesUpdateWorkspaceResponse, error) {
+	rsp, err := c.WorkspacesUpdateWorkspace(ctx, workspaceId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseWorkspacesUpdateWorkspaceResponse(rsp)
+}
+
+// WorkspacesCreateWorkspaceAssignmentWithBodyWithResponse request with arbitrary body returning *WorkspacesCreateWorkspaceAssignmentResponse
+func (c *ClientWithResponses) WorkspacesCreateWorkspaceAssignmentWithBodyWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesCreateWorkspaceAssignmentParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*WorkspacesCreateWorkspaceAssignmentResponse, error) {
+	rsp, err := c.WorkspacesCreateWorkspaceAssignmentWithBody(ctx, workspaceId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseWorkspacesCreateWorkspaceAssignmentResponse(rsp)
+}
+
+func (c *ClientWithResponses) WorkspacesCreateWorkspaceAssignmentWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesCreateWorkspaceAssignmentParams, body WorkspacesCreateWorkspaceAssignmentJSONRequestBody, reqEditors ...RequestEditorFn) (*WorkspacesCreateWorkspaceAssignmentResponse, error) {
+	rsp, err := c.WorkspacesCreateWorkspaceAssignment(ctx, workspaceId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseWorkspacesCreateWorkspaceAssignmentResponse(rsp)
+}
+
+// WorkspacesGetWorkspaceBlobWithResponse request returning *WorkspacesGetWorkspaceBlobResponse
+func (c *ClientWithResponses) WorkspacesGetWorkspaceBlobWithResponse(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesGetWorkspaceBlobParams, reqEditors ...RequestEditorFn) (*WorkspacesGetWorkspaceBlobResponse, error) {
+	rsp, err := c.WorkspacesGetWorkspaceBlob(ctx, workspaceId, filePath, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseWorkspacesGetWorkspaceBlobResponse(rsp)
+}
+
+// WorkspacesGetWorkspaceDiffWithResponse request returning *WorkspacesGetWorkspaceDiffResponse
+func (c *ClientWithResponses) WorkspacesGetWorkspaceDiffWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesGetWorkspaceDiffParams, reqEditors ...RequestEditorFn) (*WorkspacesGetWorkspaceDiffResponse, error) {
+	rsp, err := c.WorkspacesGetWorkspaceDiff(ctx, workspaceId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseWorkspacesGetWorkspaceDiffResponse(rsp)
+}
+
+// WorkspacesExportWorkspaceWithResponse request returning *WorkspacesExportWorkspaceResponse
+func (c *ClientWithResponses) WorkspacesExportWorkspaceWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesExportWorkspaceParams, reqEditors ...RequestEditorFn) (*WorkspacesExportWorkspaceResponse, error) {
+	rsp, err := c.WorkspacesExportWorkspace(ctx, workspaceId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseWorkspacesExportWorkspaceResponse(rsp)
+}
+
+// WorkspacesListWorkspaceFilesWithResponse request returning *WorkspacesListWorkspaceFilesResponse
+func (c *ClientWithResponses) WorkspacesListWorkspaceFilesWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesListWorkspaceFilesParams, reqEditors ...RequestEditorFn) (*WorkspacesListWorkspaceFilesResponse, error) {
+	rsp, err := c.WorkspacesListWorkspaceFiles(ctx, workspaceId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseWorkspacesListWorkspaceFilesResponse(rsp)
+}
+
+// WorkspacesDeleteWorkspaceFileWithResponse request returning *WorkspacesDeleteWorkspaceFileResponse
+func (c *ClientWithResponses) WorkspacesDeleteWorkspaceFileWithResponse(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesDeleteWorkspaceFileParams, reqEditors ...RequestEditorFn) (*WorkspacesDeleteWorkspaceFileResponse, error) {
+	rsp, err := c.WorkspacesDeleteWorkspaceFile(ctx, workspaceId, filePath, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseWorkspacesDeleteWorkspaceFileResponse(rsp)
+}
+
+// WorkspacesGetWorkspaceFileWithResponse request returning *WorkspacesGetWorkspaceFileResponse
+func (c *ClientWithResponses) WorkspacesGetWorkspaceFileWithResponse(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesGetWorkspaceFileParams, reqEditors ...RequestEditorFn) (*WorkspacesGetWorkspaceFileResponse, error) {
+	rsp, err := c.WorkspacesGetWorkspaceFile(ctx, workspaceId, filePath, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseWorkspacesGetWorkspaceFileResponse(rsp)
+}
+
+// WorkspacesPutWorkspaceFileWithBodyWithResponse request with arbitrary body returning *WorkspacesPutWorkspaceFileResponse
+func (c *ClientWithResponses) WorkspacesPutWorkspaceFileWithBodyWithResponse(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesPutWorkspaceFileParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*WorkspacesPutWorkspaceFileResponse, error) {
+	rsp, err := c.WorkspacesPutWorkspaceFileWithBody(ctx, workspaceId, filePath, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseWorkspacesPutWorkspaceFileResponse(rsp)
+}
+
+func (c *ClientWithResponses) WorkspacesPutWorkspaceFileWithResponse(ctx context.Context, workspaceId openapi_types.UUID, filePath string, params *WorkspacesPutWorkspaceFileParams, body WorkspacesPutWorkspaceFileJSONRequestBody, reqEditors ...RequestEditorFn) (*WorkspacesPutWorkspaceFileResponse, error) {
+	rsp, err := c.WorkspacesPutWorkspaceFile(ctx, workspaceId, filePath, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseWorkspacesPutWorkspaceFileResponse(rsp)
+}
+
+// WorkspacesGetWorkspaceHistoryWithResponse request returning *WorkspacesGetWorkspaceHistoryResponse
+func (c *ClientWithResponses) WorkspacesGetWorkspaceHistoryWithResponse(ctx context.Context, workspaceId openapi_types.UUID, params *WorkspacesGetWorkspaceHistoryParams, reqEditors ...RequestEditorFn) (*WorkspacesGetWorkspaceHistoryResponse, error) {
+	rsp, err := c.WorkspacesGetWorkspaceHistory(ctx, workspaceId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseWorkspacesGetWorkspaceHistoryResponse(rsp)
 }
 
 // ParseActivityListActivityResponse parses an HTTP response from a ActivityListActivityWithResponse call
@@ -47462,6 +51956,105 @@ func ParseAgentsUpdateAgentConfigResponse(rsp *http.Response) (*AgentsUpdateAgen
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest AgentConfigPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAgentMdPatchFrontmatterResponse parses an HTTP response from a AgentMdPatchFrontmatterWithResponse call
+func ParseAgentMdPatchFrontmatterResponse(rsp *http.Response) (*AgentMdPatchFrontmatterResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AgentMdPatchFrontmatterResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest map[string]interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAgentMdGetSchemaResponse parses an HTTP response from a AgentMdGetSchemaWithResponse call
+func ParseAgentMdGetSchemaResponse(rsp *http.Response) (*AgentMdGetSchemaResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AgentMdGetSchemaResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest map[string]interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAgentMdValidateResponse parses an HTTP response from a AgentMdValidateWithResponse call
+func ParseAgentMdValidateResponse(rsp *http.Response) (*AgentMdValidateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AgentMdValidateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest map[string]interface{}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -49244,6 +53837,105 @@ func ParseAiProvidersDiscoverModelsResponse(rsp *http.Response) (*AiProvidersDis
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest DiscoverModelsResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAiProvidersProvisionPlatformProviderResponse parses an HTTP response from a AiProvidersProvisionPlatformProviderWithResponse call
+func ParseAiProvidersProvisionPlatformProviderResponse(rsp *http.Response) (*AiProvidersProvisionPlatformProviderResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AiProvidersProvisionPlatformProviderResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest TenantAIProviderPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAiProvidersGetAiUsageResponse parses an HTTP response from a AiProvidersGetAiUsageWithResponse call
+func ParseAiProvidersGetAiUsageResponse(rsp *http.Response) (*AiProvidersGetAiUsageResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AiProvidersGetAiUsageResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest TenantAIUsage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAiProvidersExportAiUsageCsvResponse parses an HTTP response from a AiProvidersExportAiUsageCsvWithResponse call
+func ParseAiProvidersExportAiUsageCsvResponse(rsp *http.Response) (*AiProvidersExportAiUsageCsvResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AiProvidersExportAiUsageCsvResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest interface{}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -51526,6 +56218,381 @@ func ParseAnnotationSystemGetShapeWithLabelResponse(rsp *http.Response) (*Annota
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseArtifactsListArtifactsResponse parses an HTTP response from a ArtifactsListArtifactsWithResponse call
+func ParseArtifactsListArtifactsResponse(rsp *http.Response) (*ArtifactsListArtifactsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ArtifactsListArtifactsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []ArtifactPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseArtifactsDeleteArtifactResponse parses an HTTP response from a ArtifactsDeleteArtifactWithResponse call
+func ParseArtifactsDeleteArtifactResponse(rsp *http.Response) (*ArtifactsDeleteArtifactResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ArtifactsDeleteArtifactResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseArtifactsGetArtifactResponse parses an HTTP response from a ArtifactsGetArtifactWithResponse call
+func ParseArtifactsGetArtifactResponse(rsp *http.Response) (*ArtifactsGetArtifactResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ArtifactsGetArtifactResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ArtifactPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseArtifactsUpdateArtifactResponse parses an HTTP response from a ArtifactsUpdateArtifactWithResponse call
+func ParseArtifactsUpdateArtifactResponse(rsp *http.Response) (*ArtifactsUpdateArtifactResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ArtifactsUpdateArtifactResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ArtifactPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseArtifactsGetDocumentResponse parses an HTTP response from a ArtifactsGetDocumentWithResponse call
+func ParseArtifactsGetDocumentResponse(rsp *http.Response) (*ArtifactsGetDocumentResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ArtifactsGetDocumentResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ArtifactDocumentOut
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseArtifactsListRecordsResponse parses an HTTP response from a ArtifactsListRecordsWithResponse call
+func ParseArtifactsListRecordsResponse(rsp *http.Response) (*ArtifactsListRecordsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ArtifactsListRecordsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []RecordOut
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseArtifactsDeleteRecordResponse parses an HTTP response from a ArtifactsDeleteRecordWithResponse call
+func ParseArtifactsDeleteRecordResponse(rsp *http.Response) (*ArtifactsDeleteRecordResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ArtifactsDeleteRecordResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseArtifactsUpdateRecordResponse parses an HTTP response from a ArtifactsUpdateRecordWithResponse call
+func ParseArtifactsUpdateRecordResponse(rsp *http.Response) (*ArtifactsUpdateRecordResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ArtifactsUpdateRecordResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RecordOut
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseArtifactsSetRecordResponse parses an HTTP response from a ArtifactsSetRecordWithResponse call
+func ParseArtifactsSetRecordResponse(rsp *http.Response) (*ArtifactsSetRecordResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ArtifactsSetRecordResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RecordOut
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseArtifactsListSnapshotsResponse parses an HTTP response from a ArtifactsListSnapshotsWithResponse call
+func ParseArtifactsListSnapshotsResponse(rsp *http.Response) (*ArtifactsListSnapshotsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ArtifactsListSnapshotsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []ArtifactSnapshotPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseArtifactsCreateSnapshotResponse parses an HTTP response from a ArtifactsCreateSnapshotWithResponse call
+func ParseArtifactsCreateSnapshotResponse(rsp *http.Response) (*ArtifactsCreateSnapshotResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ArtifactsCreateSnapshotResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ArtifactSnapshotPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseArtifactsDownloadSnapshotResponse parses an HTTP response from a ArtifactsDownloadSnapshotWithResponse call
+func ParseArtifactsDownloadSnapshotResponse(rsp *http.Response) (*ArtifactsDownloadSnapshotResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ArtifactsDownloadSnapshotResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest HTTPValidationError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -54105,6 +59172,39 @@ func ParseDevicesUpdateDeviceResponse(rsp *http.Response) (*DevicesUpdateDeviceR
 	return response, nil
 }
 
+// ParseSensorsListDeviceChildrenResponse parses an HTTP response from a SensorsListDeviceChildrenWithResponse call
+func ParseSensorsListDeviceChildrenResponse(rsp *http.Response) (*SensorsListDeviceChildrenResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SensorsListDeviceChildrenResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DevicesPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseDevicesCheckDeviceHealthResponse parses an HTTP response from a DevicesCheckDeviceHealthWithResponse call
 func ParseDevicesCheckDeviceHealthResponse(rsp *http.Response) (*DevicesCheckDeviceHealthResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -54154,6 +59254,39 @@ func ParseDevicesPushModelToDeviceResponse(rsp *http.Response) (*DevicesPushMode
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSensorsListDeviceSensorsResponse parses an HTTP response from a SensorsListDeviceSensorsWithResponse call
+func ParseSensorsListDeviceSensorsResponse(rsp *http.Response) (*SensorsListDeviceSensorsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SensorsListDeviceSensorsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SensorsPublic
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -57384,6 +62517,39 @@ func ParseSearchSearchEntitiesResponse(rsp *http.Response) (*SearchSearchEntitie
 	return response, nil
 }
 
+// ParseSensorsListSensorReadingsResponse parses an HTTP response from a SensorsListSensorReadingsWithResponse call
+func ParseSensorsListSensorReadingsResponse(rsp *http.Response) (*SensorsListSensorReadingsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SensorsListSensorReadingsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SensorReadingsPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseStarsListStarsResponse parses an HTTP response from a StarsListStarsWithResponse call
 func ParseStarsListStarsResponse(rsp *http.Response) (*StarsListStarsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -58742,15 +63908,239 @@ func ParseVideosReprocessCameraVideoResponse(rsp *http.Response) (*VideosReproce
 	return response, nil
 }
 
-// ParseVoiceTtsResponse parses an HTTP response from a VoiceTtsWithResponse call
-func ParseVoiceTtsResponse(rsp *http.Response) (*VoiceTtsResponse, error) {
+// ParseWorkspacesListWorkspacesResponse parses an HTTP response from a WorkspacesListWorkspacesWithResponse call
+func ParseWorkspacesListWorkspacesResponse(rsp *http.Response) (*WorkspacesListWorkspacesResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &VoiceTtsResponse{
+	response := &WorkspacesListWorkspacesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []WorkspacePublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseWorkspacesCreateWorkspaceResponse parses an HTTP response from a WorkspacesCreateWorkspaceWithResponse call
+func ParseWorkspacesCreateWorkspaceResponse(rsp *http.Response) (*WorkspacesCreateWorkspaceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &WorkspacesCreateWorkspaceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest WorkspacePublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseWorkspacesImportWorkspaceResponse parses an HTTP response from a WorkspacesImportWorkspaceWithResponse call
+func ParseWorkspacesImportWorkspaceResponse(rsp *http.Response) (*WorkspacesImportWorkspaceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &WorkspacesImportWorkspaceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest WorkspacePublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseWorkspacesDeleteWorkspaceResponse parses an HTTP response from a WorkspacesDeleteWorkspaceWithResponse call
+func ParseWorkspacesDeleteWorkspaceResponse(rsp *http.Response) (*WorkspacesDeleteWorkspaceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &WorkspacesDeleteWorkspaceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseWorkspacesGetWorkspaceResponse parses an HTTP response from a WorkspacesGetWorkspaceWithResponse call
+func ParseWorkspacesGetWorkspaceResponse(rsp *http.Response) (*WorkspacesGetWorkspaceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &WorkspacesGetWorkspaceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WorkspacePublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseWorkspacesUpdateWorkspaceResponse parses an HTTP response from a WorkspacesUpdateWorkspaceWithResponse call
+func ParseWorkspacesUpdateWorkspaceResponse(rsp *http.Response) (*WorkspacesUpdateWorkspaceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &WorkspacesUpdateWorkspaceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WorkspacePublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseWorkspacesCreateWorkspaceAssignmentResponse parses an HTTP response from a WorkspacesCreateWorkspaceAssignmentWithResponse call
+func ParseWorkspacesCreateWorkspaceAssignmentResponse(rsp *http.Response) (*WorkspacesCreateWorkspaceAssignmentResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &WorkspacesCreateWorkspaceAssignmentResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest WorkspaceAssignmentPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseWorkspacesGetWorkspaceBlobResponse parses an HTTP response from a WorkspacesGetWorkspaceBlobWithResponse call
+func ParseWorkspacesGetWorkspaceBlobResponse(rsp *http.Response) (*WorkspacesGetWorkspaceBlobResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &WorkspacesGetWorkspaceBlobResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -58758,6 +64148,230 @@ func ParseVoiceTtsResponse(rsp *http.Response) (*VoiceTtsResponse, error) {
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseWorkspacesGetWorkspaceDiffResponse parses an HTTP response from a WorkspacesGetWorkspaceDiffWithResponse call
+func ParseWorkspacesGetWorkspaceDiffResponse(rsp *http.Response) (*WorkspacesGetWorkspaceDiffResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &WorkspacesGetWorkspaceDiffResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest map[string]string
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseWorkspacesExportWorkspaceResponse parses an HTTP response from a WorkspacesExportWorkspaceWithResponse call
+func ParseWorkspacesExportWorkspaceResponse(rsp *http.Response) (*WorkspacesExportWorkspaceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &WorkspacesExportWorkspaceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseWorkspacesListWorkspaceFilesResponse parses an HTTP response from a WorkspacesListWorkspaceFilesWithResponse call
+func ParseWorkspacesListWorkspaceFilesResponse(rsp *http.Response) (*WorkspacesListWorkspaceFilesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &WorkspacesListWorkspaceFilesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []map[string]interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseWorkspacesDeleteWorkspaceFileResponse parses an HTTP response from a WorkspacesDeleteWorkspaceFileWithResponse call
+func ParseWorkspacesDeleteWorkspaceFileResponse(rsp *http.Response) (*WorkspacesDeleteWorkspaceFileResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &WorkspacesDeleteWorkspaceFileResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseWorkspacesGetWorkspaceFileResponse parses an HTTP response from a WorkspacesGetWorkspaceFileWithResponse call
+func ParseWorkspacesGetWorkspaceFileResponse(rsp *http.Response) (*WorkspacesGetWorkspaceFileResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &WorkspacesGetWorkspaceFileResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest map[string]string
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseWorkspacesPutWorkspaceFileResponse parses an HTTP response from a WorkspacesPutWorkspaceFileWithResponse call
+func ParseWorkspacesPutWorkspaceFileResponse(rsp *http.Response) (*WorkspacesPutWorkspaceFileResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &WorkspacesPutWorkspaceFileResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest map[string]interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseWorkspacesGetWorkspaceHistoryResponse parses an HTTP response from a WorkspacesGetWorkspaceHistoryWithResponse call
+func ParseWorkspacesGetWorkspaceHistoryResponse(rsp *http.Response) (*WorkspacesGetWorkspaceHistoryResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &WorkspacesGetWorkspaceHistoryResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []map[string]string
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

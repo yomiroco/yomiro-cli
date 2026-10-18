@@ -9,10 +9,10 @@ import (
 	"path/filepath"
 	"syscall"
 
+	"github.com/spf13/cobra"
 	"github.com/yomiroco/yomiro-cli/internal/config"
 	"github.com/yomiroco/yomiro-cli/internal/gw/daemon"
 	"github.com/yomiroco/yomiro-cli/internal/gw/dbproxy"
-	"github.com/spf13/cobra"
 )
 
 func newRunCmd() *cobra.Command {

@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/spf13/cobra"
 	"github.com/yomiroco/yomiro-cli/internal/credentials"
 	"github.com/yomiroco/yomiro-cli/internal/envprofile"
 	"github.com/yomiroco/yomiro-cli/internal/platform"
-	"github.com/spf13/cobra"
 )
 
 func newTokenCmd() *cobra.Command {

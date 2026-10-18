@@ -5,11 +5,11 @@ import (
 	"io"
 	"os"
 
+	"github.com/pkg/browser"
+	"github.com/spf13/cobra"
 	"github.com/yomiroco/yomiro-cli/internal/credentials"
 	"github.com/yomiroco/yomiro-cli/internal/envprofile"
 	"github.com/yomiroco/yomiro-cli/internal/platform"
-	"github.com/pkg/browser"
-	"github.com/spf13/cobra"
 )
 
 // openBrowser opens a URL in the operator's default browser. It is a package

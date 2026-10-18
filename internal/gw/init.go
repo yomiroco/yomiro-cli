@@ -9,11 +9,11 @@ import (
 	"time"
 
 	"github.com/coder/websocket"
+	"github.com/spf13/cobra"
 	"github.com/yomiroco/yomiro-cli/internal/auth"
 	"github.com/yomiroco/yomiro-cli/internal/config"
 	"github.com/yomiroco/yomiro-cli/internal/envprofile"
 	"github.com/yomiroco/yomiro-cli/internal/platform"
-	"github.com/spf13/cobra"
 	"github.com/zalando/go-keyring"
 )
 

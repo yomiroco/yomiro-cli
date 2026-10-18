@@ -14,8 +14,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/yomiroco/yomiro-cli/internal/credentials"
 	"github.com/spf13/cobra"
+	"github.com/yomiroco/yomiro-cli/internal/credentials"
 )
 
 // Profile is the expanded set of environment values for a named environment.

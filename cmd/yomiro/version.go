@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/yomiroco/yomiro-cli/internal/buildinfo"
 	"github.com/spf13/cobra"
+	"github.com/yomiroco/yomiro-cli/internal/buildinfo"
 )
 
 func newVersionCmd() *cobra.Command {

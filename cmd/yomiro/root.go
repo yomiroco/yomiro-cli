@@ -3,10 +3,10 @@ package main
 import (
 	"os"
 
+	"github.com/spf13/cobra"
 	"github.com/yomiroco/yomiro-cli/internal/auth"
 	"github.com/yomiroco/yomiro-cli/internal/gw"
 	"github.com/yomiroco/yomiro-cli/internal/platform"
-	"github.com/spf13/cobra"
 )
 
 var (

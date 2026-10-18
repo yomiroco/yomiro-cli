@@ -15,13 +15,13 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/yomiroco/yomiro-cli/internal/config"
 	"github.com/yomiroco/yomiro-cli/internal/gw/connectors"
 	"github.com/yomiroco/yomiro-cli/internal/gw/connregistry"
 	"github.com/yomiroco/yomiro-cli/internal/gw/control"
 	"github.com/yomiroco/yomiro-cli/internal/gw/dbproxy"
 	"github.com/yomiroco/yomiro-cli/internal/gw/tunnel"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/zalando/go-keyring"
 )
 

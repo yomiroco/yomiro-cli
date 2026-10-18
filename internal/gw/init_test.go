@@ -15,8 +15,8 @@ import (
 	"github.com/coder/websocket"
 	"github.com/zalando/go-keyring"
 
-	"github.com/yomiroco/yomiro-cli/internal/envprofile"
 	"github.com/spf13/cobra"
+	"github.com/yomiroco/yomiro-cli/internal/envprofile"
 )
 
 // wsURL converts an httptest server's http(s) URL to a ws(s) URL with path.

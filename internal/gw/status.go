@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/spf13/cobra"
 	"github.com/yomiroco/yomiro-cli/internal/config"
 	"github.com/yomiroco/yomiro-cli/internal/gw/control"
-	"github.com/spf13/cobra"
 )
 
 func newStatusCmd() *cobra.Command {

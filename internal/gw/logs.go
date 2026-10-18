@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/yomiroco/yomiro-cli/internal/config"
 	"github.com/spf13/cobra"
+	"github.com/yomiroco/yomiro-cli/internal/config"
 )
 
 // tailBytes is the maximum number of bytes of existing log content printed
