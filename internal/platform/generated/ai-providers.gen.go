@@ -211,6 +211,29 @@ func NewAiProvidersCmd(getClient func() *client.ClientWithResponses) *cobra.Comm
 	}
 
 	{
+		var params client.AiProvidersProviderModelUsageParams
+		cmd := &cobra.Command{
+			Use:   "provider-model-usage <providerId>",
+			Short: "Provider Model Usage",
+			Args:  cobra.ExactArgs(1),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil {
+					return fmt.Errorf("path arg <providerId>: %w", err)
+				}
+				resp, err := getClient().AiProvidersProviderModelUsageWithResponse(ctx, _arg0, &params)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		root.AddCommand(cmd)
+	}
+
+	{
 		var params client.AiProvidersProvisionPlatformProviderParams
 		cmd := &cobra.Command{
 			Use:   "provision-platform-provider",

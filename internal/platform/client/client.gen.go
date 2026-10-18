@@ -301,6 +301,24 @@ func (e HookSecurityMode) Valid() bool {
 	}
 }
 
+// Defines values for ModelCatalogPopularRankedBy.
+const (
+	Newest ModelCatalogPopularRankedBy = "newest"
+	Usage  ModelCatalogPopularRankedBy = "usage"
+)
+
+// Valid indicates whether the value is a known member of the ModelCatalogPopularRankedBy enum.
+func (e ModelCatalogPopularRankedBy) Valid() bool {
+	switch e {
+	case Newest:
+		return true
+	case Usage:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ModelFormat.
 const (
 	Engine ModelFormat = "engine"
@@ -319,6 +337,27 @@ func (e ModelFormat) Valid() bool {
 	case Pt:
 		return true
 	case Tflite:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ModelMatchMatchKind.
+const (
+	Exact       ModelMatchMatchKind = "exact"
+	HuggingFace ModelMatchMatchKind = "hugging_face"
+	Name        ModelMatchMatchKind = "name"
+)
+
+// Valid indicates whether the value is a known member of the ModelMatchMatchKind enum.
+func (e ModelMatchMatchKind) Valid() bool {
+	switch e {
+	case Exact:
+		return true
+	case HuggingFace:
+		return true
+	case Name:
 		return true
 	default:
 		return false
@@ -2064,6 +2103,25 @@ type CapturesListResponse struct {
 	Items []CaptureEventListItem `json:"items"`
 }
 
+// CatalogModel defines model for CatalogModel.
+type CatalogModel struct {
+	AgenticIndex      *float32 `json:"agentic_index"`
+	BlendedUsdPerM    *float32 `json:"blended_usd_per_m"`
+	CodingIndex       *float32 `json:"coding_index"`
+	CompletionUsdPerM *float32 `json:"completion_usd_per_m"`
+	ContextLength     *int     `json:"context_length"`
+	Created           int      `json:"created"`
+	DailyTokens       *int     `json:"daily_tokens"`
+	Description       string   `json:"description"`
+	Id                string   `json:"id"`
+	InputModalities   []string `json:"input_modalities"`
+	IntelligenceIndex *float32 `json:"intelligence_index"`
+	Name              string   `json:"name"`
+	OpenrouterUrl     string   `json:"openrouter_url"`
+	PromptUsdPerM     *float32 `json:"prompt_usd_per_m"`
+	ToolCalling       bool     `json:"tool_calling"`
+}
+
 // CliPairAuthorize Request body for authorizing a pairing (POST /cli-pair/{code}/authorize).
 type CliPairAuthorize struct {
 	Scopes []ApiKeyScope `json:"scopes"`
@@ -3025,13 +3083,38 @@ type MQTTStatus struct {
 	Port         *int    `json:"port,omitempty"`
 }
 
+// MatchModelsRequest defines model for MatchModelsRequest.
+type MatchModelsRequest struct {
+	ModelIds     []string `json:"model_ids"`
+	ProviderType string   `json:"provider_type"`
+}
+
 // Message Generic message response.
 type Message struct {
 	Message string `json:"message"`
 }
 
+// ModelCatalogPopular defines model for ModelCatalogPopular.
+type ModelCatalogPopular struct {
+	Models   []CatalogModel              `json:"models"`
+	RankedBy ModelCatalogPopularRankedBy `json:"ranked_by"`
+}
+
+// ModelCatalogPopularRankedBy defines model for ModelCatalogPopular.RankedBy.
+type ModelCatalogPopularRankedBy string
+
 // ModelFormat Supported AI model file formats.
 type ModelFormat string
+
+// ModelMatch defines model for ModelMatch.
+type ModelMatch struct {
+	Match     CatalogModel         `json:"match"`
+	MatchKind *ModelMatchMatchKind `json:"match_kind"`
+	ModelId   string               `json:"model_id"`
+}
+
+// ModelMatchMatchKind defines model for ModelMatch.MatchKind.
+type ModelMatchMatchKind string
 
 // ModelOutputSchemaPublic defines model for ModelOutputSchemaPublic.
 type ModelOutputSchemaPublic struct {
@@ -3055,6 +3138,12 @@ type ModelPipeline string
 
 // ModelType Supported AI model types.
 type ModelType string
+
+// ModelUsage defines model for ModelUsage.
+type ModelUsage struct {
+	AgentCount int    `json:"agent_count"`
+	ModelId    string `json:"model_id"`
+}
 
 // OkResponse Minimal success acknowledgement (“{"ok": true}“).
 type OkResponse struct {
@@ -4321,6 +4410,24 @@ type AgentWorkspaceDefaultsPutDefaultSoulMdParams struct {
 	AccessToken     *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
+// AiModelCatalogMatchModelsParams defines parameters for AiModelCatalogMatchModels.
+type AiModelCatalogMatchModelsParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// AiModelCatalogPopularModelsParams defines parameters for AiModelCatalogPopularModels.
+type AiModelCatalogPopularModelsParams struct {
+	Limit       *int    `form:"limit,omitempty" json:"limit,omitempty"`
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// AiModelCatalogSearchModelsParams defines parameters for AiModelCatalogSearchModels.
+type AiModelCatalogSearchModelsParams struct {
+	Q           string  `form:"q" json:"q"`
+	Limit       *int    `form:"limit,omitempty" json:"limit,omitempty"`
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
 // AiProvidersListAiProvidersParams defines parameters for AiProvidersListAiProviders.
 type AiProvidersListAiProvidersParams struct {
 	ActiveOnly  *bool   `form:"active_only,omitempty" json:"active_only,omitempty"`
@@ -4364,6 +4471,11 @@ type AiProvidersGetAiProviderParams struct {
 
 // AiProvidersUpdateAiProviderParams defines parameters for AiProvidersUpdateAiProvider.
 type AiProvidersUpdateAiProviderParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// AiProvidersProviderModelUsageParams defines parameters for AiProvidersProviderModelUsage.
+type AiProvidersProviderModelUsageParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
@@ -6151,6 +6263,9 @@ type AgentSkillsCreateSkillJSONRequestBody = TenantSkillCreate
 // AgentSkillsUpdateSkillJSONRequestBody defines body for AgentSkillsUpdateSkill for application/json ContentType.
 type AgentSkillsUpdateSkillJSONRequestBody = TenantSkillUpdate
 
+// AiModelCatalogMatchModelsJSONRequestBody defines body for AiModelCatalogMatchModels for application/json ContentType.
+type AiModelCatalogMatchModelsJSONRequestBody = MatchModelsRequest
+
 // AiProvidersCreateAiProviderJSONRequestBody defines body for AiProvidersCreateAiProvider for application/json ContentType.
 type AiProvidersCreateAiProviderJSONRequestBody = TenantAIProviderCreate
 
@@ -6774,6 +6889,17 @@ type ClientInterface interface {
 	// AgentWorkspaceDefaultsPutDefaultSoulMd request
 	AgentWorkspaceDefaultsPutDefaultSoulMd(ctx context.Context, params *AgentWorkspaceDefaultsPutDefaultSoulMdParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// AiModelCatalogMatchModelsWithBody request with any body
+	AiModelCatalogMatchModelsWithBody(ctx context.Context, params *AiModelCatalogMatchModelsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AiModelCatalogMatchModels(ctx context.Context, params *AiModelCatalogMatchModelsParams, body AiModelCatalogMatchModelsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AiModelCatalogPopularModels request
+	AiModelCatalogPopularModels(ctx context.Context, params *AiModelCatalogPopularModelsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AiModelCatalogSearchModels request
+	AiModelCatalogSearchModels(ctx context.Context, params *AiModelCatalogSearchModelsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// AiProvidersListAiProviders request
 	AiProvidersListAiProviders(ctx context.Context, params *AiProvidersListAiProvidersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -6806,6 +6932,9 @@ type ClientInterface interface {
 	AiProvidersUpdateAiProviderWithBody(ctx context.Context, providerId openapi_types.UUID, params *AiProvidersUpdateAiProviderParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	AiProvidersUpdateAiProvider(ctx context.Context, providerId openapi_types.UUID, params *AiProvidersUpdateAiProviderParams, body AiProvidersUpdateAiProviderJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AiProvidersProviderModelUsage request
+	AiProvidersProviderModelUsage(ctx context.Context, providerId openapi_types.UUID, params *AiProvidersProviderModelUsageParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// AiProvidersListProviderModels request
 	AiProvidersListProviderModels(ctx context.Context, providerId openapi_types.UUID, params *AiProvidersListProviderModelsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -8799,6 +8928,54 @@ func (c *Client) AgentWorkspaceDefaultsPutDefaultSoulMd(ctx context.Context, par
 	return c.Client.Do(req)
 }
 
+func (c *Client) AiModelCatalogMatchModelsWithBody(ctx context.Context, params *AiModelCatalogMatchModelsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAiModelCatalogMatchModelsRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AiModelCatalogMatchModels(ctx context.Context, params *AiModelCatalogMatchModelsParams, body AiModelCatalogMatchModelsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAiModelCatalogMatchModelsRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AiModelCatalogPopularModels(ctx context.Context, params *AiModelCatalogPopularModelsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAiModelCatalogPopularModelsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AiModelCatalogSearchModels(ctx context.Context, params *AiModelCatalogSearchModelsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAiModelCatalogSearchModelsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) AiProvidersListAiProviders(ctx context.Context, params *AiProvidersListAiProvidersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAiProvidersListAiProvidersRequest(c.Server, params)
 	if err != nil {
@@ -8933,6 +9110,18 @@ func (c *Client) AiProvidersUpdateAiProviderWithBody(ctx context.Context, provid
 
 func (c *Client) AiProvidersUpdateAiProvider(ctx context.Context, providerId openapi_types.UUID, params *AiProvidersUpdateAiProviderParams, body AiProvidersUpdateAiProviderJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAiProvidersUpdateAiProviderRequest(c.Server, providerId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AiProvidersProviderModelUsage(ctx context.Context, providerId openapi_types.UUID, params *AiProvidersProviderModelUsageParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAiProvidersProviderModelUsageRequest(c.Server, providerId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -17552,6 +17741,207 @@ func NewAgentWorkspaceDefaultsPutDefaultSoulMdRequest(server string, params *Age
 	return req, nil
 }
 
+// NewAiModelCatalogMatchModelsRequest calls the generic AiModelCatalogMatchModels builder with application/json body
+func NewAiModelCatalogMatchModelsRequest(server string, params *AiModelCatalogMatchModelsParams, body AiModelCatalogMatchModelsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAiModelCatalogMatchModelsRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewAiModelCatalogMatchModelsRequestWithBody generates requests for AiModelCatalogMatchModels with any type of body
+func NewAiModelCatalogMatchModelsRequestWithBody(server string, params *AiModelCatalogMatchModelsParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/ai-model-catalog/match")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewAiModelCatalogPopularModelsRequest generates requests for AiModelCatalogPopularModels
+func NewAiModelCatalogPopularModelsRequest(server string, params *AiModelCatalogPopularModelsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/ai-model-catalog/popular")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewAiModelCatalogSearchModelsRequest generates requests for AiModelCatalogSearchModels
+func NewAiModelCatalogSearchModelsRequest(server string, params *AiModelCatalogSearchModelsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/ai-model-catalog/search")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "q", params.Q, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
 // NewAiProvidersListAiProvidersRequest generates requests for AiProvidersListAiProviders
 func NewAiProvidersListAiProvidersRequest(server string, params *AiProvidersListAiProvidersParams) (*http.Request, error) {
 	var err error
@@ -18009,6 +18399,57 @@ func NewAiProvidersUpdateAiProviderRequestWithBody(server string, providerId ope
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewAiProvidersProviderModelUsageRequest generates requests for AiProvidersProviderModelUsage
+func NewAiProvidersProviderModelUsageRequest(server string, providerId openapi_types.UUID, params *AiProvidersProviderModelUsageParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "provider_id", providerId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/ai-providers/%s/model-usage", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	if params != nil {
 
@@ -37492,6 +37933,17 @@ type ClientWithResponsesInterface interface {
 	// AgentWorkspaceDefaultsPutDefaultSoulMdWithResponse request
 	AgentWorkspaceDefaultsPutDefaultSoulMdWithResponse(ctx context.Context, params *AgentWorkspaceDefaultsPutDefaultSoulMdParams, reqEditors ...RequestEditorFn) (*AgentWorkspaceDefaultsPutDefaultSoulMdResponse, error)
 
+	// AiModelCatalogMatchModelsWithBodyWithResponse request with any body
+	AiModelCatalogMatchModelsWithBodyWithResponse(ctx context.Context, params *AiModelCatalogMatchModelsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AiModelCatalogMatchModelsResponse, error)
+
+	AiModelCatalogMatchModelsWithResponse(ctx context.Context, params *AiModelCatalogMatchModelsParams, body AiModelCatalogMatchModelsJSONRequestBody, reqEditors ...RequestEditorFn) (*AiModelCatalogMatchModelsResponse, error)
+
+	// AiModelCatalogPopularModelsWithResponse request
+	AiModelCatalogPopularModelsWithResponse(ctx context.Context, params *AiModelCatalogPopularModelsParams, reqEditors ...RequestEditorFn) (*AiModelCatalogPopularModelsResponse, error)
+
+	// AiModelCatalogSearchModelsWithResponse request
+	AiModelCatalogSearchModelsWithResponse(ctx context.Context, params *AiModelCatalogSearchModelsParams, reqEditors ...RequestEditorFn) (*AiModelCatalogSearchModelsResponse, error)
+
 	// AiProvidersListAiProvidersWithResponse request
 	AiProvidersListAiProvidersWithResponse(ctx context.Context, params *AiProvidersListAiProvidersParams, reqEditors ...RequestEditorFn) (*AiProvidersListAiProvidersResponse, error)
 
@@ -37524,6 +37976,9 @@ type ClientWithResponsesInterface interface {
 	AiProvidersUpdateAiProviderWithBodyWithResponse(ctx context.Context, providerId openapi_types.UUID, params *AiProvidersUpdateAiProviderParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AiProvidersUpdateAiProviderResponse, error)
 
 	AiProvidersUpdateAiProviderWithResponse(ctx context.Context, providerId openapi_types.UUID, params *AiProvidersUpdateAiProviderParams, body AiProvidersUpdateAiProviderJSONRequestBody, reqEditors ...RequestEditorFn) (*AiProvidersUpdateAiProviderResponse, error)
+
+	// AiProvidersProviderModelUsageWithResponse request
+	AiProvidersProviderModelUsageWithResponse(ctx context.Context, providerId openapi_types.UUID, params *AiProvidersProviderModelUsageParams, reqEditors ...RequestEditorFn) (*AiProvidersProviderModelUsageResponse, error)
 
 	// AiProvidersListProviderModelsWithResponse request
 	AiProvidersListProviderModelsWithResponse(ctx context.Context, providerId openapi_types.UUID, params *AiProvidersListProviderModelsParams, reqEditors ...RequestEditorFn) (*AiProvidersListProviderModelsResponse, error)
@@ -40036,6 +40491,75 @@ func (r AgentWorkspaceDefaultsPutDefaultSoulMdResponse) StatusCode() int {
 	return 0
 }
 
+type AiModelCatalogMatchModelsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]ModelMatch
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AiModelCatalogMatchModelsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AiModelCatalogMatchModelsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AiModelCatalogPopularModelsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ModelCatalogPopular
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AiModelCatalogPopularModelsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AiModelCatalogPopularModelsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AiModelCatalogSearchModelsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]CatalogModel
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AiModelCatalogSearchModelsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AiModelCatalogSearchModelsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type AiProvidersListAiProvidersResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -40237,6 +40761,29 @@ func (r AiProvidersUpdateAiProviderResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r AiProvidersUpdateAiProviderResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AiProvidersProviderModelUsageResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]ModelUsage
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AiProvidersProviderModelUsageResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AiProvidersProviderModelUsageResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -48172,6 +48719,41 @@ func (c *ClientWithResponses) AgentWorkspaceDefaultsPutDefaultSoulMdWithResponse
 	return ParseAgentWorkspaceDefaultsPutDefaultSoulMdResponse(rsp)
 }
 
+// AiModelCatalogMatchModelsWithBodyWithResponse request with arbitrary body returning *AiModelCatalogMatchModelsResponse
+func (c *ClientWithResponses) AiModelCatalogMatchModelsWithBodyWithResponse(ctx context.Context, params *AiModelCatalogMatchModelsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AiModelCatalogMatchModelsResponse, error) {
+	rsp, err := c.AiModelCatalogMatchModelsWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAiModelCatalogMatchModelsResponse(rsp)
+}
+
+func (c *ClientWithResponses) AiModelCatalogMatchModelsWithResponse(ctx context.Context, params *AiModelCatalogMatchModelsParams, body AiModelCatalogMatchModelsJSONRequestBody, reqEditors ...RequestEditorFn) (*AiModelCatalogMatchModelsResponse, error) {
+	rsp, err := c.AiModelCatalogMatchModels(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAiModelCatalogMatchModelsResponse(rsp)
+}
+
+// AiModelCatalogPopularModelsWithResponse request returning *AiModelCatalogPopularModelsResponse
+func (c *ClientWithResponses) AiModelCatalogPopularModelsWithResponse(ctx context.Context, params *AiModelCatalogPopularModelsParams, reqEditors ...RequestEditorFn) (*AiModelCatalogPopularModelsResponse, error) {
+	rsp, err := c.AiModelCatalogPopularModels(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAiModelCatalogPopularModelsResponse(rsp)
+}
+
+// AiModelCatalogSearchModelsWithResponse request returning *AiModelCatalogSearchModelsResponse
+func (c *ClientWithResponses) AiModelCatalogSearchModelsWithResponse(ctx context.Context, params *AiModelCatalogSearchModelsParams, reqEditors ...RequestEditorFn) (*AiModelCatalogSearchModelsResponse, error) {
+	rsp, err := c.AiModelCatalogSearchModels(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAiModelCatalogSearchModelsResponse(rsp)
+}
+
 // AiProvidersListAiProvidersWithResponse request returning *AiProvidersListAiProvidersResponse
 func (c *ClientWithResponses) AiProvidersListAiProvidersWithResponse(ctx context.Context, params *AiProvidersListAiProvidersParams, reqEditors ...RequestEditorFn) (*AiProvidersListAiProvidersResponse, error) {
 	rsp, err := c.AiProvidersListAiProviders(ctx, params, reqEditors...)
@@ -48275,6 +48857,15 @@ func (c *ClientWithResponses) AiProvidersUpdateAiProviderWithResponse(ctx contex
 		return nil, err
 	}
 	return ParseAiProvidersUpdateAiProviderResponse(rsp)
+}
+
+// AiProvidersProviderModelUsageWithResponse request returning *AiProvidersProviderModelUsageResponse
+func (c *ClientWithResponses) AiProvidersProviderModelUsageWithResponse(ctx context.Context, providerId openapi_types.UUID, params *AiProvidersProviderModelUsageParams, reqEditors ...RequestEditorFn) (*AiProvidersProviderModelUsageResponse, error) {
+	rsp, err := c.AiProvidersProviderModelUsage(ctx, providerId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAiProvidersProviderModelUsageResponse(rsp)
 }
 
 // AiProvidersListProviderModelsWithResponse request returning *AiProvidersListProviderModelsResponse
@@ -53755,6 +54346,105 @@ func ParseAgentWorkspaceDefaultsPutDefaultSoulMdResponse(rsp *http.Response) (*A
 	return response, nil
 }
 
+// ParseAiModelCatalogMatchModelsResponse parses an HTTP response from a AiModelCatalogMatchModelsWithResponse call
+func ParseAiModelCatalogMatchModelsResponse(rsp *http.Response) (*AiModelCatalogMatchModelsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AiModelCatalogMatchModelsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []ModelMatch
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAiModelCatalogPopularModelsResponse parses an HTTP response from a AiModelCatalogPopularModelsWithResponse call
+func ParseAiModelCatalogPopularModelsResponse(rsp *http.Response) (*AiModelCatalogPopularModelsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AiModelCatalogPopularModelsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ModelCatalogPopular
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAiModelCatalogSearchModelsResponse parses an HTTP response from a AiModelCatalogSearchModelsWithResponse call
+func ParseAiModelCatalogSearchModelsResponse(rsp *http.Response) (*AiModelCatalogSearchModelsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AiModelCatalogSearchModelsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []CatalogModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseAiProvidersListAiProvidersResponse parses an HTTP response from a AiProvidersListAiProvidersWithResponse call
 func ParseAiProvidersListAiProvidersResponse(rsp *http.Response) (*AiProvidersListAiProvidersResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -54035,6 +54725,39 @@ func ParseAiProvidersUpdateAiProviderResponse(rsp *http.Response) (*AiProvidersU
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest TenantAIProviderPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAiProvidersProviderModelUsageResponse parses an HTTP response from a AiProvidersProviderModelUsageWithResponse call
+func ParseAiProvidersProviderModelUsageResponse(rsp *http.Response) (*AiProvidersProviderModelUsageResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AiProvidersProviderModelUsageResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []ModelUsage
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
