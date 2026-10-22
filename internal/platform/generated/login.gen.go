@@ -2,6 +2,8 @@
 package generated
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/yomiroco/yomiro-cli/internal/output"
@@ -67,6 +69,37 @@ func NewLoginCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 				return output.RenderResponse(cmd, resp)
 			},
 		}
+		root.AddCommand(cmd)
+	}
+
+	{
+		var bodyJSON string
+		var skeleton bool
+		cmd := &cobra.Command{
+			Use:   "mobile-token",
+			Short: "Mobile Token",
+			Long:  "Mobile Token.\n\nRequest body fields:\n  code           string  required\n  code_verifier  string  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			RunE: func(cmd *cobra.Command, args []string) error {
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"code\": \"\",\n  \"code_verifier\": \"\"\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.LoginMobileTokenJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
+				resp, err := getClient().LoginMobileTokenWithResponse(ctx, body)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 

@@ -190,6 +190,27 @@ func (e CameraImagePublicReviewState) Valid() bool {
 	}
 }
 
+// Defines values for CatalogEntryPublicToolPolicy.
+const (
+	CatalogEntryPublicToolPolicyBlocked CatalogEntryPublicToolPolicy = "blocked"
+	CatalogEntryPublicToolPolicyChange  CatalogEntryPublicToolPolicy = "change"
+	CatalogEntryPublicToolPolicyRead    CatalogEntryPublicToolPolicy = "read"
+)
+
+// Valid indicates whether the value is a known member of the CatalogEntryPublicToolPolicy enum.
+func (e CatalogEntryPublicToolPolicy) Valid() bool {
+	switch e {
+	case CatalogEntryPublicToolPolicyBlocked:
+		return true
+	case CatalogEntryPublicToolPolicyChange:
+		return true
+	case CatalogEntryPublicToolPolicyRead:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for DetectionSource.
 const (
 	AnnotationProject DetectionSource = "annotation_project"
@@ -202,6 +223,24 @@ func (e DetectionSource) Valid() bool {
 	case AnnotationProject:
 		return true
 	case TextPrompts:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EffectiveServerPublicScope.
+const (
+	EffectiveServerPublicScopeAgent  EffectiveServerPublicScope = "agent"
+	EffectiveServerPublicScopeTenant EffectiveServerPublicScope = "tenant"
+)
+
+// Valid indicates whether the value is a known member of the EffectiveServerPublicScope enum.
+func (e EffectiveServerPublicScope) Valid() bool {
+	switch e {
+	case EffectiveServerPublicScopeAgent:
+		return true
+	case EffectiveServerPublicScopeTenant:
 		return true
 	default:
 		return false
@@ -280,6 +319,51 @@ func (e ExecutionTier) Valid() bool {
 	}
 }
 
+// Defines values for HarnessProposalStatus.
+const (
+	HarnessProposalStatusApproved   HarnessProposalStatus = "approved"
+	HarnessProposalStatusPending    HarnessProposalStatus = "pending"
+	HarnessProposalStatusRejected   HarnessProposalStatus = "rejected"
+	HarnessProposalStatusSuperseded HarnessProposalStatus = "superseded"
+)
+
+// Valid indicates whether the value is a known member of the HarnessProposalStatus enum.
+func (e HarnessProposalStatus) Valid() bool {
+	switch e {
+	case HarnessProposalStatusApproved:
+		return true
+	case HarnessProposalStatusPending:
+		return true
+	case HarnessProposalStatusRejected:
+		return true
+	case HarnessProposalStatusSuperseded:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for HarnessSettingsWriteSource.
+const (
+	Form   HarnessSettingsWriteSource = "form"
+	Import HarnessSettingsWriteSource = "import"
+	Json   HarnessSettingsWriteSource = "json"
+)
+
+// Valid indicates whether the value is a known member of the HarnessSettingsWriteSource enum.
+func (e HarnessSettingsWriteSource) Valid() bool {
+	switch e {
+	case Form:
+		return true
+	case Import:
+		return true
+	case Json:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for HookSecurityMode.
 const (
 	ApprovalRequired HookSecurityMode = "approval_required"
@@ -295,6 +379,75 @@ func (e HookSecurityMode) Valid() bool {
 	case Auto:
 		return true
 	case Notify:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for McpServerAuth.
+const (
+	McpServerAuthHeaders McpServerAuth = "headers"
+	McpServerAuthNone    McpServerAuth = "none"
+	McpServerAuthOauth   McpServerAuth = "oauth"
+)
+
+// Valid indicates whether the value is a known member of the McpServerAuth enum.
+func (e McpServerAuth) Valid() bool {
+	switch e {
+	case McpServerAuthHeaders:
+		return true
+	case McpServerAuthNone:
+		return true
+	case McpServerAuthOauth:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for McpServerType.
+const (
+	McpServerTypeHttp McpServerType = "http"
+	McpServerTypeSse  McpServerType = "sse"
+)
+
+// Valid indicates whether the value is a known member of the McpServerType enum.
+func (e McpServerType) Valid() bool {
+	switch e {
+	case McpServerTypeHttp:
+		return true
+	case McpServerTypeSse:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for McpServerStatus.
+const (
+	McpServerStatusDrift            McpServerStatus = "drift"
+	McpServerStatusError            McpServerStatus = "error"
+	McpServerStatusNeedsCredentials McpServerStatus = "needs_credentials"
+	McpServerStatusNeedsOauth       McpServerStatus = "needs_oauth"
+	McpServerStatusOk               McpServerStatus = "ok"
+	McpServerStatusPending          McpServerStatus = "pending"
+)
+
+// Valid indicates whether the value is a known member of the McpServerStatus enum.
+func (e McpServerStatus) Valid() bool {
+	switch e {
+	case McpServerStatusDrift:
+		return true
+	case McpServerStatusError:
+		return true
+	case McpServerStatusNeedsCredentials:
+		return true
+	case McpServerStatusNeedsOauth:
+		return true
+	case McpServerStatusOk:
+		return true
+	case McpServerStatusPending:
 		return true
 	default:
 		return false
@@ -457,6 +610,87 @@ func (e OutputTarget) Valid() bool {
 	}
 }
 
+// Defines values for ProbeRequestType.
+const (
+	ProbeRequestTypeHttp ProbeRequestType = "http"
+	ProbeRequestTypeSse  ProbeRequestType = "sse"
+)
+
+// Valid indicates whether the value is a known member of the ProbeRequestType enum.
+func (e ProbeRequestType) Valid() bool {
+	switch e {
+	case ProbeRequestTypeHttp:
+		return true
+	case ProbeRequestTypeSse:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ProbeResultAuth.
+const (
+	ProbeResultAuthHeaders ProbeResultAuth = "headers"
+	ProbeResultAuthNone    ProbeResultAuth = "none"
+	ProbeResultAuthOauth   ProbeResultAuth = "oauth"
+)
+
+// Valid indicates whether the value is a known member of the ProbeResultAuth enum.
+func (e ProbeResultAuth) Valid() bool {
+	switch e {
+	case ProbeResultAuthHeaders:
+		return true
+	case ProbeResultAuthNone:
+		return true
+	case ProbeResultAuthOauth:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ProposedServerAuth.
+const (
+	Headers ProposedServerAuth = "headers"
+	None    ProposedServerAuth = "none"
+	Oauth   ProposedServerAuth = "oauth"
+)
+
+// Valid indicates whether the value is a known member of the ProposedServerAuth enum.
+func (e ProposedServerAuth) Valid() bool {
+	switch e {
+	case Headers:
+		return true
+	case None:
+		return true
+	case Oauth:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ProposedServerSource.
+const (
+	ProposedServerSourceCatalog  ProposedServerSource = "catalog"
+	ProposedServerSourceCustom   ProposedServerSource = "custom"
+	ProposedServerSourceRegistry ProposedServerSource = "registry"
+)
+
+// Valid indicates whether the value is a known member of the ProposedServerSource enum.
+func (e ProposedServerSource) Valid() bool {
+	switch e {
+	case ProposedServerSourceCatalog:
+		return true
+	case ProposedServerSourceCustom:
+		return true
+	case ProposedServerSourceRegistry:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for PtzCapabilitiesSchemaOutcome.
 const (
 	Denied      PtzCapabilitiesSchemaOutcome = "denied"
@@ -522,16 +756,76 @@ func (e ReviewRefKind) Valid() bool {
 
 // Defines values for ReviewTargetSource.
 const (
-	System ReviewTargetSource = "system"
-	Tenant ReviewTargetSource = "tenant"
+	ReviewTargetSourceSystem ReviewTargetSource = "system"
+	ReviewTargetSourceTenant ReviewTargetSource = "tenant"
 )
 
 // Valid indicates whether the value is a known member of the ReviewTargetSource enum.
 func (e ReviewTargetSource) Valid() bool {
 	switch e {
-	case System:
+	case ReviewTargetSourceSystem:
 		return true
-	case Tenant:
+	case ReviewTargetSourceTenant:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ServerSourceKind.
+const (
+	ServerSourceKindCatalog  ServerSourceKind = "catalog"
+	ServerSourceKindCustom   ServerSourceKind = "custom"
+	ServerSourceKindRegistry ServerSourceKind = "registry"
+)
+
+// Valid indicates whether the value is a known member of the ServerSourceKind enum.
+func (e ServerSourceKind) Valid() bool {
+	switch e {
+	case ServerSourceKindCatalog:
+		return true
+	case ServerSourceKindCustom:
+		return true
+	case ServerSourceKindRegistry:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ServerStatePublicScope.
+const (
+	ServerStatePublicScopeAgent  ServerStatePublicScope = "agent"
+	ServerStatePublicScopeTenant ServerStatePublicScope = "tenant"
+)
+
+// Valid indicates whether the value is a known member of the ServerStatePublicScope enum.
+func (e ServerStatePublicScope) Valid() bool {
+	switch e {
+	case ServerStatePublicScopeAgent:
+		return true
+	case ServerStatePublicScopeTenant:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ServerToolPublicClass.
+const (
+	ServerToolPublicClassBlocked ServerToolPublicClass = "blocked"
+	ServerToolPublicClassChange  ServerToolPublicClass = "change"
+	ServerToolPublicClassRead    ServerToolPublicClass = "read"
+)
+
+// Valid indicates whether the value is a known member of the ServerToolPublicClass enum.
+func (e ServerToolPublicClass) Valid() bool {
+	switch e {
+	case ServerToolPublicClassBlocked:
+		return true
+	case ServerToolPublicClassChange:
+		return true
+	case ServerToolPublicClassRead:
 		return true
 	default:
 		return false
@@ -567,19 +861,19 @@ func (e SessionStatus) Valid() bool {
 
 // Defines values for SkillScope.
 const (
-	SkillScopeAgent  SkillScope = "agent"
-	SkillScopeGlobal SkillScope = "global"
-	SkillScopeGroup  SkillScope = "group"
+	Agent  SkillScope = "agent"
+	Global SkillScope = "global"
+	Group  SkillScope = "group"
 )
 
 // Valid indicates whether the value is a known member of the SkillScope enum.
 func (e SkillScope) Valid() bool {
 	switch e {
-	case SkillScopeAgent:
+	case Agent:
 		return true
-	case SkillScopeGlobal:
+	case Global:
 		return true
-	case SkillScopeGroup:
+	case Group:
 		return true
 	default:
 		return false
@@ -601,6 +895,27 @@ func (e SkillStatus) Valid() bool {
 	case SkillStatusArchived:
 		return true
 	case SkillStatusDraft:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ToolSelectionPolicy.
+const (
+	Blocked ToolSelectionPolicy = "blocked"
+	Change  ToolSelectionPolicy = "change"
+	Read    ToolSelectionPolicy = "read"
+)
+
+// Valid indicates whether the value is a known member of the ToolSelectionPolicy enum.
+func (e ToolSelectionPolicy) Valid() bool {
+	switch e {
+	case Blocked:
+		return true
+	case Change:
+		return true
+	case Read:
 		return true
 	default:
 		return false
@@ -868,6 +1183,11 @@ type AIModelsPublic struct {
 
 // AIProviderType defines model for AIProviderType.
 type AIProviderType string
+
+// AcceptDriftRequest defines model for AcceptDriftRequest.
+type AcceptDriftRequest struct {
+	PendingManifestHash string `json:"pending_manifest_hash"`
+}
 
 // ActiveTrack A tracked object in the detection digest.
 type ActiveTrack struct {
@@ -1192,6 +1512,7 @@ type AgentSessionPublic struct {
 	SessionId          string                  `json:"session_id"`
 	SessionPreferences *map[string]interface{} `json:"session_preferences,omitempty"`
 	Status             SessionStatus           `json:"status"`
+	Title              *string                 `json:"title,omitempty"`
 	TotalTokens        int                     `json:"total_tokens"`
 	TotalToolCalls     int                     `json:"total_tool_calls"`
 	TriggerLabel       *string                 `json:"trigger_label,omitempty"`
@@ -1785,6 +2106,18 @@ type ApiKeysPublic struct {
 	Data  []ApiKeyPublic `json:"data"`
 }
 
+// ApproveProposalRequest defines model for ApproveProposalRequest.
+type ApproveProposalRequest struct {
+	Inputs *map[string]interface{} `json:"inputs,omitempty"`
+}
+
+// ApprovedProposalPublic defines model for ApprovedProposalPublic.
+type ApprovedProposalPublic struct {
+	Proposal     HarnessProposalPublic `json:"proposal"`
+	ServerStates []ServerStatePublic   `json:"server_states"`
+	Settings     HarnessSettingsPublic `json:"settings"`
+}
+
 // ArtifactDocumentOut defines model for ArtifactDocumentOut.
 type ArtifactDocumentOut struct {
 	Html string `json:"html"`
@@ -2101,6 +2434,37 @@ type CaptureRequest struct {
 type CapturesListResponse struct {
 	Count int                    `json:"count"`
 	Items []CaptureEventListItem `json:"items"`
+}
+
+// CatalogEntryPublic defines model for CatalogEntryPublic.
+type CatalogEntryPublic struct {
+	Auth             string                                  `json:"auth"`
+	Categories       []string                                `json:"categories"`
+	Description      string                                  `json:"description"`
+	HasSkill         bool                                    `json:"has_skill"`
+	Icon             *string                                 `json:"icon"`
+	Inputs           []CatalogInput                          `json:"inputs"`
+	Key              string                                  `json:"key"`
+	RecommendedTools []string                                `json:"recommended_tools"`
+	RegistryName     *string                                 `json:"registry_name"`
+	SelfHosted       bool                                    `json:"self_hosted"`
+	Server           McpServer                               `json:"server"`
+	Title            string                                  `json:"title"`
+	ToolPolicy       map[string]CatalogEntryPublicToolPolicy `json:"tool_policy"`
+}
+
+// CatalogEntryPublicToolPolicy defines model for CatalogEntryPublic.ToolPolicy.
+type CatalogEntryPublicToolPolicy string
+
+// CatalogInput defines model for CatalogInput.
+type CatalogInput struct {
+	DocsUrl  *string `json:"docs_url,omitempty"`
+	Help     *string `json:"help,omitempty"`
+	IsUrl    *bool   `json:"is_url,omitempty"`
+	Label    string  `json:"label"`
+	Name     string  `json:"name"`
+	Required *bool   `json:"required,omitempty"`
+	Secret   bool    `json:"secret"`
 }
 
 // CatalogModel defines model for CatalogModel.
@@ -2675,6 +3039,39 @@ type DiscoveredDevice struct {
 	Name         string                 `json:"name"`
 }
 
+// DiscoveredServer One shape for catalog, registry and custom results: a server template plus its inputs.
+type DiscoveredServer struct {
+	CatalogKey  *string         `json:"catalog_key,omitempty"`
+	Description string          `json:"description"`
+	Inputs      *[]CatalogInput `json:"inputs,omitempty"`
+	Ref         string          `json:"ref"`
+	Server      McpServer       `json:"server"`
+	Source      ServerSource    `json:"source"`
+	Title       string          `json:"title"`
+	Vetted      bool            `json:"vetted"`
+	WebsiteUrl  *string         `json:"website_url,omitempty"`
+}
+
+// EffectiveServerPublic defines model for EffectiveServerPublic.
+type EffectiveServerPublic struct {
+	Inherited      bool                       `json:"inherited"`
+	MissingSecrets *[]string                  `json:"missing_secrets,omitempty"`
+	Mounted        bool                       `json:"mounted"`
+	Name           string                     `json:"name"`
+	Scope          EffectiveServerPublicScope `json:"scope"`
+	Status         McpServerStatus            `json:"status"`
+	Url            string                     `json:"url"`
+	Vetted         bool                       `json:"vetted"`
+}
+
+// EffectiveServerPublicScope defines model for EffectiveServerPublic.Scope.
+type EffectiveServerPublicScope string
+
+// EffectiveSettingsPublic defines model for EffectiveSettingsPublic.
+type EffectiveSettingsPublic struct {
+	Servers []EffectiveServerPublic `json:"servers"`
+}
+
 // EvalRunStatus defines model for EvalRunStatus.
 type EvalRunStatus string
 
@@ -2738,6 +3135,75 @@ type GrafanaUrlResponse struct {
 type HTTPValidationError struct {
 	Detail *[]ValidationError `json:"detail,omitempty"`
 }
+
+// HarnessProposalPublic defines model for HarnessProposalPublic.
+type HarnessProposalPublic struct {
+	AgentId      openapi_types.UUID     `json:"agent_id"`
+	AgentName    string                 `json:"agent_name"`
+	CreatedAt    string                 `json:"created_at"`
+	DecisionNote *string                `json:"decision_note"`
+	Id           openapi_types.UUID     `json:"id"`
+	NeedsInputs  []NeededInput          `json:"needs_inputs"`
+	NeedsOauth   bool                   `json:"needs_oauth"`
+	Patch        map[string]interface{} `json:"patch"`
+	Reason       string                 `json:"reason"`
+	RenderedDiff RenderedDiff           `json:"rendered_diff"`
+	Servers      []ProposedServer       `json:"servers"`
+	Status       HarnessProposalStatus  `json:"status"`
+}
+
+// HarnessProposalStatus defines model for HarnessProposalStatus.
+type HarnessProposalStatus string
+
+// HarnessProposalsPublic defines model for HarnessProposalsPublic.
+type HarnessProposalsPublic struct {
+	Count int                     `json:"count"`
+	Data  []HarnessProposalPublic `json:"data"`
+}
+
+// HarnessRevisionPublic defines model for HarnessRevisionPublic.
+type HarnessRevisionPublic struct {
+	Source          string              `json:"source"`
+	UpdatedAt       string              `json:"updated_at"`
+	UpdatedByUserId *openapi_types.UUID `json:"updated_by_user_id,omitempty"`
+	Version         int                 `json:"version"`
+}
+
+// HarnessSecretPublic defines model for HarnessSecretPublic.
+type HarnessSecretPublic struct {
+	LastUsedAt   *string   `json:"last_used_at,omitempty"`
+	Name         string    `json:"name"`
+	ReferencedBy *[]string `json:"referenced_by,omitempty"`
+	UpdatedAt    string    `json:"updated_at"`
+}
+
+// HarnessSecretWrite defines model for HarnessSecretWrite.
+type HarnessSecretWrite struct {
+	Value string `json:"value"`
+}
+
+// HarnessSecretsPublic defines model for HarnessSecretsPublic.
+type HarnessSecretsPublic struct {
+	Count int                   `json:"count"`
+	Data  []HarnessSecretPublic `json:"data"`
+}
+
+// HarnessSettingsPublic defines model for HarnessSettingsPublic.
+type HarnessSettingsPublic struct {
+	Document  map[string]interface{} `json:"document"`
+	UpdatedAt *string                `json:"updated_at,omitempty"`
+	Version   int                    `json:"version"`
+}
+
+// HarnessSettingsWrite defines model for HarnessSettingsWrite.
+type HarnessSettingsWrite struct {
+	Document map[string]interface{}      `json:"document"`
+	Source   *HarnessSettingsWriteSource `json:"source,omitempty"`
+	Version  int                         `json:"version"`
+}
+
+// HarnessSettingsWriteSource defines model for HarnessSettingsWrite.Source.
+type HarnessSettingsWriteSource string
 
 // HookSecurityMode defines model for HookSecurityMode.
 type HookSecurityMode string
@@ -2966,6 +3432,21 @@ type InspectionProfileWithImages struct {
 	UpdatedAt            string             `json:"updated_at"`
 }
 
+// InstantiateRequest defines model for InstantiateRequest.
+type InstantiateRequest struct {
+	Inputs     *[]CatalogInput    `json:"inputs,omitempty"`
+	Omit       *[]string          `json:"omit,omitempty"`
+	ServerName string             `json:"server_name"`
+	Template   McpServer          `json:"template"`
+	Values     *map[string]string `json:"values,omitempty"`
+}
+
+// InstantiateResponse defines model for InstantiateResponse.
+type InstantiateResponse struct {
+	SecretNames map[string]string `json:"secret_names"`
+	Server      McpServer         `json:"server"`
+}
+
 // JetsonNanoConfigPublic Public schema for Jetson Nano config responses.
 type JetsonNanoConfigPublic struct {
 	// CameraIndex Camera index on the Jetson device
@@ -3083,15 +3564,58 @@ type MQTTStatus struct {
 	Port         *int    `json:"port,omitempty"`
 }
 
+// ManifestTool defines model for ManifestTool.
+type ManifestTool struct {
+	Annotations *ToolAnnotations       `json:"annotations,omitempty"`
+	Description string                 `json:"description"`
+	InputSchema map[string]interface{} `json:"input_schema"`
+	Name        string                 `json:"name"`
+}
+
 // MatchModelsRequest defines model for MatchModelsRequest.
 type MatchModelsRequest struct {
 	ModelIds     []string `json:"model_ids"`
 	ProviderType string   `json:"provider_type"`
 }
 
+// McpServer defines model for McpServer.
+type McpServer struct {
+	Auth                *McpServerAuth     `json:"auth,omitempty"`
+	Enabled             *bool              `json:"enabled,omitempty"`
+	EnabledForAllAgents *bool              `json:"enabledForAllAgents,omitempty"`
+	Headers             *map[string]string `json:"headers,omitempty"`
+	Source              ServerSource       `json:"source"`
+	TimeoutSeconds      *int               `json:"timeoutSeconds,omitempty"`
+	Tools               *ToolSelection     `json:"tools,omitempty"`
+	Type                *McpServerType     `json:"type,omitempty"`
+	Url                 string             `json:"url"`
+}
+
+// McpServerAuth defines model for McpServer.Auth.
+type McpServerAuth string
+
+// McpServerType defines model for McpServer.Type.
+type McpServerType string
+
+// McpServerStatus defines model for McpServerStatus.
+type McpServerStatus string
+
 // Message Generic message response.
 type Message struct {
 	Message string `json:"message"`
+}
+
+// MobileTokenRequest defines model for MobileTokenRequest.
+type MobileTokenRequest struct {
+	Code         string `json:"code"`
+	CodeVerifier string `json:"code_verifier"`
+}
+
+// MobileTokenResponse defines model for MobileTokenResponse.
+type MobileTokenResponse struct {
+	AccessToken string  `json:"access_token"`
+	ExpiresIn   int     `json:"expires_in"`
+	TokenType   *string `json:"token_type,omitempty"`
 }
 
 // ModelCatalogPopular defines model for ModelCatalogPopular.
@@ -3145,6 +3669,18 @@ type ModelUsage struct {
 	ModelId    string `json:"model_id"`
 }
 
+// NeededInput defines model for NeededInput.
+type NeededInput struct {
+	DocsUrl    *string `json:"docs_url,omitempty"`
+	Help       *string `json:"help,omitempty"`
+	IsUrl      *bool   `json:"is_url,omitempty"`
+	Label      string  `json:"label"`
+	Name       string  `json:"name"`
+	Required   *bool   `json:"required,omitempty"`
+	Secret     bool    `json:"secret"`
+	SecretName string  `json:"secret_name"`
+}
+
 // OkResponse Minimal success acknowledgement (“{"ok": true}“).
 type OkResponse struct {
 	Ok *bool `json:"ok,omitempty"`
@@ -3188,6 +3724,13 @@ type OtelEndpointUpdate struct {
 // OutputTarget defines model for OutputTarget.
 type OutputTarget string
 
+// PendingDiff defines model for PendingDiff.
+type PendingDiff struct {
+	Added   []string `json:"added"`
+	Changed []string `json:"changed"`
+	Removed []string `json:"removed"`
+}
+
 // PrivateUserCreate defines model for PrivateUserCreate.
 type PrivateUserCreate struct {
 	Auth0Sub   *string            `json:"auth0_sub,omitempty"`
@@ -3196,6 +3739,28 @@ type PrivateUserCreate struct {
 	IsVerified *bool              `json:"is_verified,omitempty"`
 	TenantId   openapi_types.UUID `json:"tenant_id"`
 }
+
+// ProbeRequest defines model for ProbeRequest.
+type ProbeRequest struct {
+	Headers *map[string]string `json:"headers,omitempty"`
+	Type    *ProbeRequestType  `json:"type,omitempty"`
+	Url     string             `json:"url"`
+}
+
+// ProbeRequestType defines model for ProbeRequest.Type.
+type ProbeRequestType string
+
+// ProbeResult defines model for ProbeResult.
+type ProbeResult struct {
+	Auth                  ProbeResultAuth `json:"auth"`
+	Error                 *string         `json:"error,omitempty"`
+	OauthResourceMetadata *string         `json:"oauth_resource_metadata,omitempty"`
+	OauthScope            *string         `json:"oauth_scope,omitempty"`
+	Tools                 []ManifestTool  `json:"tools"`
+}
+
+// ProbeResultAuth defines model for ProbeResult.Auth.
+type ProbeResultAuth string
 
 // ProjectDeviceLinkCreate Properties to receive on link creation.
 type ProjectDeviceLinkCreate struct {
@@ -3250,6 +3815,24 @@ type ProjectDeviceLinksPublic struct {
 	Count int                       `json:"count"`
 	Data  []ProjectDeviceLinkPublic `json:"data"`
 }
+
+// ProposedServer A server the proposal touches, as it would run: where it connects and what it sends there.
+type ProposedServer struct {
+	Auth        ProposedServerAuth   `json:"auth"`
+	HeaderNames []string             `json:"header_names"`
+	Name        string               `json:"name"`
+	Removed     bool                 `json:"removed"`
+	Secrets     []ReferencedSecret   `json:"secrets"`
+	Source      ProposedServerSource `json:"source"`
+	Url         string               `json:"url"`
+	Vetted      bool                 `json:"vetted"`
+}
+
+// ProposedServerAuth defines model for ProposedServer.Auth.
+type ProposedServerAuth string
+
+// ProposedServerSource defines model for ProposedServer.Source.
+type ProposedServerSource string
 
 // PtzCapabilitiesSchema What a camera's motors can do, as reported by the device after probing.
 type PtzCapabilitiesSchema struct {
@@ -3369,6 +3952,31 @@ type ReferenceSheetWithVersions struct {
 	Versions      *[]ReferenceSheetVersionPublic `json:"versions,omitempty"`
 }
 
+// ReferencedSecret defines model for ReferencedSecret.
+type ReferencedSecret struct {
+	IsSet bool   `json:"is_set"`
+	Name  string `json:"name"`
+}
+
+// RegistryPage defines model for RegistryPage.
+type RegistryPage struct {
+	Items      []DiscoveredServer `json:"items"`
+	NextCursor *string            `json:"next_cursor,omitempty"`
+}
+
+// RejectProposalRequest defines model for RejectProposalRequest.
+type RejectProposalRequest struct {
+	Note *string `json:"note,omitempty"`
+}
+
+// RenderedDiff defines model for RenderedDiff.
+type RenderedDiff struct {
+	Added     []string  `json:"added"`
+	Changed   []string  `json:"changed"`
+	Effective *[]string `json:"effective,omitempty"`
+	Removed   []string  `json:"removed"`
+}
+
 // RestoreResponse defines model for RestoreResponse.
 type RestoreResponse struct {
 	RestoredCount int `json:"restored_count"`
@@ -3411,6 +4019,12 @@ type ReviewTarget struct {
 
 // ReviewTargetSource defines model for ReviewTarget.Source.
 type ReviewTargetSource string
+
+// ReviewerModelOptionsPublic defines model for ReviewerModelOptionsPublic.
+type ReviewerModelOptionsPublic struct {
+	Models           []string          `json:"models"`
+	ProviderDefaults map[string]string `json:"provider_defaults"`
+}
 
 // SaveMessagesPayload defines model for SaveMessagesPayload.
 type SaveMessagesPayload struct {
@@ -3498,6 +4112,47 @@ type SensorsPublic struct {
 	Data  []SensorPublic `json:"data"`
 }
 
+// ServerSource defines model for ServerSource.
+type ServerSource struct {
+	Kind ServerSourceKind `json:"kind"`
+	Ref  *string          `json:"ref,omitempty"`
+}
+
+// ServerSourceKind defines model for ServerSource.Kind.
+type ServerSourceKind string
+
+// ServerStatePublic defines model for ServerStatePublic.
+type ServerStatePublic struct {
+	AgentId             *openapi_types.UUID    `json:"agent_id"`
+	CallCount           int                    `json:"call_count"`
+	Id                  openapi_types.UUID     `json:"id"`
+	LastError           *string                `json:"last_error"`
+	LastProbedAt        *string                `json:"last_probed_at"`
+	Name                string                 `json:"name"`
+	PendingDiff         PendingDiff            `json:"pending_diff"`
+	PendingManifestHash *string                `json:"pending_manifest_hash"`
+	SchemaTokens        int                    `json:"schema_tokens"`
+	Scope               ServerStatePublicScope `json:"scope"`
+	Status              McpServerStatus        `json:"status"`
+	Tools               []ServerToolPublic     `json:"tools"`
+	UsedByAgentIds      []openapi_types.UUID   `json:"used_by_agent_ids"`
+	Vetted              bool                   `json:"vetted"`
+}
+
+// ServerStatePublicScope defines model for ServerStatePublic.Scope.
+type ServerStatePublicScope string
+
+// ServerToolPublic defines model for ServerToolPublic.
+type ServerToolPublic struct {
+	Class        ServerToolPublicClass `json:"class"`
+	Description  string                `json:"description"`
+	Name         string                `json:"name"`
+	SchemaTokens int                   `json:"schema_tokens"`
+}
+
+// ServerToolPublicClass defines model for ServerToolPublic.Class.
+type ServerToolPublicClass string
+
 // SessionStatus defines model for SessionStatus.
 type SessionStatus string
 
@@ -3531,18 +4186,6 @@ type StarItem struct {
 // StarListResponse defines model for StarListResponse.
 type StarListResponse struct {
 	Data []StarItem `json:"data"`
-}
-
-// StartRequest defines model for StartRequest.
-type StartRequest struct {
-	TargetUserId openapi_types.UUID `json:"target_user_id"`
-}
-
-// StartResponse defines model for StartResponse.
-type StartResponse struct {
-	ExpiresAt  string             `json:"expires_at"`
-	SessionId  openapi_types.UUID `json:"session_id"`
-	TargetUser TargetUserPublic   `json:"target_user"`
 }
 
 // StatCardResponse A single stat card for the dashboard.
@@ -3913,6 +4556,23 @@ type TenantUpdate struct {
 	Settings       *map[string]interface{} `json:"settings,omitempty"`
 }
 
+// ToolAnnotations defines model for ToolAnnotations.
+type ToolAnnotations struct {
+	Destructive *bool `json:"destructive,omitempty"`
+	Idempotent  *bool `json:"idempotent,omitempty"`
+	OpenWorld   *bool `json:"open_world,omitempty"`
+	ReadOnly    *bool `json:"read_only,omitempty"`
+}
+
+// ToolSelection defines model for ToolSelection.
+type ToolSelection struct {
+	Allow  *[]string                       `json:"allow,omitempty"`
+	Policy *map[string]ToolSelectionPolicy `json:"policy,omitempty"`
+}
+
+// ToolSelectionPolicy defines model for ToolSelection.Policy.
+type ToolSelectionPolicy string
+
 // UpdateSessionPreferencesPayload defines model for UpdateSessionPreferencesPayload.
 type UpdateSessionPreferencesPayload struct {
 	SessionPreferences map[string]interface{} `json:"session_preferences"`
@@ -4049,6 +4709,28 @@ type WorkspacePublic struct {
 type WorkspaceUpdate struct {
 	Description *string `json:"description,omitempty"`
 	Name        *string `json:"name,omitempty"`
+}
+
+// AppApiRoutesImpersonateStartRequest defines model for app__api__routes__impersonate__StartRequest.
+type AppApiRoutesImpersonateStartRequest struct {
+	TargetUserId openapi_types.UUID `json:"target_user_id"`
+}
+
+// AppApiRoutesImpersonateStartResponse defines model for app__api__routes__impersonate__StartResponse.
+type AppApiRoutesImpersonateStartResponse struct {
+	ExpiresAt  string             `json:"expires_at"`
+	SessionId  openapi_types.UUID `json:"session_id"`
+	TargetUser TargetUserPublic   `json:"target_user"`
+}
+
+// AppApiRoutesIntegrationsOauthStartRequest defines model for app__api__routes__integrations__oauth__StartRequest.
+type AppApiRoutesIntegrationsOauthStartRequest struct {
+	ReturnTo string `json:"return_to"`
+}
+
+// AppApiRoutesIntegrationsOauthStartResponse defines model for app__api__routes__integrations__oauth__StartResponse.
+type AppApiRoutesIntegrationsOauthStartResponse struct {
+	AuthorizeUrl string `json:"authorize_url"`
 }
 
 // ActivityListActivityParams defines parameters for ActivityListActivity.
@@ -5018,6 +5700,9 @@ type LoginAuthLoginParams struct {
 
 	// LoginHint Email to pre-fill on the Auth0 login page
 	LoginHint *string `form:"login_hint,omitempty" json:"login_hint,omitempty"`
+
+	// AppCodeChallenge Mobile app's PKCE S256 challenge; required when redirect_uri is the mobile app scheme
+	AppCodeChallenge *string `form:"app_code_challenge,omitempty" json:"app_code_challenge,omitempty"`
 }
 
 // CapturesListCapturesParams defines parameters for CapturesListCaptures.
@@ -5452,6 +6137,74 @@ type GatewayGatewayStatusParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
+// HarnessListProposalsParams defines parameters for HarnessListProposals.
+type HarnessListProposalsParams struct {
+	AgentId     *openapi_types.UUID    `form:"agent_id,omitempty" json:"agent_id,omitempty"`
+	Status      *HarnessProposalStatus `form:"status,omitempty" json:"status,omitempty"`
+	AccessToken *string                `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// HarnessApproveProposalParams defines parameters for HarnessApproveProposal.
+type HarnessApproveProposalParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// HarnessRejectProposalParams defines parameters for HarnessRejectProposal.
+type HarnessRejectProposalParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// HarnessListSecretsParams defines parameters for HarnessListSecrets.
+type HarnessListSecretsParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// HarnessDeleteSecretParams defines parameters for HarnessDeleteSecret.
+type HarnessDeleteSecretParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// HarnessPutSecretParams defines parameters for HarnessPutSecret.
+type HarnessPutSecretParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// HarnessGetTenantSettingsParams defines parameters for HarnessGetTenantSettings.
+type HarnessGetTenantSettingsParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// HarnessPutTenantSettingsParams defines parameters for HarnessPutTenantSettings.
+type HarnessPutTenantSettingsParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// HarnessGetAgentSettingsParams defines parameters for HarnessGetAgentSettings.
+type HarnessGetAgentSettingsParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// HarnessPutAgentSettingsParams defines parameters for HarnessPutAgentSettings.
+type HarnessPutAgentSettingsParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// HarnessGetEffectiveSettingsParams defines parameters for HarnessGetEffectiveSettings.
+type HarnessGetEffectiveSettingsParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// HarnessListReviewerModelsParams defines parameters for HarnessListReviewerModels.
+type HarnessListReviewerModelsParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// HarnessListRevisionsParams defines parameters for HarnessListRevisions.
+type HarnessListRevisionsParams struct {
+	AgentId     *openapi_types.UUID `form:"agent_id,omitempty" json:"agent_id,omitempty"`
+	AccessToken *string             `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
 // ImagesReadCameraImagesParams defines parameters for ImagesReadCameraImages.
 type ImagesReadCameraImagesParams struct {
 	Skip  *int `form:"skip,omitempty" json:"skip,omitempty"`
@@ -5638,6 +6391,57 @@ type InspectionDeleteAnnotationParams struct {
 
 // InspectionUpdateAnnotationParams defines parameters for InspectionUpdateAnnotation.
 type InspectionUpdateAnnotationParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// IntegrationsListCatalogParams defines parameters for IntegrationsListCatalog.
+type IntegrationsListCatalogParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// IntegrationsInstantiateServerParams defines parameters for IntegrationsInstantiateServer.
+type IntegrationsInstantiateServerParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// IntegrationsOauthCallbackParams defines parameters for IntegrationsOauthCallback.
+type IntegrationsOauthCallbackParams struct {
+	State       string  `form:"state" json:"state"`
+	Code        *string `form:"code,omitempty" json:"code,omitempty"`
+	Error       *string `form:"error,omitempty" json:"error,omitempty"`
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// IntegrationsProbeServerParams defines parameters for IntegrationsProbeServer.
+type IntegrationsProbeServerParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// IntegrationsSearchRegistryParams defines parameters for IntegrationsSearchRegistry.
+type IntegrationsSearchRegistryParams struct {
+	Search      *string `form:"search,omitempty" json:"search,omitempty"`
+	Cursor      *string `form:"cursor,omitempty" json:"cursor,omitempty"`
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// IntegrationsListServerStatesParams defines parameters for IntegrationsListServerStates.
+type IntegrationsListServerStatesParams struct {
+	AgentId     *openapi_types.UUID `form:"agent_id,omitempty" json:"agent_id,omitempty"`
+	AccessToken *string             `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// IntegrationsAcceptServerDriftParams defines parameters for IntegrationsAcceptServerDrift.
+type IntegrationsAcceptServerDriftParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// IntegrationsStartOauthParams defines parameters for IntegrationsStartOauth.
+type IntegrationsStartOauthParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// IntegrationsRefreshServerStateParams defines parameters for IntegrationsRefreshServerState.
+type IntegrationsRefreshServerStateParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
@@ -6344,6 +7148,9 @@ type AuthStartCliPairJSONRequestBody = CliPairCreate
 // AuthAuthorizeCliPairJSONRequestBody defines body for AuthAuthorizeCliPair for application/json ContentType.
 type AuthAuthorizeCliPairJSONRequestBody = CliPairAuthorize
 
+// LoginMobileTokenJSONRequestBody defines body for LoginMobileToken for application/json ContentType.
+type LoginMobileTokenJSONRequestBody = MobileTokenRequest
+
 // CapturesBulkDeleteCapturesJSONRequestBody defines body for CapturesBulkDeleteCaptures for application/json ContentType.
 type CapturesBulkDeleteCapturesJSONRequestBody = BulkDeleteRequest
 
@@ -6410,6 +7217,21 @@ type DevicesUpdateDeviceJSONRequestBody = DeviceUpdate
 // ExploreRunRawQueryJSONRequestBody defines body for ExploreRunRawQuery for application/json ContentType.
 type ExploreRunRawQueryJSONRequestBody = RawQueryRequest
 
+// HarnessApproveProposalJSONRequestBody defines body for HarnessApproveProposal for application/json ContentType.
+type HarnessApproveProposalJSONRequestBody = ApproveProposalRequest
+
+// HarnessRejectProposalJSONRequestBody defines body for HarnessRejectProposal for application/json ContentType.
+type HarnessRejectProposalJSONRequestBody = RejectProposalRequest
+
+// HarnessPutSecretJSONRequestBody defines body for HarnessPutSecret for application/json ContentType.
+type HarnessPutSecretJSONRequestBody = HarnessSecretWrite
+
+// HarnessPutTenantSettingsJSONRequestBody defines body for HarnessPutTenantSettings for application/json ContentType.
+type HarnessPutTenantSettingsJSONRequestBody = HarnessSettingsWrite
+
+// HarnessPutAgentSettingsJSONRequestBody defines body for HarnessPutAgentSettings for application/json ContentType.
+type HarnessPutAgentSettingsJSONRequestBody = HarnessSettingsWrite
+
 // ImagesCaptureImageMultipartRequestBody defines body for ImagesCaptureImage for multipart/form-data ContentType.
 type ImagesCaptureImageMultipartRequestBody = BodyImagesCaptureImage
 
@@ -6426,7 +7248,7 @@ type ImagesUpdateCameraImageJSONRequestBody = CameraImageUpdate
 type ImagesPatchCameraImageReviewJSONRequestBody = ReviewPayload
 
 // ImpersonateStartImpersonationJSONRequestBody defines body for ImpersonateStartImpersonation for application/json ContentType.
-type ImpersonateStartImpersonationJSONRequestBody = StartRequest
+type ImpersonateStartImpersonationJSONRequestBody = AppApiRoutesImpersonateStartRequest
 
 // IncidentsCreateIncidentJSONRequestBody defines body for IncidentsCreateIncident for application/json ContentType.
 type IncidentsCreateIncidentJSONRequestBody = IncidentCreate
@@ -6448,6 +7270,18 @@ type InspectionSetCaptureReferenceSetJSONRequestBody = CaptureReferenceSetIn
 
 // InspectionUpdateAnnotationJSONRequestBody defines body for InspectionUpdateAnnotation for application/json ContentType.
 type InspectionUpdateAnnotationJSONRequestBody = AnnotationUpdateIn
+
+// IntegrationsInstantiateServerJSONRequestBody defines body for IntegrationsInstantiateServer for application/json ContentType.
+type IntegrationsInstantiateServerJSONRequestBody = InstantiateRequest
+
+// IntegrationsProbeServerJSONRequestBody defines body for IntegrationsProbeServer for application/json ContentType.
+type IntegrationsProbeServerJSONRequestBody = ProbeRequest
+
+// IntegrationsAcceptServerDriftJSONRequestBody defines body for IntegrationsAcceptServerDrift for application/json ContentType.
+type IntegrationsAcceptServerDriftJSONRequestBody = AcceptDriftRequest
+
+// IntegrationsStartOauthJSONRequestBody defines body for IntegrationsStartOauth for application/json ContentType.
+type IntegrationsStartOauthJSONRequestBody = AppApiRoutesIntegrationsOauthStartRequest
 
 // JetsonNanoMoveCameraJSONRequestBody defines body for JetsonNanoMoveCamera for application/json ContentType.
 type JetsonNanoMoveCameraJSONRequestBody = PtzMoveRequest
@@ -7244,6 +8078,11 @@ type ClientInterface interface {
 	// LoginAuthLogout request
 	LoginAuthLogout(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// LoginMobileTokenWithBody request with any body
+	LoginMobileTokenWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	LoginMobileToken(ctx context.Context, body LoginMobileTokenJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// CapturesListCaptures request
 	CapturesListCaptures(ctx context.Context, params *CapturesListCapturesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -7530,6 +8369,55 @@ type ClientInterface interface {
 	// GatewayGatewayStatus request
 	GatewayGatewayStatus(ctx context.Context, params *GatewayGatewayStatusParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// HarnessListProposals request
+	HarnessListProposals(ctx context.Context, params *HarnessListProposalsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// HarnessApproveProposalWithBody request with any body
+	HarnessApproveProposalWithBody(ctx context.Context, proposalId openapi_types.UUID, params *HarnessApproveProposalParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	HarnessApproveProposal(ctx context.Context, proposalId openapi_types.UUID, params *HarnessApproveProposalParams, body HarnessApproveProposalJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// HarnessRejectProposalWithBody request with any body
+	HarnessRejectProposalWithBody(ctx context.Context, proposalId openapi_types.UUID, params *HarnessRejectProposalParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	HarnessRejectProposal(ctx context.Context, proposalId openapi_types.UUID, params *HarnessRejectProposalParams, body HarnessRejectProposalJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// HarnessListSecrets request
+	HarnessListSecrets(ctx context.Context, params *HarnessListSecretsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// HarnessDeleteSecret request
+	HarnessDeleteSecret(ctx context.Context, name string, params *HarnessDeleteSecretParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// HarnessPutSecretWithBody request with any body
+	HarnessPutSecretWithBody(ctx context.Context, name string, params *HarnessPutSecretParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	HarnessPutSecret(ctx context.Context, name string, params *HarnessPutSecretParams, body HarnessPutSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// HarnessGetTenantSettings request
+	HarnessGetTenantSettings(ctx context.Context, params *HarnessGetTenantSettingsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// HarnessPutTenantSettingsWithBody request with any body
+	HarnessPutTenantSettingsWithBody(ctx context.Context, params *HarnessPutTenantSettingsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	HarnessPutTenantSettings(ctx context.Context, params *HarnessPutTenantSettingsParams, body HarnessPutTenantSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// HarnessGetAgentSettings request
+	HarnessGetAgentSettings(ctx context.Context, agentId openapi_types.UUID, params *HarnessGetAgentSettingsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// HarnessPutAgentSettingsWithBody request with any body
+	HarnessPutAgentSettingsWithBody(ctx context.Context, agentId openapi_types.UUID, params *HarnessPutAgentSettingsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	HarnessPutAgentSettings(ctx context.Context, agentId openapi_types.UUID, params *HarnessPutAgentSettingsParams, body HarnessPutAgentSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// HarnessGetEffectiveSettings request
+	HarnessGetEffectiveSettings(ctx context.Context, agentId openapi_types.UUID, params *HarnessGetEffectiveSettingsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// HarnessListReviewerModels request
+	HarnessListReviewerModels(ctx context.Context, params *HarnessListReviewerModelsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// HarnessListRevisions request
+	HarnessListRevisions(ctx context.Context, params *HarnessListRevisionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ImagesReadCameraImages request
 	ImagesReadCameraImages(ctx context.Context, params *ImagesReadCameraImagesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -7647,6 +8535,41 @@ type ClientInterface interface {
 	InspectionUpdateAnnotationWithBody(ctx context.Context, annotationId openapi_types.UUID, params *InspectionUpdateAnnotationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	InspectionUpdateAnnotation(ctx context.Context, annotationId openapi_types.UUID, params *InspectionUpdateAnnotationParams, body InspectionUpdateAnnotationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// IntegrationsListCatalog request
+	IntegrationsListCatalog(ctx context.Context, params *IntegrationsListCatalogParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// IntegrationsInstantiateServerWithBody request with any body
+	IntegrationsInstantiateServerWithBody(ctx context.Context, params *IntegrationsInstantiateServerParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	IntegrationsInstantiateServer(ctx context.Context, params *IntegrationsInstantiateServerParams, body IntegrationsInstantiateServerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// IntegrationsOauthCallback request
+	IntegrationsOauthCallback(ctx context.Context, params *IntegrationsOauthCallbackParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// IntegrationsProbeServerWithBody request with any body
+	IntegrationsProbeServerWithBody(ctx context.Context, params *IntegrationsProbeServerParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	IntegrationsProbeServer(ctx context.Context, params *IntegrationsProbeServerParams, body IntegrationsProbeServerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// IntegrationsSearchRegistry request
+	IntegrationsSearchRegistry(ctx context.Context, params *IntegrationsSearchRegistryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// IntegrationsListServerStates request
+	IntegrationsListServerStates(ctx context.Context, params *IntegrationsListServerStatesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// IntegrationsAcceptServerDriftWithBody request with any body
+	IntegrationsAcceptServerDriftWithBody(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsAcceptServerDriftParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	IntegrationsAcceptServerDrift(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsAcceptServerDriftParams, body IntegrationsAcceptServerDriftJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// IntegrationsStartOauthWithBody request with any body
+	IntegrationsStartOauthWithBody(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsStartOauthParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	IntegrationsStartOauth(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsStartOauthParams, body IntegrationsStartOauthJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// IntegrationsRefreshServerState request
+	IntegrationsRefreshServerState(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsRefreshServerStateParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// JetsonNanoGetJetsonDevices request
 	JetsonNanoGetJetsonDevices(ctx context.Context, params *JetsonNanoGetJetsonDevicesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -10452,6 +11375,30 @@ func (c *Client) LoginAuthLogout(ctx context.Context, reqEditors ...RequestEdito
 	return c.Client.Do(req)
 }
 
+func (c *Client) LoginMobileTokenWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewLoginMobileTokenRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) LoginMobileToken(ctx context.Context, body LoginMobileTokenJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewLoginMobileTokenRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) CapturesListCaptures(ctx context.Context, params *CapturesListCapturesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCapturesListCapturesRequest(c.Server, params)
 	if err != nil {
@@ -11676,6 +12623,222 @@ func (c *Client) GatewayGatewayStatus(ctx context.Context, params *GatewayGatewa
 	return c.Client.Do(req)
 }
 
+func (c *Client) HarnessListProposals(ctx context.Context, params *HarnessListProposalsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessListProposalsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) HarnessApproveProposalWithBody(ctx context.Context, proposalId openapi_types.UUID, params *HarnessApproveProposalParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessApproveProposalRequestWithBody(c.Server, proposalId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) HarnessApproveProposal(ctx context.Context, proposalId openapi_types.UUID, params *HarnessApproveProposalParams, body HarnessApproveProposalJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessApproveProposalRequest(c.Server, proposalId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) HarnessRejectProposalWithBody(ctx context.Context, proposalId openapi_types.UUID, params *HarnessRejectProposalParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessRejectProposalRequestWithBody(c.Server, proposalId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) HarnessRejectProposal(ctx context.Context, proposalId openapi_types.UUID, params *HarnessRejectProposalParams, body HarnessRejectProposalJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessRejectProposalRequest(c.Server, proposalId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) HarnessListSecrets(ctx context.Context, params *HarnessListSecretsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessListSecretsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) HarnessDeleteSecret(ctx context.Context, name string, params *HarnessDeleteSecretParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessDeleteSecretRequest(c.Server, name, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) HarnessPutSecretWithBody(ctx context.Context, name string, params *HarnessPutSecretParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessPutSecretRequestWithBody(c.Server, name, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) HarnessPutSecret(ctx context.Context, name string, params *HarnessPutSecretParams, body HarnessPutSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessPutSecretRequest(c.Server, name, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) HarnessGetTenantSettings(ctx context.Context, params *HarnessGetTenantSettingsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessGetTenantSettingsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) HarnessPutTenantSettingsWithBody(ctx context.Context, params *HarnessPutTenantSettingsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessPutTenantSettingsRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) HarnessPutTenantSettings(ctx context.Context, params *HarnessPutTenantSettingsParams, body HarnessPutTenantSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessPutTenantSettingsRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) HarnessGetAgentSettings(ctx context.Context, agentId openapi_types.UUID, params *HarnessGetAgentSettingsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessGetAgentSettingsRequest(c.Server, agentId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) HarnessPutAgentSettingsWithBody(ctx context.Context, agentId openapi_types.UUID, params *HarnessPutAgentSettingsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessPutAgentSettingsRequestWithBody(c.Server, agentId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) HarnessPutAgentSettings(ctx context.Context, agentId openapi_types.UUID, params *HarnessPutAgentSettingsParams, body HarnessPutAgentSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessPutAgentSettingsRequest(c.Server, agentId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) HarnessGetEffectiveSettings(ctx context.Context, agentId openapi_types.UUID, params *HarnessGetEffectiveSettingsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessGetEffectiveSettingsRequest(c.Server, agentId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) HarnessListReviewerModels(ctx context.Context, params *HarnessListReviewerModelsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessListReviewerModelsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) HarnessListRevisions(ctx context.Context, params *HarnessListRevisionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHarnessListRevisionsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) ImagesReadCameraImages(ctx context.Context, params *ImagesReadCameraImagesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewImagesReadCameraImagesRequest(c.Server, params)
 	if err != nil {
@@ -12182,6 +13345,162 @@ func (c *Client) InspectionUpdateAnnotationWithBody(ctx context.Context, annotat
 
 func (c *Client) InspectionUpdateAnnotation(ctx context.Context, annotationId openapi_types.UUID, params *InspectionUpdateAnnotationParams, body InspectionUpdateAnnotationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewInspectionUpdateAnnotationRequest(c.Server, annotationId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) IntegrationsListCatalog(ctx context.Context, params *IntegrationsListCatalogParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIntegrationsListCatalogRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) IntegrationsInstantiateServerWithBody(ctx context.Context, params *IntegrationsInstantiateServerParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIntegrationsInstantiateServerRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) IntegrationsInstantiateServer(ctx context.Context, params *IntegrationsInstantiateServerParams, body IntegrationsInstantiateServerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIntegrationsInstantiateServerRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) IntegrationsOauthCallback(ctx context.Context, params *IntegrationsOauthCallbackParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIntegrationsOauthCallbackRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) IntegrationsProbeServerWithBody(ctx context.Context, params *IntegrationsProbeServerParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIntegrationsProbeServerRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) IntegrationsProbeServer(ctx context.Context, params *IntegrationsProbeServerParams, body IntegrationsProbeServerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIntegrationsProbeServerRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) IntegrationsSearchRegistry(ctx context.Context, params *IntegrationsSearchRegistryParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIntegrationsSearchRegistryRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) IntegrationsListServerStates(ctx context.Context, params *IntegrationsListServerStatesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIntegrationsListServerStatesRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) IntegrationsAcceptServerDriftWithBody(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsAcceptServerDriftParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIntegrationsAcceptServerDriftRequestWithBody(c.Server, stateId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) IntegrationsAcceptServerDrift(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsAcceptServerDriftParams, body IntegrationsAcceptServerDriftJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIntegrationsAcceptServerDriftRequest(c.Server, stateId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) IntegrationsStartOauthWithBody(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsStartOauthParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIntegrationsStartOauthRequestWithBody(c.Server, stateId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) IntegrationsStartOauth(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsStartOauthParams, body IntegrationsStartOauthJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIntegrationsStartOauthRequest(c.Server, stateId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) IntegrationsRefreshServerState(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsRefreshServerStateParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIntegrationsRefreshServerStateRequest(c.Server, stateId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -24303,6 +25622,22 @@ func NewLoginAuthLoginRequest(server string, params *LoginAuthLoginParams) (*htt
 
 		}
 
+		if params.AppCodeChallenge != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "app_code_challenge", *params.AppCodeChallenge, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		queryURL.RawQuery = queryValues.Encode()
 	}
 
@@ -24337,6 +25672,46 @@ func NewLoginAuthLogoutRequest(server string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewLoginMobileTokenRequest calls the generic LoginMobileToken builder with application/json body
+func NewLoginMobileTokenRequest(server string, body LoginMobileTokenJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewLoginMobileTokenRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewLoginMobileTokenRequestWithBody generates requests for LoginMobileToken with any type of body
+func NewLoginMobileTokenRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/auth/mobile/token")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -29236,6 +30611,752 @@ func NewGatewayGatewayStatusRequest(server string, params *GatewayGatewayStatusP
 	return req, nil
 }
 
+// NewHarnessListProposalsRequest generates requests for HarnessListProposals
+func NewHarnessListProposalsRequest(server string, params *HarnessListProposalsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/harness/proposals")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.AgentId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "agent_id", *params.AgentId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Status != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "status", *params.Status, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewHarnessApproveProposalRequest calls the generic HarnessApproveProposal builder with application/json body
+func NewHarnessApproveProposalRequest(server string, proposalId openapi_types.UUID, params *HarnessApproveProposalParams, body HarnessApproveProposalJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewHarnessApproveProposalRequestWithBody(server, proposalId, params, "application/json", bodyReader)
+}
+
+// NewHarnessApproveProposalRequestWithBody generates requests for HarnessApproveProposal with any type of body
+func NewHarnessApproveProposalRequestWithBody(server string, proposalId openapi_types.UUID, params *HarnessApproveProposalParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "proposal_id", proposalId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/harness/proposals/%s/approve", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewHarnessRejectProposalRequest calls the generic HarnessRejectProposal builder with application/json body
+func NewHarnessRejectProposalRequest(server string, proposalId openapi_types.UUID, params *HarnessRejectProposalParams, body HarnessRejectProposalJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewHarnessRejectProposalRequestWithBody(server, proposalId, params, "application/json", bodyReader)
+}
+
+// NewHarnessRejectProposalRequestWithBody generates requests for HarnessRejectProposal with any type of body
+func NewHarnessRejectProposalRequestWithBody(server string, proposalId openapi_types.UUID, params *HarnessRejectProposalParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "proposal_id", proposalId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/harness/proposals/%s/reject", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewHarnessListSecretsRequest generates requests for HarnessListSecrets
+func NewHarnessListSecretsRequest(server string, params *HarnessListSecretsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/harness/secrets")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewHarnessDeleteSecretRequest generates requests for HarnessDeleteSecret
+func NewHarnessDeleteSecretRequest(server string, name string, params *HarnessDeleteSecretParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/harness/secrets/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewHarnessPutSecretRequest calls the generic HarnessPutSecret builder with application/json body
+func NewHarnessPutSecretRequest(server string, name string, params *HarnessPutSecretParams, body HarnessPutSecretJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewHarnessPutSecretRequestWithBody(server, name, params, "application/json", bodyReader)
+}
+
+// NewHarnessPutSecretRequestWithBody generates requests for HarnessPutSecret with any type of body
+func NewHarnessPutSecretRequestWithBody(server string, name string, params *HarnessPutSecretParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/harness/secrets/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewHarnessGetTenantSettingsRequest generates requests for HarnessGetTenantSettings
+func NewHarnessGetTenantSettingsRequest(server string, params *HarnessGetTenantSettingsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/harness/settings")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewHarnessPutTenantSettingsRequest calls the generic HarnessPutTenantSettings builder with application/json body
+func NewHarnessPutTenantSettingsRequest(server string, params *HarnessPutTenantSettingsParams, body HarnessPutTenantSettingsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewHarnessPutTenantSettingsRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewHarnessPutTenantSettingsRequestWithBody generates requests for HarnessPutTenantSettings with any type of body
+func NewHarnessPutTenantSettingsRequestWithBody(server string, params *HarnessPutTenantSettingsParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/harness/settings")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewHarnessGetAgentSettingsRequest generates requests for HarnessGetAgentSettings
+func NewHarnessGetAgentSettingsRequest(server string, agentId openapi_types.UUID, params *HarnessGetAgentSettingsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "agent_id", agentId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/harness/settings/agents/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewHarnessPutAgentSettingsRequest calls the generic HarnessPutAgentSettings builder with application/json body
+func NewHarnessPutAgentSettingsRequest(server string, agentId openapi_types.UUID, params *HarnessPutAgentSettingsParams, body HarnessPutAgentSettingsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewHarnessPutAgentSettingsRequestWithBody(server, agentId, params, "application/json", bodyReader)
+}
+
+// NewHarnessPutAgentSettingsRequestWithBody generates requests for HarnessPutAgentSettings with any type of body
+func NewHarnessPutAgentSettingsRequestWithBody(server string, agentId openapi_types.UUID, params *HarnessPutAgentSettingsParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "agent_id", agentId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/harness/settings/agents/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewHarnessGetEffectiveSettingsRequest generates requests for HarnessGetEffectiveSettings
+func NewHarnessGetEffectiveSettingsRequest(server string, agentId openapi_types.UUID, params *HarnessGetEffectiveSettingsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "agent_id", agentId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/harness/settings/agents/%s/effective", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewHarnessListReviewerModelsRequest generates requests for HarnessListReviewerModels
+func NewHarnessListReviewerModelsRequest(server string, params *HarnessListReviewerModelsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/harness/settings/reviewer-models")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewHarnessListRevisionsRequest generates requests for HarnessListRevisions
+func NewHarnessListRevisionsRequest(server string, params *HarnessListRevisionsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/harness/settings/revisions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.AgentId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "agent_id", *params.AgentId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
 // NewImagesReadCameraImagesRequest generates requests for ImagesReadCameraImages
 func NewImagesReadCameraImagesRequest(server string, params *ImagesReadCameraImagesParams) (*http.Request, error) {
 	var err error
@@ -31217,6 +33338,585 @@ func NewInspectionUpdateAnnotationRequestWithBody(server string, annotationId op
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewIntegrationsListCatalogRequest generates requests for IntegrationsListCatalog
+func NewIntegrationsListCatalogRequest(server string, params *IntegrationsListCatalogParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/integrations/catalog")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewIntegrationsInstantiateServerRequest calls the generic IntegrationsInstantiateServer builder with application/json body
+func NewIntegrationsInstantiateServerRequest(server string, params *IntegrationsInstantiateServerParams, body IntegrationsInstantiateServerJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewIntegrationsInstantiateServerRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewIntegrationsInstantiateServerRequestWithBody generates requests for IntegrationsInstantiateServer with any type of body
+func NewIntegrationsInstantiateServerRequestWithBody(server string, params *IntegrationsInstantiateServerParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/integrations/instantiate")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewIntegrationsOauthCallbackRequest generates requests for IntegrationsOauthCallback
+func NewIntegrationsOauthCallbackRequest(server string, params *IntegrationsOauthCallbackParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/integrations/oauth/callback")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "state", params.State, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if params.Code != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "code", *params.Code, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Error != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "error", *params.Error, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewIntegrationsProbeServerRequest calls the generic IntegrationsProbeServer builder with application/json body
+func NewIntegrationsProbeServerRequest(server string, params *IntegrationsProbeServerParams, body IntegrationsProbeServerJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewIntegrationsProbeServerRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewIntegrationsProbeServerRequestWithBody generates requests for IntegrationsProbeServer with any type of body
+func NewIntegrationsProbeServerRequestWithBody(server string, params *IntegrationsProbeServerParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/integrations/probe")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewIntegrationsSearchRegistryRequest generates requests for IntegrationsSearchRegistry
+func NewIntegrationsSearchRegistryRequest(server string, params *IntegrationsSearchRegistryParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/integrations/registry")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Search != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "search", *params.Search, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Cursor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "cursor", *params.Cursor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewIntegrationsListServerStatesRequest generates requests for IntegrationsListServerStates
+func NewIntegrationsListServerStatesRequest(server string, params *IntegrationsListServerStatesParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/integrations/servers")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.AgentId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "agent_id", *params.AgentId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewIntegrationsAcceptServerDriftRequest calls the generic IntegrationsAcceptServerDrift builder with application/json body
+func NewIntegrationsAcceptServerDriftRequest(server string, stateId openapi_types.UUID, params *IntegrationsAcceptServerDriftParams, body IntegrationsAcceptServerDriftJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewIntegrationsAcceptServerDriftRequestWithBody(server, stateId, params, "application/json", bodyReader)
+}
+
+// NewIntegrationsAcceptServerDriftRequestWithBody generates requests for IntegrationsAcceptServerDrift with any type of body
+func NewIntegrationsAcceptServerDriftRequestWithBody(server string, stateId openapi_types.UUID, params *IntegrationsAcceptServerDriftParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "state_id", stateId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/integrations/servers/%s/accept-drift", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewIntegrationsStartOauthRequest calls the generic IntegrationsStartOauth builder with application/json body
+func NewIntegrationsStartOauthRequest(server string, stateId openapi_types.UUID, params *IntegrationsStartOauthParams, body IntegrationsStartOauthJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewIntegrationsStartOauthRequestWithBody(server, stateId, params, "application/json", bodyReader)
+}
+
+// NewIntegrationsStartOauthRequestWithBody generates requests for IntegrationsStartOauth with any type of body
+func NewIntegrationsStartOauthRequestWithBody(server string, stateId openapi_types.UUID, params *IntegrationsStartOauthParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "state_id", stateId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/integrations/servers/%s/oauth/start", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewIntegrationsRefreshServerStateRequest generates requests for IntegrationsRefreshServerState
+func NewIntegrationsRefreshServerStateRequest(server string, stateId openapi_types.UUID, params *IntegrationsRefreshServerStateParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "state_id", stateId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/integrations/servers/%s/refresh", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	if params != nil {
 
@@ -38288,6 +40988,11 @@ type ClientWithResponsesInterface interface {
 	// LoginAuthLogoutWithResponse request
 	LoginAuthLogoutWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*LoginAuthLogoutResponse, error)
 
+	// LoginMobileTokenWithBodyWithResponse request with any body
+	LoginMobileTokenWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*LoginMobileTokenResponse, error)
+
+	LoginMobileTokenWithResponse(ctx context.Context, body LoginMobileTokenJSONRequestBody, reqEditors ...RequestEditorFn) (*LoginMobileTokenResponse, error)
+
 	// CapturesListCapturesWithResponse request
 	CapturesListCapturesWithResponse(ctx context.Context, params *CapturesListCapturesParams, reqEditors ...RequestEditorFn) (*CapturesListCapturesResponse, error)
 
@@ -38574,6 +41279,55 @@ type ClientWithResponsesInterface interface {
 	// GatewayGatewayStatusWithResponse request
 	GatewayGatewayStatusWithResponse(ctx context.Context, params *GatewayGatewayStatusParams, reqEditors ...RequestEditorFn) (*GatewayGatewayStatusResponse, error)
 
+	// HarnessListProposalsWithResponse request
+	HarnessListProposalsWithResponse(ctx context.Context, params *HarnessListProposalsParams, reqEditors ...RequestEditorFn) (*HarnessListProposalsResponse, error)
+
+	// HarnessApproveProposalWithBodyWithResponse request with any body
+	HarnessApproveProposalWithBodyWithResponse(ctx context.Context, proposalId openapi_types.UUID, params *HarnessApproveProposalParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*HarnessApproveProposalResponse, error)
+
+	HarnessApproveProposalWithResponse(ctx context.Context, proposalId openapi_types.UUID, params *HarnessApproveProposalParams, body HarnessApproveProposalJSONRequestBody, reqEditors ...RequestEditorFn) (*HarnessApproveProposalResponse, error)
+
+	// HarnessRejectProposalWithBodyWithResponse request with any body
+	HarnessRejectProposalWithBodyWithResponse(ctx context.Context, proposalId openapi_types.UUID, params *HarnessRejectProposalParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*HarnessRejectProposalResponse, error)
+
+	HarnessRejectProposalWithResponse(ctx context.Context, proposalId openapi_types.UUID, params *HarnessRejectProposalParams, body HarnessRejectProposalJSONRequestBody, reqEditors ...RequestEditorFn) (*HarnessRejectProposalResponse, error)
+
+	// HarnessListSecretsWithResponse request
+	HarnessListSecretsWithResponse(ctx context.Context, params *HarnessListSecretsParams, reqEditors ...RequestEditorFn) (*HarnessListSecretsResponse, error)
+
+	// HarnessDeleteSecretWithResponse request
+	HarnessDeleteSecretWithResponse(ctx context.Context, name string, params *HarnessDeleteSecretParams, reqEditors ...RequestEditorFn) (*HarnessDeleteSecretResponse, error)
+
+	// HarnessPutSecretWithBodyWithResponse request with any body
+	HarnessPutSecretWithBodyWithResponse(ctx context.Context, name string, params *HarnessPutSecretParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*HarnessPutSecretResponse, error)
+
+	HarnessPutSecretWithResponse(ctx context.Context, name string, params *HarnessPutSecretParams, body HarnessPutSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*HarnessPutSecretResponse, error)
+
+	// HarnessGetTenantSettingsWithResponse request
+	HarnessGetTenantSettingsWithResponse(ctx context.Context, params *HarnessGetTenantSettingsParams, reqEditors ...RequestEditorFn) (*HarnessGetTenantSettingsResponse, error)
+
+	// HarnessPutTenantSettingsWithBodyWithResponse request with any body
+	HarnessPutTenantSettingsWithBodyWithResponse(ctx context.Context, params *HarnessPutTenantSettingsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*HarnessPutTenantSettingsResponse, error)
+
+	HarnessPutTenantSettingsWithResponse(ctx context.Context, params *HarnessPutTenantSettingsParams, body HarnessPutTenantSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*HarnessPutTenantSettingsResponse, error)
+
+	// HarnessGetAgentSettingsWithResponse request
+	HarnessGetAgentSettingsWithResponse(ctx context.Context, agentId openapi_types.UUID, params *HarnessGetAgentSettingsParams, reqEditors ...RequestEditorFn) (*HarnessGetAgentSettingsResponse, error)
+
+	// HarnessPutAgentSettingsWithBodyWithResponse request with any body
+	HarnessPutAgentSettingsWithBodyWithResponse(ctx context.Context, agentId openapi_types.UUID, params *HarnessPutAgentSettingsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*HarnessPutAgentSettingsResponse, error)
+
+	HarnessPutAgentSettingsWithResponse(ctx context.Context, agentId openapi_types.UUID, params *HarnessPutAgentSettingsParams, body HarnessPutAgentSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*HarnessPutAgentSettingsResponse, error)
+
+	// HarnessGetEffectiveSettingsWithResponse request
+	HarnessGetEffectiveSettingsWithResponse(ctx context.Context, agentId openapi_types.UUID, params *HarnessGetEffectiveSettingsParams, reqEditors ...RequestEditorFn) (*HarnessGetEffectiveSettingsResponse, error)
+
+	// HarnessListReviewerModelsWithResponse request
+	HarnessListReviewerModelsWithResponse(ctx context.Context, params *HarnessListReviewerModelsParams, reqEditors ...RequestEditorFn) (*HarnessListReviewerModelsResponse, error)
+
+	// HarnessListRevisionsWithResponse request
+	HarnessListRevisionsWithResponse(ctx context.Context, params *HarnessListRevisionsParams, reqEditors ...RequestEditorFn) (*HarnessListRevisionsResponse, error)
+
 	// ImagesReadCameraImagesWithResponse request
 	ImagesReadCameraImagesWithResponse(ctx context.Context, params *ImagesReadCameraImagesParams, reqEditors ...RequestEditorFn) (*ImagesReadCameraImagesResponse, error)
 
@@ -38691,6 +41445,41 @@ type ClientWithResponsesInterface interface {
 	InspectionUpdateAnnotationWithBodyWithResponse(ctx context.Context, annotationId openapi_types.UUID, params *InspectionUpdateAnnotationParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*InspectionUpdateAnnotationResponse, error)
 
 	InspectionUpdateAnnotationWithResponse(ctx context.Context, annotationId openapi_types.UUID, params *InspectionUpdateAnnotationParams, body InspectionUpdateAnnotationJSONRequestBody, reqEditors ...RequestEditorFn) (*InspectionUpdateAnnotationResponse, error)
+
+	// IntegrationsListCatalogWithResponse request
+	IntegrationsListCatalogWithResponse(ctx context.Context, params *IntegrationsListCatalogParams, reqEditors ...RequestEditorFn) (*IntegrationsListCatalogResponse, error)
+
+	// IntegrationsInstantiateServerWithBodyWithResponse request with any body
+	IntegrationsInstantiateServerWithBodyWithResponse(ctx context.Context, params *IntegrationsInstantiateServerParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*IntegrationsInstantiateServerResponse, error)
+
+	IntegrationsInstantiateServerWithResponse(ctx context.Context, params *IntegrationsInstantiateServerParams, body IntegrationsInstantiateServerJSONRequestBody, reqEditors ...RequestEditorFn) (*IntegrationsInstantiateServerResponse, error)
+
+	// IntegrationsOauthCallbackWithResponse request
+	IntegrationsOauthCallbackWithResponse(ctx context.Context, params *IntegrationsOauthCallbackParams, reqEditors ...RequestEditorFn) (*IntegrationsOauthCallbackResponse, error)
+
+	// IntegrationsProbeServerWithBodyWithResponse request with any body
+	IntegrationsProbeServerWithBodyWithResponse(ctx context.Context, params *IntegrationsProbeServerParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*IntegrationsProbeServerResponse, error)
+
+	IntegrationsProbeServerWithResponse(ctx context.Context, params *IntegrationsProbeServerParams, body IntegrationsProbeServerJSONRequestBody, reqEditors ...RequestEditorFn) (*IntegrationsProbeServerResponse, error)
+
+	// IntegrationsSearchRegistryWithResponse request
+	IntegrationsSearchRegistryWithResponse(ctx context.Context, params *IntegrationsSearchRegistryParams, reqEditors ...RequestEditorFn) (*IntegrationsSearchRegistryResponse, error)
+
+	// IntegrationsListServerStatesWithResponse request
+	IntegrationsListServerStatesWithResponse(ctx context.Context, params *IntegrationsListServerStatesParams, reqEditors ...RequestEditorFn) (*IntegrationsListServerStatesResponse, error)
+
+	// IntegrationsAcceptServerDriftWithBodyWithResponse request with any body
+	IntegrationsAcceptServerDriftWithBodyWithResponse(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsAcceptServerDriftParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*IntegrationsAcceptServerDriftResponse, error)
+
+	IntegrationsAcceptServerDriftWithResponse(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsAcceptServerDriftParams, body IntegrationsAcceptServerDriftJSONRequestBody, reqEditors ...RequestEditorFn) (*IntegrationsAcceptServerDriftResponse, error)
+
+	// IntegrationsStartOauthWithBodyWithResponse request with any body
+	IntegrationsStartOauthWithBodyWithResponse(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsStartOauthParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*IntegrationsStartOauthResponse, error)
+
+	IntegrationsStartOauthWithResponse(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsStartOauthParams, body IntegrationsStartOauthJSONRequestBody, reqEditors ...RequestEditorFn) (*IntegrationsStartOauthResponse, error)
+
+	// IntegrationsRefreshServerStateWithResponse request
+	IntegrationsRefreshServerStateWithResponse(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsRefreshServerStateParams, reqEditors ...RequestEditorFn) (*IntegrationsRefreshServerStateResponse, error)
 
 	// JetsonNanoGetJetsonDevicesWithResponse request
 	JetsonNanoGetJetsonDevicesWithResponse(ctx context.Context, params *JetsonNanoGetJetsonDevicesParams, reqEditors ...RequestEditorFn) (*JetsonNanoGetJetsonDevicesResponse, error)
@@ -42810,6 +45599,29 @@ func (r LoginAuthLogoutResponse) StatusCode() int {
 	return 0
 }
 
+type LoginMobileTokenResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *MobileTokenResponse
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r LoginMobileTokenResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r LoginMobileTokenResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type CapturesListCapturesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -44694,6 +47506,303 @@ func (r GatewayGatewayStatusResponse) StatusCode() int {
 	return 0
 }
 
+type HarnessListProposalsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *HarnessProposalsPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r HarnessListProposalsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r HarnessListProposalsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type HarnessApproveProposalResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ApprovedProposalPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r HarnessApproveProposalResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r HarnessApproveProposalResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type HarnessRejectProposalResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *HarnessProposalPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r HarnessRejectProposalResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r HarnessRejectProposalResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type HarnessListSecretsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *HarnessSecretsPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r HarnessListSecretsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r HarnessListSecretsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type HarnessDeleteSecretResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r HarnessDeleteSecretResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r HarnessDeleteSecretResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type HarnessPutSecretResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r HarnessPutSecretResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r HarnessPutSecretResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type HarnessGetTenantSettingsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *HarnessSettingsPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r HarnessGetTenantSettingsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r HarnessGetTenantSettingsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type HarnessPutTenantSettingsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *HarnessSettingsPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r HarnessPutTenantSettingsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r HarnessPutTenantSettingsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type HarnessGetAgentSettingsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *HarnessSettingsPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r HarnessGetAgentSettingsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r HarnessGetAgentSettingsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type HarnessPutAgentSettingsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *HarnessSettingsPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r HarnessPutAgentSettingsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r HarnessPutAgentSettingsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type HarnessGetEffectiveSettingsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *EffectiveSettingsPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r HarnessGetEffectiveSettingsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r HarnessGetEffectiveSettingsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type HarnessListReviewerModelsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ReviewerModelOptionsPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r HarnessListReviewerModelsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r HarnessListReviewerModelsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type HarnessListRevisionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]HarnessRevisionPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r HarnessListRevisionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r HarnessListRevisionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ImagesReadCameraImagesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -44973,7 +48082,7 @@ func (r ImagesPatchCameraImageReviewResponse) StatusCode() int {
 type ImpersonateStartImpersonationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *StartResponse
+	JSON200      *AppApiRoutesImpersonateStartResponse
 	JSON422      *HTTPValidationError
 }
 
@@ -45422,6 +48531,213 @@ func (r InspectionUpdateAnnotationResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r InspectionUpdateAnnotationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type IntegrationsListCatalogResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]CatalogEntryPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r IntegrationsListCatalogResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r IntegrationsListCatalogResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type IntegrationsInstantiateServerResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *InstantiateResponse
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r IntegrationsInstantiateServerResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r IntegrationsInstantiateServerResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type IntegrationsOauthCallbackResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *interface{}
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r IntegrationsOauthCallbackResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r IntegrationsOauthCallbackResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type IntegrationsProbeServerResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ProbeResult
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r IntegrationsProbeServerResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r IntegrationsProbeServerResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type IntegrationsSearchRegistryResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RegistryPage
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r IntegrationsSearchRegistryResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r IntegrationsSearchRegistryResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type IntegrationsListServerStatesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]ServerStatePublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r IntegrationsListServerStatesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r IntegrationsListServerStatesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type IntegrationsAcceptServerDriftResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ServerStatePublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r IntegrationsAcceptServerDriftResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r IntegrationsAcceptServerDriftResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type IntegrationsStartOauthResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AppApiRoutesIntegrationsOauthStartResponse
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r IntegrationsStartOauthResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r IntegrationsStartOauthResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type IntegrationsRefreshServerStateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ServerStatePublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r IntegrationsRefreshServerStateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r IntegrationsRefreshServerStateResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -49836,6 +53152,23 @@ func (c *ClientWithResponses) LoginAuthLogoutWithResponse(ctx context.Context, r
 	return ParseLoginAuthLogoutResponse(rsp)
 }
 
+// LoginMobileTokenWithBodyWithResponse request with arbitrary body returning *LoginMobileTokenResponse
+func (c *ClientWithResponses) LoginMobileTokenWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*LoginMobileTokenResponse, error) {
+	rsp, err := c.LoginMobileTokenWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseLoginMobileTokenResponse(rsp)
+}
+
+func (c *ClientWithResponses) LoginMobileTokenWithResponse(ctx context.Context, body LoginMobileTokenJSONRequestBody, reqEditors ...RequestEditorFn) (*LoginMobileTokenResponse, error) {
+	rsp, err := c.LoginMobileToken(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseLoginMobileTokenResponse(rsp)
+}
+
 // CapturesListCapturesWithResponse request returning *CapturesListCapturesResponse
 func (c *ClientWithResponses) CapturesListCapturesWithResponse(ctx context.Context, params *CapturesListCapturesParams, reqEditors ...RequestEditorFn) (*CapturesListCapturesResponse, error) {
 	rsp, err := c.CapturesListCaptures(ctx, params, reqEditors...)
@@ -50734,6 +54067,163 @@ func (c *ClientWithResponses) GatewayGatewayStatusWithResponse(ctx context.Conte
 	return ParseGatewayGatewayStatusResponse(rsp)
 }
 
+// HarnessListProposalsWithResponse request returning *HarnessListProposalsResponse
+func (c *ClientWithResponses) HarnessListProposalsWithResponse(ctx context.Context, params *HarnessListProposalsParams, reqEditors ...RequestEditorFn) (*HarnessListProposalsResponse, error) {
+	rsp, err := c.HarnessListProposals(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessListProposalsResponse(rsp)
+}
+
+// HarnessApproveProposalWithBodyWithResponse request with arbitrary body returning *HarnessApproveProposalResponse
+func (c *ClientWithResponses) HarnessApproveProposalWithBodyWithResponse(ctx context.Context, proposalId openapi_types.UUID, params *HarnessApproveProposalParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*HarnessApproveProposalResponse, error) {
+	rsp, err := c.HarnessApproveProposalWithBody(ctx, proposalId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessApproveProposalResponse(rsp)
+}
+
+func (c *ClientWithResponses) HarnessApproveProposalWithResponse(ctx context.Context, proposalId openapi_types.UUID, params *HarnessApproveProposalParams, body HarnessApproveProposalJSONRequestBody, reqEditors ...RequestEditorFn) (*HarnessApproveProposalResponse, error) {
+	rsp, err := c.HarnessApproveProposal(ctx, proposalId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessApproveProposalResponse(rsp)
+}
+
+// HarnessRejectProposalWithBodyWithResponse request with arbitrary body returning *HarnessRejectProposalResponse
+func (c *ClientWithResponses) HarnessRejectProposalWithBodyWithResponse(ctx context.Context, proposalId openapi_types.UUID, params *HarnessRejectProposalParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*HarnessRejectProposalResponse, error) {
+	rsp, err := c.HarnessRejectProposalWithBody(ctx, proposalId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessRejectProposalResponse(rsp)
+}
+
+func (c *ClientWithResponses) HarnessRejectProposalWithResponse(ctx context.Context, proposalId openapi_types.UUID, params *HarnessRejectProposalParams, body HarnessRejectProposalJSONRequestBody, reqEditors ...RequestEditorFn) (*HarnessRejectProposalResponse, error) {
+	rsp, err := c.HarnessRejectProposal(ctx, proposalId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessRejectProposalResponse(rsp)
+}
+
+// HarnessListSecretsWithResponse request returning *HarnessListSecretsResponse
+func (c *ClientWithResponses) HarnessListSecretsWithResponse(ctx context.Context, params *HarnessListSecretsParams, reqEditors ...RequestEditorFn) (*HarnessListSecretsResponse, error) {
+	rsp, err := c.HarnessListSecrets(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessListSecretsResponse(rsp)
+}
+
+// HarnessDeleteSecretWithResponse request returning *HarnessDeleteSecretResponse
+func (c *ClientWithResponses) HarnessDeleteSecretWithResponse(ctx context.Context, name string, params *HarnessDeleteSecretParams, reqEditors ...RequestEditorFn) (*HarnessDeleteSecretResponse, error) {
+	rsp, err := c.HarnessDeleteSecret(ctx, name, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessDeleteSecretResponse(rsp)
+}
+
+// HarnessPutSecretWithBodyWithResponse request with arbitrary body returning *HarnessPutSecretResponse
+func (c *ClientWithResponses) HarnessPutSecretWithBodyWithResponse(ctx context.Context, name string, params *HarnessPutSecretParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*HarnessPutSecretResponse, error) {
+	rsp, err := c.HarnessPutSecretWithBody(ctx, name, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessPutSecretResponse(rsp)
+}
+
+func (c *ClientWithResponses) HarnessPutSecretWithResponse(ctx context.Context, name string, params *HarnessPutSecretParams, body HarnessPutSecretJSONRequestBody, reqEditors ...RequestEditorFn) (*HarnessPutSecretResponse, error) {
+	rsp, err := c.HarnessPutSecret(ctx, name, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessPutSecretResponse(rsp)
+}
+
+// HarnessGetTenantSettingsWithResponse request returning *HarnessGetTenantSettingsResponse
+func (c *ClientWithResponses) HarnessGetTenantSettingsWithResponse(ctx context.Context, params *HarnessGetTenantSettingsParams, reqEditors ...RequestEditorFn) (*HarnessGetTenantSettingsResponse, error) {
+	rsp, err := c.HarnessGetTenantSettings(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessGetTenantSettingsResponse(rsp)
+}
+
+// HarnessPutTenantSettingsWithBodyWithResponse request with arbitrary body returning *HarnessPutTenantSettingsResponse
+func (c *ClientWithResponses) HarnessPutTenantSettingsWithBodyWithResponse(ctx context.Context, params *HarnessPutTenantSettingsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*HarnessPutTenantSettingsResponse, error) {
+	rsp, err := c.HarnessPutTenantSettingsWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessPutTenantSettingsResponse(rsp)
+}
+
+func (c *ClientWithResponses) HarnessPutTenantSettingsWithResponse(ctx context.Context, params *HarnessPutTenantSettingsParams, body HarnessPutTenantSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*HarnessPutTenantSettingsResponse, error) {
+	rsp, err := c.HarnessPutTenantSettings(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessPutTenantSettingsResponse(rsp)
+}
+
+// HarnessGetAgentSettingsWithResponse request returning *HarnessGetAgentSettingsResponse
+func (c *ClientWithResponses) HarnessGetAgentSettingsWithResponse(ctx context.Context, agentId openapi_types.UUID, params *HarnessGetAgentSettingsParams, reqEditors ...RequestEditorFn) (*HarnessGetAgentSettingsResponse, error) {
+	rsp, err := c.HarnessGetAgentSettings(ctx, agentId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessGetAgentSettingsResponse(rsp)
+}
+
+// HarnessPutAgentSettingsWithBodyWithResponse request with arbitrary body returning *HarnessPutAgentSettingsResponse
+func (c *ClientWithResponses) HarnessPutAgentSettingsWithBodyWithResponse(ctx context.Context, agentId openapi_types.UUID, params *HarnessPutAgentSettingsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*HarnessPutAgentSettingsResponse, error) {
+	rsp, err := c.HarnessPutAgentSettingsWithBody(ctx, agentId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessPutAgentSettingsResponse(rsp)
+}
+
+func (c *ClientWithResponses) HarnessPutAgentSettingsWithResponse(ctx context.Context, agentId openapi_types.UUID, params *HarnessPutAgentSettingsParams, body HarnessPutAgentSettingsJSONRequestBody, reqEditors ...RequestEditorFn) (*HarnessPutAgentSettingsResponse, error) {
+	rsp, err := c.HarnessPutAgentSettings(ctx, agentId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessPutAgentSettingsResponse(rsp)
+}
+
+// HarnessGetEffectiveSettingsWithResponse request returning *HarnessGetEffectiveSettingsResponse
+func (c *ClientWithResponses) HarnessGetEffectiveSettingsWithResponse(ctx context.Context, agentId openapi_types.UUID, params *HarnessGetEffectiveSettingsParams, reqEditors ...RequestEditorFn) (*HarnessGetEffectiveSettingsResponse, error) {
+	rsp, err := c.HarnessGetEffectiveSettings(ctx, agentId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessGetEffectiveSettingsResponse(rsp)
+}
+
+// HarnessListReviewerModelsWithResponse request returning *HarnessListReviewerModelsResponse
+func (c *ClientWithResponses) HarnessListReviewerModelsWithResponse(ctx context.Context, params *HarnessListReviewerModelsParams, reqEditors ...RequestEditorFn) (*HarnessListReviewerModelsResponse, error) {
+	rsp, err := c.HarnessListReviewerModels(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessListReviewerModelsResponse(rsp)
+}
+
+// HarnessListRevisionsWithResponse request returning *HarnessListRevisionsResponse
+func (c *ClientWithResponses) HarnessListRevisionsWithResponse(ctx context.Context, params *HarnessListRevisionsParams, reqEditors ...RequestEditorFn) (*HarnessListRevisionsResponse, error) {
+	rsp, err := c.HarnessListRevisions(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHarnessListRevisionsResponse(rsp)
+}
+
 // ImagesReadCameraImagesWithResponse request returning *ImagesReadCameraImagesResponse
 func (c *ClientWithResponses) ImagesReadCameraImagesWithResponse(ctx context.Context, params *ImagesReadCameraImagesParams, reqEditors ...RequestEditorFn) (*ImagesReadCameraImagesResponse, error) {
 	rsp, err := c.ImagesReadCameraImages(ctx, params, reqEditors...)
@@ -51108,6 +54598,119 @@ func (c *ClientWithResponses) InspectionUpdateAnnotationWithResponse(ctx context
 		return nil, err
 	}
 	return ParseInspectionUpdateAnnotationResponse(rsp)
+}
+
+// IntegrationsListCatalogWithResponse request returning *IntegrationsListCatalogResponse
+func (c *ClientWithResponses) IntegrationsListCatalogWithResponse(ctx context.Context, params *IntegrationsListCatalogParams, reqEditors ...RequestEditorFn) (*IntegrationsListCatalogResponse, error) {
+	rsp, err := c.IntegrationsListCatalog(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIntegrationsListCatalogResponse(rsp)
+}
+
+// IntegrationsInstantiateServerWithBodyWithResponse request with arbitrary body returning *IntegrationsInstantiateServerResponse
+func (c *ClientWithResponses) IntegrationsInstantiateServerWithBodyWithResponse(ctx context.Context, params *IntegrationsInstantiateServerParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*IntegrationsInstantiateServerResponse, error) {
+	rsp, err := c.IntegrationsInstantiateServerWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIntegrationsInstantiateServerResponse(rsp)
+}
+
+func (c *ClientWithResponses) IntegrationsInstantiateServerWithResponse(ctx context.Context, params *IntegrationsInstantiateServerParams, body IntegrationsInstantiateServerJSONRequestBody, reqEditors ...RequestEditorFn) (*IntegrationsInstantiateServerResponse, error) {
+	rsp, err := c.IntegrationsInstantiateServer(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIntegrationsInstantiateServerResponse(rsp)
+}
+
+// IntegrationsOauthCallbackWithResponse request returning *IntegrationsOauthCallbackResponse
+func (c *ClientWithResponses) IntegrationsOauthCallbackWithResponse(ctx context.Context, params *IntegrationsOauthCallbackParams, reqEditors ...RequestEditorFn) (*IntegrationsOauthCallbackResponse, error) {
+	rsp, err := c.IntegrationsOauthCallback(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIntegrationsOauthCallbackResponse(rsp)
+}
+
+// IntegrationsProbeServerWithBodyWithResponse request with arbitrary body returning *IntegrationsProbeServerResponse
+func (c *ClientWithResponses) IntegrationsProbeServerWithBodyWithResponse(ctx context.Context, params *IntegrationsProbeServerParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*IntegrationsProbeServerResponse, error) {
+	rsp, err := c.IntegrationsProbeServerWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIntegrationsProbeServerResponse(rsp)
+}
+
+func (c *ClientWithResponses) IntegrationsProbeServerWithResponse(ctx context.Context, params *IntegrationsProbeServerParams, body IntegrationsProbeServerJSONRequestBody, reqEditors ...RequestEditorFn) (*IntegrationsProbeServerResponse, error) {
+	rsp, err := c.IntegrationsProbeServer(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIntegrationsProbeServerResponse(rsp)
+}
+
+// IntegrationsSearchRegistryWithResponse request returning *IntegrationsSearchRegistryResponse
+func (c *ClientWithResponses) IntegrationsSearchRegistryWithResponse(ctx context.Context, params *IntegrationsSearchRegistryParams, reqEditors ...RequestEditorFn) (*IntegrationsSearchRegistryResponse, error) {
+	rsp, err := c.IntegrationsSearchRegistry(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIntegrationsSearchRegistryResponse(rsp)
+}
+
+// IntegrationsListServerStatesWithResponse request returning *IntegrationsListServerStatesResponse
+func (c *ClientWithResponses) IntegrationsListServerStatesWithResponse(ctx context.Context, params *IntegrationsListServerStatesParams, reqEditors ...RequestEditorFn) (*IntegrationsListServerStatesResponse, error) {
+	rsp, err := c.IntegrationsListServerStates(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIntegrationsListServerStatesResponse(rsp)
+}
+
+// IntegrationsAcceptServerDriftWithBodyWithResponse request with arbitrary body returning *IntegrationsAcceptServerDriftResponse
+func (c *ClientWithResponses) IntegrationsAcceptServerDriftWithBodyWithResponse(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsAcceptServerDriftParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*IntegrationsAcceptServerDriftResponse, error) {
+	rsp, err := c.IntegrationsAcceptServerDriftWithBody(ctx, stateId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIntegrationsAcceptServerDriftResponse(rsp)
+}
+
+func (c *ClientWithResponses) IntegrationsAcceptServerDriftWithResponse(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsAcceptServerDriftParams, body IntegrationsAcceptServerDriftJSONRequestBody, reqEditors ...RequestEditorFn) (*IntegrationsAcceptServerDriftResponse, error) {
+	rsp, err := c.IntegrationsAcceptServerDrift(ctx, stateId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIntegrationsAcceptServerDriftResponse(rsp)
+}
+
+// IntegrationsStartOauthWithBodyWithResponse request with arbitrary body returning *IntegrationsStartOauthResponse
+func (c *ClientWithResponses) IntegrationsStartOauthWithBodyWithResponse(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsStartOauthParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*IntegrationsStartOauthResponse, error) {
+	rsp, err := c.IntegrationsStartOauthWithBody(ctx, stateId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIntegrationsStartOauthResponse(rsp)
+}
+
+func (c *ClientWithResponses) IntegrationsStartOauthWithResponse(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsStartOauthParams, body IntegrationsStartOauthJSONRequestBody, reqEditors ...RequestEditorFn) (*IntegrationsStartOauthResponse, error) {
+	rsp, err := c.IntegrationsStartOauth(ctx, stateId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIntegrationsStartOauthResponse(rsp)
+}
+
+// IntegrationsRefreshServerStateWithResponse request returning *IntegrationsRefreshServerStateResponse
+func (c *ClientWithResponses) IntegrationsRefreshServerStateWithResponse(ctx context.Context, stateId openapi_types.UUID, params *IntegrationsRefreshServerStateParams, reqEditors ...RequestEditorFn) (*IntegrationsRefreshServerStateResponse, error) {
+	rsp, err := c.IntegrationsRefreshServerState(ctx, stateId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIntegrationsRefreshServerStateResponse(rsp)
 }
 
 // JetsonNanoGetJetsonDevicesWithResponse request returning *JetsonNanoGetJetsonDevicesResponse
@@ -57651,6 +61254,39 @@ func ParseLoginAuthLogoutResponse(rsp *http.Response) (*LoginAuthLogoutResponse,
 	return response, nil
 }
 
+// ParseLoginMobileTokenResponse parses an HTTP response from a LoginMobileTokenWithResponse call
+func ParseLoginMobileTokenResponse(rsp *http.Response) (*LoginMobileTokenResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &LoginMobileTokenResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MobileTokenResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseCapturesListCapturesResponse parses an HTTP response from a CapturesListCapturesWithResponse call
 func ParseCapturesListCapturesResponse(rsp *http.Response) (*CapturesListCapturesResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -60324,6 +63960,421 @@ func ParseGatewayGatewayStatusResponse(rsp *http.Response) (*GatewayGatewayStatu
 	return response, nil
 }
 
+// ParseHarnessListProposalsResponse parses an HTTP response from a HarnessListProposalsWithResponse call
+func ParseHarnessListProposalsResponse(rsp *http.Response) (*HarnessListProposalsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &HarnessListProposalsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest HarnessProposalsPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseHarnessApproveProposalResponse parses an HTTP response from a HarnessApproveProposalWithResponse call
+func ParseHarnessApproveProposalResponse(rsp *http.Response) (*HarnessApproveProposalResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &HarnessApproveProposalResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ApprovedProposalPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseHarnessRejectProposalResponse parses an HTTP response from a HarnessRejectProposalWithResponse call
+func ParseHarnessRejectProposalResponse(rsp *http.Response) (*HarnessRejectProposalResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &HarnessRejectProposalResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest HarnessProposalPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseHarnessListSecretsResponse parses an HTTP response from a HarnessListSecretsWithResponse call
+func ParseHarnessListSecretsResponse(rsp *http.Response) (*HarnessListSecretsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &HarnessListSecretsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest HarnessSecretsPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseHarnessDeleteSecretResponse parses an HTTP response from a HarnessDeleteSecretWithResponse call
+func ParseHarnessDeleteSecretResponse(rsp *http.Response) (*HarnessDeleteSecretResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &HarnessDeleteSecretResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseHarnessPutSecretResponse parses an HTTP response from a HarnessPutSecretWithResponse call
+func ParseHarnessPutSecretResponse(rsp *http.Response) (*HarnessPutSecretResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &HarnessPutSecretResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseHarnessGetTenantSettingsResponse parses an HTTP response from a HarnessGetTenantSettingsWithResponse call
+func ParseHarnessGetTenantSettingsResponse(rsp *http.Response) (*HarnessGetTenantSettingsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &HarnessGetTenantSettingsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest HarnessSettingsPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseHarnessPutTenantSettingsResponse parses an HTTP response from a HarnessPutTenantSettingsWithResponse call
+func ParseHarnessPutTenantSettingsResponse(rsp *http.Response) (*HarnessPutTenantSettingsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &HarnessPutTenantSettingsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest HarnessSettingsPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseHarnessGetAgentSettingsResponse parses an HTTP response from a HarnessGetAgentSettingsWithResponse call
+func ParseHarnessGetAgentSettingsResponse(rsp *http.Response) (*HarnessGetAgentSettingsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &HarnessGetAgentSettingsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest HarnessSettingsPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseHarnessPutAgentSettingsResponse parses an HTTP response from a HarnessPutAgentSettingsWithResponse call
+func ParseHarnessPutAgentSettingsResponse(rsp *http.Response) (*HarnessPutAgentSettingsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &HarnessPutAgentSettingsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest HarnessSettingsPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseHarnessGetEffectiveSettingsResponse parses an HTTP response from a HarnessGetEffectiveSettingsWithResponse call
+func ParseHarnessGetEffectiveSettingsResponse(rsp *http.Response) (*HarnessGetEffectiveSettingsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &HarnessGetEffectiveSettingsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest EffectiveSettingsPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseHarnessListReviewerModelsResponse parses an HTTP response from a HarnessListReviewerModelsWithResponse call
+func ParseHarnessListReviewerModelsResponse(rsp *http.Response) (*HarnessListReviewerModelsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &HarnessListReviewerModelsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ReviewerModelOptionsPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseHarnessListRevisionsResponse parses an HTTP response from a HarnessListRevisionsWithResponse call
+func ParseHarnessListRevisionsResponse(rsp *http.Response) (*HarnessListRevisionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &HarnessListRevisionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []HarnessRevisionPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseImagesReadCameraImagesResponse parses an HTTP response from a ImagesReadCameraImagesWithResponse call
 func ParseImagesReadCameraImagesResponse(rsp *http.Response) (*ImagesReadCameraImagesResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -60735,7 +64786,7 @@ func ParseImpersonateStartImpersonationResponse(rsp *http.Response) (*Impersonat
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest StartResponse
+		var dest AppApiRoutesImpersonateStartResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -61349,6 +65400,303 @@ func ParseInspectionUpdateAnnotationResponse(rsp *http.Response) (*InspectionUpd
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest InspectionAnnotationPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseIntegrationsListCatalogResponse parses an HTTP response from a IntegrationsListCatalogWithResponse call
+func ParseIntegrationsListCatalogResponse(rsp *http.Response) (*IntegrationsListCatalogResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &IntegrationsListCatalogResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []CatalogEntryPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseIntegrationsInstantiateServerResponse parses an HTTP response from a IntegrationsInstantiateServerWithResponse call
+func ParseIntegrationsInstantiateServerResponse(rsp *http.Response) (*IntegrationsInstantiateServerResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &IntegrationsInstantiateServerResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InstantiateResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseIntegrationsOauthCallbackResponse parses an HTTP response from a IntegrationsOauthCallbackWithResponse call
+func ParseIntegrationsOauthCallbackResponse(rsp *http.Response) (*IntegrationsOauthCallbackResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &IntegrationsOauthCallbackResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseIntegrationsProbeServerResponse parses an HTTP response from a IntegrationsProbeServerWithResponse call
+func ParseIntegrationsProbeServerResponse(rsp *http.Response) (*IntegrationsProbeServerResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &IntegrationsProbeServerResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ProbeResult
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseIntegrationsSearchRegistryResponse parses an HTTP response from a IntegrationsSearchRegistryWithResponse call
+func ParseIntegrationsSearchRegistryResponse(rsp *http.Response) (*IntegrationsSearchRegistryResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &IntegrationsSearchRegistryResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RegistryPage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseIntegrationsListServerStatesResponse parses an HTTP response from a IntegrationsListServerStatesWithResponse call
+func ParseIntegrationsListServerStatesResponse(rsp *http.Response) (*IntegrationsListServerStatesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &IntegrationsListServerStatesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []ServerStatePublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseIntegrationsAcceptServerDriftResponse parses an HTTP response from a IntegrationsAcceptServerDriftWithResponse call
+func ParseIntegrationsAcceptServerDriftResponse(rsp *http.Response) (*IntegrationsAcceptServerDriftResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &IntegrationsAcceptServerDriftResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ServerStatePublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseIntegrationsStartOauthResponse parses an HTTP response from a IntegrationsStartOauthWithResponse call
+func ParseIntegrationsStartOauthResponse(rsp *http.Response) (*IntegrationsStartOauthResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &IntegrationsStartOauthResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AppApiRoutesIntegrationsOauthStartResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseIntegrationsRefreshServerStateResponse parses an HTTP response from a IntegrationsRefreshServerStateWithResponse call
+func ParseIntegrationsRefreshServerStateResponse(rsp *http.Response) (*IntegrationsRefreshServerStateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &IntegrationsRefreshServerStateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ServerStatePublic
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
