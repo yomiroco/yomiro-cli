@@ -2336,6 +2336,11 @@ type CameraImagesPublic struct {
 	Data  []CameraImagePublic `json:"data"`
 }
 
+// CameraStill defines model for CameraStill.
+type CameraStill struct {
+	Url string `json:"url"`
+}
+
 // CameraVideoPublic Public schema for camera video responses.
 type CameraVideoPublic struct {
 	CreatedAt          string                  `json:"created_at"`
@@ -3467,6 +3472,9 @@ type JetsonNanoConfigPublic struct {
 	// Ptz camera_id -> PTZ capabilities, discovered by the device. Absent means no motors.
 	Ptz *map[string]PtzCapabilitiesSchema `json:"ptz,omitempty"`
 
+	// Recording The one camera a device is recording right now.
+	Recording *RecordingStatePublic `json:"recording,omitempty"`
+
 	// Resolution Video resolution (e.g., 1920x1080)
 	Resolution *string               `json:"resolution,omitempty"`
 	Streams    *[]StreamConfigSchema `json:"streams,omitempty"`
@@ -3923,6 +3931,12 @@ type RecordOut struct {
 	UpdatedAt  string                 `json:"updated_at"`
 	UpdatedBy  UserRef                `json:"updated_by"`
 	Version    int                    `json:"version"`
+}
+
+// RecordingStatePublic The one camera a device is recording right now.
+type RecordingStatePublic struct {
+	CameraId  string `json:"camera_id"`
+	StartedAt string `json:"started_at"`
 }
 
 // ReferenceSheetPublic Public schema for reference sheet responses.
@@ -6468,6 +6482,21 @@ type JetsonNanoMoveCameraParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
+// JetsonNanoStopRecordingParams defines parameters for JetsonNanoStopRecording.
+type JetsonNanoStopRecordingParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// JetsonNanoStartRecordingParams defines parameters for JetsonNanoStartRecording.
+type JetsonNanoStartRecordingParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// JetsonNanoGetCameraStillParams defines parameters for JetsonNanoGetCameraStill.
+type JetsonNanoGetCameraStillParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
 // JetsonNanoGetJetsonConfigParams defines parameters for JetsonNanoGetJetsonConfig.
 type JetsonNanoGetJetsonConfigParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
@@ -8604,6 +8633,15 @@ type ClientInterface interface {
 	JetsonNanoMoveCameraWithBody(ctx context.Context, deviceId string, cameraId string, params *JetsonNanoMoveCameraParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	JetsonNanoMoveCamera(ctx context.Context, deviceId string, cameraId string, params *JetsonNanoMoveCameraParams, body JetsonNanoMoveCameraJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// JetsonNanoStopRecording request
+	JetsonNanoStopRecording(ctx context.Context, deviceId string, cameraId string, params *JetsonNanoStopRecordingParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// JetsonNanoStartRecording request
+	JetsonNanoStartRecording(ctx context.Context, deviceId string, cameraId string, params *JetsonNanoStartRecordingParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// JetsonNanoGetCameraStill request
+	JetsonNanoGetCameraStill(ctx context.Context, deviceId string, cameraId string, params *JetsonNanoGetCameraStillParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// JetsonNanoGetJetsonConfig request
 	JetsonNanoGetJetsonConfig(ctx context.Context, deviceId string, params *JetsonNanoGetJetsonConfigParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -13571,6 +13609,42 @@ func (c *Client) JetsonNanoMoveCameraWithBody(ctx context.Context, deviceId stri
 
 func (c *Client) JetsonNanoMoveCamera(ctx context.Context, deviceId string, cameraId string, params *JetsonNanoMoveCameraParams, body JetsonNanoMoveCameraJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewJetsonNanoMoveCameraRequest(c.Server, deviceId, cameraId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) JetsonNanoStopRecording(ctx context.Context, deviceId string, cameraId string, params *JetsonNanoStopRecordingParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewJetsonNanoStopRecordingRequest(c.Server, deviceId, cameraId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) JetsonNanoStartRecording(ctx context.Context, deviceId string, cameraId string, params *JetsonNanoStartRecordingParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewJetsonNanoStartRecordingRequest(c.Server, deviceId, cameraId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) JetsonNanoGetCameraStill(ctx context.Context, deviceId string, cameraId string, params *JetsonNanoGetCameraStillParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewJetsonNanoGetCameraStillRequest(c.Server, deviceId, cameraId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -34123,6 +34197,180 @@ func NewJetsonNanoMoveCameraRequestWithBody(server string, deviceId string, came
 	return req, nil
 }
 
+// NewJetsonNanoStopRecordingRequest generates requests for JetsonNanoStopRecording
+func NewJetsonNanoStopRecordingRequest(server string, deviceId string, cameraId string, params *JetsonNanoStopRecordingParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "device_id", deviceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "camera_id", cameraId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/jetson-nano/%s/cameras/%s/recording", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewJetsonNanoStartRecordingRequest generates requests for JetsonNanoStartRecording
+func NewJetsonNanoStartRecordingRequest(server string, deviceId string, cameraId string, params *JetsonNanoStartRecordingParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "device_id", deviceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "camera_id", cameraId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/jetson-nano/%s/cameras/%s/recording", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewJetsonNanoGetCameraStillRequest generates requests for JetsonNanoGetCameraStill
+func NewJetsonNanoGetCameraStillRequest(server string, deviceId string, cameraId string, params *JetsonNanoGetCameraStillParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "device_id", deviceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "camera_id", cameraId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/jetson-nano/%s/cameras/%s/still", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
 // NewJetsonNanoGetJetsonConfigRequest generates requests for JetsonNanoGetJetsonConfig
 func NewJetsonNanoGetJetsonConfigRequest(server string, deviceId string, params *JetsonNanoGetJetsonConfigParams) (*http.Request, error) {
 	var err error
@@ -41660,6 +41908,15 @@ type ClientWithResponsesInterface interface {
 
 	JetsonNanoMoveCameraWithResponse(ctx context.Context, deviceId string, cameraId string, params *JetsonNanoMoveCameraParams, body JetsonNanoMoveCameraJSONRequestBody, reqEditors ...RequestEditorFn) (*JetsonNanoMoveCameraResponse, error)
 
+	// JetsonNanoStopRecordingWithResponse request
+	JetsonNanoStopRecordingWithResponse(ctx context.Context, deviceId string, cameraId string, params *JetsonNanoStopRecordingParams, reqEditors ...RequestEditorFn) (*JetsonNanoStopRecordingResponse, error)
+
+	// JetsonNanoStartRecordingWithResponse request
+	JetsonNanoStartRecordingWithResponse(ctx context.Context, deviceId string, cameraId string, params *JetsonNanoStartRecordingParams, reqEditors ...RequestEditorFn) (*JetsonNanoStartRecordingResponse, error)
+
+	// JetsonNanoGetCameraStillWithResponse request
+	JetsonNanoGetCameraStillWithResponse(ctx context.Context, deviceId string, cameraId string, params *JetsonNanoGetCameraStillParams, reqEditors ...RequestEditorFn) (*JetsonNanoGetCameraStillResponse, error)
+
 	// JetsonNanoGetJetsonConfigWithResponse request
 	JetsonNanoGetJetsonConfigWithResponse(ctx context.Context, deviceId string, params *JetsonNanoGetJetsonConfigParams, reqEditors ...RequestEditorFn) (*JetsonNanoGetJetsonConfigResponse, error)
 
@@ -48969,6 +49226,75 @@ func (r JetsonNanoMoveCameraResponse) StatusCode() int {
 	return 0
 }
 
+type JetsonNanoStopRecordingResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON202      *map[string]string
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r JetsonNanoStopRecordingResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r JetsonNanoStopRecordingResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type JetsonNanoStartRecordingResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON202      *map[string]string
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r JetsonNanoStartRecordingResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r JetsonNanoStartRecordingResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type JetsonNanoGetCameraStillResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *CameraStill
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r JetsonNanoGetCameraStillResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r JetsonNanoGetCameraStillResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type JetsonNanoGetJetsonConfigResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -54962,6 +55288,33 @@ func (c *ClientWithResponses) JetsonNanoMoveCameraWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseJetsonNanoMoveCameraResponse(rsp)
+}
+
+// JetsonNanoStopRecordingWithResponse request returning *JetsonNanoStopRecordingResponse
+func (c *ClientWithResponses) JetsonNanoStopRecordingWithResponse(ctx context.Context, deviceId string, cameraId string, params *JetsonNanoStopRecordingParams, reqEditors ...RequestEditorFn) (*JetsonNanoStopRecordingResponse, error) {
+	rsp, err := c.JetsonNanoStopRecording(ctx, deviceId, cameraId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseJetsonNanoStopRecordingResponse(rsp)
+}
+
+// JetsonNanoStartRecordingWithResponse request returning *JetsonNanoStartRecordingResponse
+func (c *ClientWithResponses) JetsonNanoStartRecordingWithResponse(ctx context.Context, deviceId string, cameraId string, params *JetsonNanoStartRecordingParams, reqEditors ...RequestEditorFn) (*JetsonNanoStartRecordingResponse, error) {
+	rsp, err := c.JetsonNanoStartRecording(ctx, deviceId, cameraId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseJetsonNanoStartRecordingResponse(rsp)
+}
+
+// JetsonNanoGetCameraStillWithResponse request returning *JetsonNanoGetCameraStillResponse
+func (c *ClientWithResponses) JetsonNanoGetCameraStillWithResponse(ctx context.Context, deviceId string, cameraId string, params *JetsonNanoGetCameraStillParams, reqEditors ...RequestEditorFn) (*JetsonNanoGetCameraStillResponse, error) {
+	rsp, err := c.JetsonNanoGetCameraStill(ctx, deviceId, cameraId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseJetsonNanoGetCameraStillResponse(rsp)
 }
 
 // JetsonNanoGetJetsonConfigWithResponse request returning *JetsonNanoGetJetsonConfigResponse
@@ -66014,6 +66367,105 @@ func ParseJetsonNanoMoveCameraResponse(rsp *http.Response) (*JetsonNanoMoveCamer
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest map[string]string
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseJetsonNanoStopRecordingResponse parses an HTTP response from a JetsonNanoStopRecordingWithResponse call
+func ParseJetsonNanoStopRecordingResponse(rsp *http.Response) (*JetsonNanoStopRecordingResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &JetsonNanoStopRecordingResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest map[string]string
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseJetsonNanoStartRecordingResponse parses an HTTP response from a JetsonNanoStartRecordingWithResponse call
+func ParseJetsonNanoStartRecordingResponse(rsp *http.Response) (*JetsonNanoStartRecordingResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &JetsonNanoStartRecordingResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest map[string]string
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseJetsonNanoGetCameraStillResponse parses an HTTP response from a JetsonNanoGetCameraStillWithResponse call
+func ParseJetsonNanoGetCameraStillResponse(rsp *http.Response) (*JetsonNanoGetCameraStillResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &JetsonNanoGetCameraStillResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CameraStill
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

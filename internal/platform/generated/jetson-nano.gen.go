@@ -41,6 +41,27 @@ func NewJetsonNanoCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 	}
 
 	{
+		var params client.JetsonNanoGetCameraStillParams
+		cmd := &cobra.Command{
+			Use:   "get-camera-still <deviceId> <cameraId>",
+			Short: "Get Camera Still",
+			Args:  cobra.ExactArgs(2),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				_arg1 := args[1]
+				resp, err := getClient().JetsonNanoGetCameraStillWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		root.AddCommand(cmd)
+	}
+
+	{
 		var params client.JetsonNanoGetDetectionDigestParams
 		cmd := &cobra.Command{
 			Use:   "get-detection-digest <deviceId>",
@@ -261,6 +282,48 @@ func NewJetsonNanoCmd(getClient func() *client.ClientWithResponses) *cobra.Comma
 		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
 		cmd.MarkFlagsOneRequired("json-body", "skeleton")
 		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
+		root.AddCommand(cmd)
+	}
+
+	{
+		var params client.JetsonNanoStartRecordingParams
+		cmd := &cobra.Command{
+			Use:   "start-recording <deviceId> <cameraId>",
+			Short: "Start Recording",
+			Args:  cobra.ExactArgs(2),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				_arg1 := args[1]
+				resp, err := getClient().JetsonNanoStartRecordingWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		root.AddCommand(cmd)
+	}
+
+	{
+		var params client.JetsonNanoStopRecordingParams
+		cmd := &cobra.Command{
+			Use:   "stop-recording <deviceId> <cameraId>",
+			Short: "Stop Recording",
+			Args:  cobra.ExactArgs(2),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				ctx := cmd.Context()
+				_arg0 := args[0]
+				_arg1 := args[1]
+				resp, err := getClient().JetsonNanoStopRecordingWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
 		root.AddCommand(cmd)
 	}
 
