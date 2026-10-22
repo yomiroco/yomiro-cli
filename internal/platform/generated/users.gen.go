@@ -132,6 +132,24 @@ func NewUsersCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	}
 
 	{
+		var params client.UsersReadMyNotificationsParams
+		cmd := &cobra.Command{
+			Use:   "read-my-notifications",
+			Short: "Read My Notifications",
+			RunE: func(cmd *cobra.Command, args []string) error {
+				ctx := cmd.Context()
+				resp, err := getClient().UsersReadMyNotificationsWithResponse(ctx, &params)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		root.AddCommand(cmd)
+	}
+
+	{
 		var params client.UsersReadUserByIdParams
 		cmd := &cobra.Command{
 			Use:   "read-by-id <userId>",
@@ -187,6 +205,39 @@ func NewUsersCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 			},
 		}
 		bindings.DefineQueryFlags(cmd, &params)
+		root.AddCommand(cmd)
+	}
+
+	{
+		var params client.UsersUpdateMyNotificationsParams
+		var bodyJSON string
+		var skeleton bool
+		cmd := &cobra.Command{
+			Use:   "update-my-notifications",
+			Short: "Update My Notifications",
+			Long:  "Update My Notifications.\n\nRequest body fields:\n  event_types  array  required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			RunE: func(cmd *cobra.Command, args []string) error {
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"event_types\": []\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				var body client.UsersUpdateMyNotificationsJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
+				resp, err := getClient().UsersUpdateMyNotificationsWithResponse(ctx, &params, body)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
 		root.AddCommand(cmd)
 	}
 

@@ -3681,6 +3681,19 @@ type NeededInput struct {
 	SecretName string  `json:"secret_name"`
 }
 
+// NotificationEventPublic defines model for NotificationEventPublic.
+type NotificationEventPublic struct {
+	Description string    `json:"description"`
+	EventType   EventType `json:"event_type"`
+	Subscribed  bool      `json:"subscribed"`
+	Title       string    `json:"title"`
+}
+
+// NotificationSubscriptionsUpdate defines model for NotificationSubscriptionsUpdate.
+type NotificationSubscriptionsUpdate struct {
+	EventTypes []EventType `json:"event_types"`
+}
+
 // OkResponse Minimal success acknowledgement (“{"ok": true}“).
 type OkResponse struct {
 	Ok *bool `json:"ok,omitempty"`
@@ -6847,6 +6860,16 @@ type UsersUpdateUserMeParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
+// UsersReadMyNotificationsParams defines parameters for UsersReadMyNotifications.
+type UsersReadMyNotificationsParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// UsersUpdateMyNotificationsParams defines parameters for UsersUpdateMyNotifications.
+type UsersUpdateMyNotificationsParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
 // UsersDeleteProfilePictureParams defines parameters for UsersDeleteProfilePicture.
 type UsersDeleteProfilePictureParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
@@ -7348,6 +7371,9 @@ type UsersCreateUserJSONRequestBody = UserCreate
 
 // UsersUpdateUserMeJSONRequestBody defines body for UsersUpdateUserMe for application/json ContentType.
 type UsersUpdateUserMeJSONRequestBody = UserUpdateMe
+
+// UsersUpdateMyNotificationsJSONRequestBody defines body for UsersUpdateMyNotifications for application/json ContentType.
+type UsersUpdateMyNotificationsJSONRequestBody = NotificationSubscriptionsUpdate
 
 // UsersUploadProfilePictureMultipartRequestBody defines body for UsersUploadProfilePicture for multipart/form-data ContentType.
 type UsersUploadProfilePictureMultipartRequestBody = BodyUsersUploadProfilePicture
@@ -8844,6 +8870,14 @@ type ClientInterface interface {
 	UsersUpdateUserMeWithBody(ctx context.Context, params *UsersUpdateUserMeParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UsersUpdateUserMe(ctx context.Context, params *UsersUpdateUserMeParams, body UsersUpdateUserMeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UsersReadMyNotifications request
+	UsersReadMyNotifications(ctx context.Context, params *UsersReadMyNotificationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UsersUpdateMyNotificationsWithBody request with any body
+	UsersUpdateMyNotificationsWithBody(ctx context.Context, params *UsersUpdateMyNotificationsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UsersUpdateMyNotifications(ctx context.Context, params *UsersUpdateMyNotificationsParams, body UsersUpdateMyNotificationsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UsersDeleteProfilePicture request
 	UsersDeleteProfilePicture(ctx context.Context, params *UsersDeleteProfilePictureParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -14665,6 +14699,42 @@ func (c *Client) UsersUpdateUserMeWithBody(ctx context.Context, params *UsersUpd
 
 func (c *Client) UsersUpdateUserMe(ctx context.Context, params *UsersUpdateUserMeParams, body UsersUpdateUserMeJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUsersUpdateUserMeRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UsersReadMyNotifications(ctx context.Context, params *UsersReadMyNotificationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUsersReadMyNotificationsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UsersUpdateMyNotificationsWithBody(ctx context.Context, params *UsersUpdateMyNotificationsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUsersUpdateMyNotificationsRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UsersUpdateMyNotifications(ctx context.Context, params *UsersUpdateMyNotificationsParams, body UsersUpdateMyNotificationsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUsersUpdateMyNotificationsRequest(c.Server, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -38376,6 +38446,107 @@ func NewUsersUpdateUserMeRequestWithBody(server string, params *UsersUpdateUserM
 	return req, nil
 }
 
+// NewUsersReadMyNotificationsRequest generates requests for UsersReadMyNotifications
+func NewUsersReadMyNotificationsRequest(server string, params *UsersReadMyNotificationsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/users/me/notifications")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewUsersUpdateMyNotificationsRequest calls the generic UsersUpdateMyNotifications builder with application/json body
+func NewUsersUpdateMyNotificationsRequest(server string, params *UsersUpdateMyNotificationsParams, body UsersUpdateMyNotificationsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUsersUpdateMyNotificationsRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewUsersUpdateMyNotificationsRequestWithBody generates requests for UsersUpdateMyNotifications with any type of body
+func NewUsersUpdateMyNotificationsRequestWithBody(server string, params *UsersUpdateMyNotificationsParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/users/me/notifications")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
 // NewUsersDeleteProfilePictureRequest generates requests for UsersDeleteProfilePicture
 func NewUsersDeleteProfilePictureRequest(server string, params *UsersDeleteProfilePictureParams) (*http.Request, error) {
 	var err error
@@ -41754,6 +41925,14 @@ type ClientWithResponsesInterface interface {
 	UsersUpdateUserMeWithBodyWithResponse(ctx context.Context, params *UsersUpdateUserMeParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UsersUpdateUserMeResponse, error)
 
 	UsersUpdateUserMeWithResponse(ctx context.Context, params *UsersUpdateUserMeParams, body UsersUpdateUserMeJSONRequestBody, reqEditors ...RequestEditorFn) (*UsersUpdateUserMeResponse, error)
+
+	// UsersReadMyNotificationsWithResponse request
+	UsersReadMyNotificationsWithResponse(ctx context.Context, params *UsersReadMyNotificationsParams, reqEditors ...RequestEditorFn) (*UsersReadMyNotificationsResponse, error)
+
+	// UsersUpdateMyNotificationsWithBodyWithResponse request with any body
+	UsersUpdateMyNotificationsWithBodyWithResponse(ctx context.Context, params *UsersUpdateMyNotificationsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UsersUpdateMyNotificationsResponse, error)
+
+	UsersUpdateMyNotificationsWithResponse(ctx context.Context, params *UsersUpdateMyNotificationsParams, body UsersUpdateMyNotificationsJSONRequestBody, reqEditors ...RequestEditorFn) (*UsersUpdateMyNotificationsResponse, error)
 
 	// UsersDeleteProfilePictureWithResponse request
 	UsersDeleteProfilePictureWithResponse(ctx context.Context, params *UsersDeleteProfilePictureParams, reqEditors ...RequestEditorFn) (*UsersDeleteProfilePictureResponse, error)
@@ -50580,6 +50759,52 @@ func (r UsersUpdateUserMeResponse) StatusCode() int {
 	return 0
 }
 
+type UsersReadMyNotificationsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]NotificationEventPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r UsersReadMyNotificationsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UsersReadMyNotificationsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UsersUpdateMyNotificationsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]NotificationEventPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r UsersUpdateMyNotificationsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UsersUpdateMyNotificationsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type UsersDeleteProfilePictureResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -55567,6 +55792,32 @@ func (c *ClientWithResponses) UsersUpdateUserMeWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseUsersUpdateUserMeResponse(rsp)
+}
+
+// UsersReadMyNotificationsWithResponse request returning *UsersReadMyNotificationsResponse
+func (c *ClientWithResponses) UsersReadMyNotificationsWithResponse(ctx context.Context, params *UsersReadMyNotificationsParams, reqEditors ...RequestEditorFn) (*UsersReadMyNotificationsResponse, error) {
+	rsp, err := c.UsersReadMyNotifications(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUsersReadMyNotificationsResponse(rsp)
+}
+
+// UsersUpdateMyNotificationsWithBodyWithResponse request with arbitrary body returning *UsersUpdateMyNotificationsResponse
+func (c *ClientWithResponses) UsersUpdateMyNotificationsWithBodyWithResponse(ctx context.Context, params *UsersUpdateMyNotificationsParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UsersUpdateMyNotificationsResponse, error) {
+	rsp, err := c.UsersUpdateMyNotificationsWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUsersUpdateMyNotificationsResponse(rsp)
+}
+
+func (c *ClientWithResponses) UsersUpdateMyNotificationsWithResponse(ctx context.Context, params *UsersUpdateMyNotificationsParams, body UsersUpdateMyNotificationsJSONRequestBody, reqEditors ...RequestEditorFn) (*UsersUpdateMyNotificationsResponse, error) {
+	rsp, err := c.UsersUpdateMyNotifications(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUsersUpdateMyNotificationsResponse(rsp)
 }
 
 // UsersDeleteProfilePictureWithResponse request returning *UsersDeleteProfilePictureResponse
@@ -68309,6 +68560,72 @@ func ParseUsersUpdateUserMeResponse(rsp *http.Response) (*UsersUpdateUserMeRespo
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest UserPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUsersReadMyNotificationsResponse parses an HTTP response from a UsersReadMyNotificationsWithResponse call
+func ParseUsersReadMyNotificationsResponse(rsp *http.Response) (*UsersReadMyNotificationsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UsersReadMyNotificationsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []NotificationEventPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUsersUpdateMyNotificationsResponse parses an HTTP response from a UsersUpdateMyNotificationsWithResponse call
+func ParseUsersUpdateMyNotificationsResponse(rsp *http.Response) (*UsersUpdateMyNotificationsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UsersUpdateMyNotificationsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []NotificationEventPublic
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
