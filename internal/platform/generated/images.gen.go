@@ -123,6 +123,29 @@ func NewImagesCmd(getClient func() *client.ClientWithResponses) *cobra.Command {
 	}
 
 	{
+		var params client.ImagesGetDownloadUrlParams
+		cmd := &cobra.Command{
+			Use:   "get-download-url <imageId>",
+			Short: "Get Download Url",
+			Args:  cobra.ExactArgs(1),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil {
+					return fmt.Errorf("path arg <imageId>: %w", err)
+				}
+				resp, err := getClient().ImagesGetDownloadUrlWithResponse(ctx, _arg0, &params)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		root.AddCommand(cmd)
+	}
+
+	{
 		var params client.ImagesGetHeatmapFileParams
 		cmd := &cobra.Command{
 			Use:   "get-heatmap-file <imageId>",

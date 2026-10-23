@@ -2385,6 +2385,7 @@ type CaptureEventDetail struct {
 	DetectionsSummary   *map[string]interface{} `json:"detections_summary,omitempty"`
 	DeviceGroupId       openapi_types.UUID      `json:"device_group_id"`
 	DeviceId            string                  `json:"device_id"`
+	DownloadUrl         string                  `json:"download_url"`
 	Id                  openapi_types.UUID      `json:"id"`
 	MetadataS3Key       string                  `json:"metadata_s3_key"`
 	MetadataUrl         string                  `json:"metadata_url"`
@@ -3055,6 +3056,11 @@ type DiscoveredServer struct {
 	Title       string          `json:"title"`
 	Vetted      bool            `json:"vetted"`
 	WebsiteUrl  *string         `json:"website_url,omitempty"`
+}
+
+// DownloadUrl defines model for DownloadUrl.
+type DownloadUrl struct {
+	Url string `json:"url"`
 }
 
 // EffectiveServerPublic defines model for EffectiveServerPublic.
@@ -6296,6 +6302,11 @@ type ImagesGetDifferenceFileParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
+// ImagesGetDownloadUrlParams defines parameters for ImagesGetDownloadUrl.
+type ImagesGetDownloadUrlParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
 // ImagesGetHeatmapFileParams defines parameters for ImagesGetHeatmapFile.
 type ImagesGetHeatmapFileParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
@@ -8500,6 +8511,9 @@ type ClientInterface interface {
 
 	// ImagesGetDifferenceFile request
 	ImagesGetDifferenceFile(ctx context.Context, imageId openapi_types.UUID, params *ImagesGetDifferenceFileParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ImagesGetDownloadUrl request
+	ImagesGetDownloadUrl(ctx context.Context, imageId openapi_types.UUID, params *ImagesGetDownloadUrlParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ImagesGetHeatmapFile request
 	ImagesGetHeatmapFile(ctx context.Context, imageId openapi_types.UUID, params *ImagesGetHeatmapFileParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -13021,6 +13035,18 @@ func (c *Client) ImagesUpdateCameraImage(ctx context.Context, imageId openapi_ty
 
 func (c *Client) ImagesGetDifferenceFile(ctx context.Context, imageId openapi_types.UUID, params *ImagesGetDifferenceFileParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewImagesGetDifferenceFileRequest(c.Server, imageId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ImagesGetDownloadUrl(ctx context.Context, imageId openapi_types.UUID, params *ImagesGetDownloadUrlParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewImagesGetDownloadUrlRequest(c.Server, imageId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -32083,6 +32109,57 @@ func NewImagesGetDifferenceFileRequest(server string, imageId openapi_types.UUID
 	return req, nil
 }
 
+// NewImagesGetDownloadUrlRequest generates requests for ImagesGetDownloadUrl
+func NewImagesGetDownloadUrlRequest(server string, imageId openapi_types.UUID, params *ImagesGetDownloadUrlParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "image_id", imageId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/images/%s/download-url", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
 // NewImagesGetHeatmapFileRequest generates requests for ImagesGetHeatmapFile
 func NewImagesGetHeatmapFileRequest(server string, imageId openapi_types.UUID, params *ImagesGetHeatmapFileParams) (*http.Request, error) {
 	var err error
@@ -41775,6 +41852,9 @@ type ClientWithResponsesInterface interface {
 	// ImagesGetDifferenceFileWithResponse request
 	ImagesGetDifferenceFileWithResponse(ctx context.Context, imageId openapi_types.UUID, params *ImagesGetDifferenceFileParams, reqEditors ...RequestEditorFn) (*ImagesGetDifferenceFileResponse, error)
 
+	// ImagesGetDownloadUrlWithResponse request
+	ImagesGetDownloadUrlWithResponse(ctx context.Context, imageId openapi_types.UUID, params *ImagesGetDownloadUrlParams, reqEditors ...RequestEditorFn) (*ImagesGetDownloadUrlResponse, error)
+
 	// ImagesGetHeatmapFileWithResponse request
 	ImagesGetHeatmapFileWithResponse(ctx context.Context, imageId openapi_types.UUID, params *ImagesGetHeatmapFileParams, reqEditors ...RequestEditorFn) (*ImagesGetHeatmapFileResponse, error)
 
@@ -48423,6 +48503,29 @@ func (r ImagesGetDifferenceFileResponse) StatusCode() int {
 	return 0
 }
 
+type ImagesGetDownloadUrlResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *DownloadUrl
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r ImagesGetDownloadUrlResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ImagesGetDownloadUrlResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ImagesGetHeatmapFileResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -54861,6 +54964,15 @@ func (c *ClientWithResponses) ImagesGetDifferenceFileWithResponse(ctx context.Co
 		return nil, err
 	}
 	return ParseImagesGetDifferenceFileResponse(rsp)
+}
+
+// ImagesGetDownloadUrlWithResponse request returning *ImagesGetDownloadUrlResponse
+func (c *ClientWithResponses) ImagesGetDownloadUrlWithResponse(ctx context.Context, imageId openapi_types.UUID, params *ImagesGetDownloadUrlParams, reqEditors ...RequestEditorFn) (*ImagesGetDownloadUrlResponse, error) {
+	rsp, err := c.ImagesGetDownloadUrl(ctx, imageId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseImagesGetDownloadUrlResponse(rsp)
 }
 
 // ImagesGetHeatmapFileWithResponse request returning *ImagesGetHeatmapFileResponse
@@ -65226,6 +65338,39 @@ func ParseImagesGetDifferenceFileResponse(rsp *http.Response) (*ImagesGetDiffere
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseImagesGetDownloadUrlResponse parses an HTTP response from a ImagesGetDownloadUrlWithResponse call
+func ParseImagesGetDownloadUrlResponse(rsp *http.Response) (*ImagesGetDownloadUrlResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ImagesGetDownloadUrlResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DownloadUrl
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
