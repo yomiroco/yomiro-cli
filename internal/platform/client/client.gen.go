@@ -4240,11 +4240,24 @@ type StatusResponse struct {
 	TimeRemainingSeconds *int                `json:"time_remaining_seconds,omitempty"`
 }
 
+// StreamAudioConfig Per-camera audio: “live“ publishes it to LiveKit; the rest drives detection.
+type StreamAudioConfig struct {
+	Listen     *bool               `json:"listen,omitempty"`
+	Live       *bool               `json:"live,omitempty"`
+	Model      *string             `json:"model,omitempty"`
+	Sounds     *[]string           `json:"sounds,omitempty"`
+	Threshold  *float32            `json:"threshold,omitempty"`
+	Thresholds *map[string]float32 `json:"thresholds,omitempty"`
+}
+
 // StreamConfigSchema A single RTSP stream the device should pull.
 //
 // Mirrors the device-side “StreamConfig“. At most one stream per device may
 // set “inference“; the rest are view-only.
 type StreamConfigSchema struct {
+	// Audio Per-camera audio: ``live`` publishes it to LiveKit; the rest drives detection.
+	Audio *StreamAudioConfig `json:"audio,omitempty"`
+
 	// CameraId Stable identifier for the stream, unique within the device
 	CameraId string `json:"camera_id"`
 
