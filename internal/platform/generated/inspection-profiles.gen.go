@@ -241,6 +241,33 @@ func NewInspectionProfilesCmd(getClient func() *client.ClientWithResponses) *cob
 	}
 
 	{
+		var params client.InspectionProfilesGetProfileScorecardParams
+		cmd := &cobra.Command{
+			Use:   "get-profile-scorecard <deviceGroupId> <profileId>",
+			Short: "Get Profile Scorecard",
+			Args:  cobra.ExactArgs(2),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil {
+					return fmt.Errorf("path arg <deviceGroupId>: %w", err)
+				}
+				_arg1, err := uuid.Parse(args[1])
+				if err != nil {
+					return fmt.Errorf("path arg <profileId>: %w", err)
+				}
+				resp, err := getClient().InspectionProfilesGetProfileScorecardWithResponse(ctx, _arg0, _arg1, &params)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		root.AddCommand(cmd)
+	}
+
+	{
 		var params client.InspectionProfilesInspectCaptureParams
 		var bodyJSON string
 		var skeleton bool

@@ -3492,6 +3492,21 @@ type InspectionProfileWithImages struct {
 	UpdatedAt            string             `json:"updated_at"`
 }
 
+// InspectionScorecard Confusion matrix of machine verdict (pass/fail) against reviewer (approved/rejected).
+type InspectionScorecard struct {
+	Agreement         *float32 `json:"agreement"`
+	Escape            int      `json:"escape"`
+	EscapeRate        *float32 `json:"escape_rate"`
+	FailedInspections int      `json:"failed_inspections"`
+	FalseReject       int      `json:"false_reject"`
+	FalseRejectRate   *float32 `json:"false_reject_rate"`
+	Reviewed          int      `json:"reviewed"`
+	Total             int      `json:"total"`
+	TruePass          int      `json:"true_pass"`
+	TrueReject        int      `json:"true_reject"`
+	Unreviewed        int      `json:"unreviewed"`
+}
+
 // InstantiateRequest defines model for InstantiateRequest.
 type InstantiateRequest struct {
 	Inputs     *[]CatalogInput    `json:"inputs,omitempty"`
@@ -6118,6 +6133,12 @@ type InspectionProfilesInspectCaptureParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
+// InspectionProfilesGetProfileScorecardParams defines parameters for InspectionProfilesGetProfileScorecard.
+type InspectionProfilesGetProfileScorecardParams struct {
+	Days        *int    `form:"days,omitempty" json:"days,omitempty"`
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
 // InspectionProfilesUploadTrainingCaptureParams defines parameters for InspectionProfilesUploadTrainingCapture.
 type InspectionProfilesUploadTrainingCaptureParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
@@ -8429,6 +8450,9 @@ type ClientInterface interface {
 	InspectionProfilesInspectCaptureWithBody(ctx context.Context, deviceGroupId openapi_types.UUID, profileId openapi_types.UUID, params *InspectionProfilesInspectCaptureParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	InspectionProfilesInspectCapture(ctx context.Context, deviceGroupId openapi_types.UUID, profileId openapi_types.UUID, params *InspectionProfilesInspectCaptureParams, body InspectionProfilesInspectCaptureJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// InspectionProfilesGetProfileScorecard request
+	InspectionProfilesGetProfileScorecard(ctx context.Context, deviceGroupId openapi_types.UUID, profileId openapi_types.UUID, params *InspectionProfilesGetProfileScorecardParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// InspectionProfilesUploadTrainingCaptureWithBody request with any body
 	InspectionProfilesUploadTrainingCaptureWithBody(ctx context.Context, deviceGroupId openapi_types.UUID, profileId openapi_types.UUID, params *InspectionProfilesUploadTrainingCaptureParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -12431,6 +12455,18 @@ func (c *Client) InspectionProfilesInspectCaptureWithBody(ctx context.Context, d
 
 func (c *Client) InspectionProfilesInspectCapture(ctx context.Context, deviceGroupId openapi_types.UUID, profileId openapi_types.UUID, params *InspectionProfilesInspectCaptureParams, body InspectionProfilesInspectCaptureJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewInspectionProfilesInspectCaptureRequest(c.Server, deviceGroupId, profileId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) InspectionProfilesGetProfileScorecard(ctx context.Context, deviceGroupId openapi_types.UUID, profileId openapi_types.UUID, params *InspectionProfilesGetProfileScorecardParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewInspectionProfilesGetProfileScorecardRequest(c.Server, deviceGroupId, profileId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -29536,6 +29572,86 @@ func NewInspectionProfilesInspectCaptureRequestWithBody(server string, deviceGro
 	return req, nil
 }
 
+// NewInspectionProfilesGetProfileScorecardRequest generates requests for InspectionProfilesGetProfileScorecard
+func NewInspectionProfilesGetProfileScorecardRequest(server string, deviceGroupId openapi_types.UUID, profileId openapi_types.UUID, params *InspectionProfilesGetProfileScorecardParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "device_group_id", deviceGroupId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "profile_id", profileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/device-groups/%s/inspection-profiles/%s/scorecard", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Days != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "days", *params.Days, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
 // NewInspectionProfilesUploadTrainingCaptureRequestWithBody generates requests for InspectionProfilesUploadTrainingCapture with any type of body
 func NewInspectionProfilesUploadTrainingCaptureRequestWithBody(server string, deviceGroupId openapi_types.UUID, profileId openapi_types.UUID, params *InspectionProfilesUploadTrainingCaptureParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
@@ -41851,6 +41967,9 @@ type ClientWithResponsesInterface interface {
 
 	InspectionProfilesInspectCaptureWithResponse(ctx context.Context, deviceGroupId openapi_types.UUID, profileId openapi_types.UUID, params *InspectionProfilesInspectCaptureParams, body InspectionProfilesInspectCaptureJSONRequestBody, reqEditors ...RequestEditorFn) (*InspectionProfilesInspectCaptureResponse, error)
 
+	// InspectionProfilesGetProfileScorecardWithResponse request
+	InspectionProfilesGetProfileScorecardWithResponse(ctx context.Context, deviceGroupId openapi_types.UUID, profileId openapi_types.UUID, params *InspectionProfilesGetProfileScorecardParams, reqEditors ...RequestEditorFn) (*InspectionProfilesGetProfileScorecardResponse, error)
+
 	// InspectionProfilesUploadTrainingCaptureWithBodyWithResponse request with any body
 	InspectionProfilesUploadTrainingCaptureWithBodyWithResponse(ctx context.Context, deviceGroupId openapi_types.UUID, profileId openapi_types.UUID, params *InspectionProfilesUploadTrainingCaptureParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*InspectionProfilesUploadTrainingCaptureResponse, error)
 
@@ -47626,6 +47745,29 @@ func (r InspectionProfilesInspectCaptureResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r InspectionProfilesInspectCaptureResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type InspectionProfilesGetProfileScorecardResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *InspectionScorecard
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r InspectionProfilesGetProfileScorecardResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r InspectionProfilesGetProfileScorecardResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -54647,6 +54789,15 @@ func (c *ClientWithResponses) InspectionProfilesInspectCaptureWithResponse(ctx c
 		return nil, err
 	}
 	return ParseInspectionProfilesInspectCaptureResponse(rsp)
+}
+
+// InspectionProfilesGetProfileScorecardWithResponse request returning *InspectionProfilesGetProfileScorecardResponse
+func (c *ClientWithResponses) InspectionProfilesGetProfileScorecardWithResponse(ctx context.Context, deviceGroupId openapi_types.UUID, profileId openapi_types.UUID, params *InspectionProfilesGetProfileScorecardParams, reqEditors ...RequestEditorFn) (*InspectionProfilesGetProfileScorecardResponse, error) {
+	rsp, err := c.InspectionProfilesGetProfileScorecard(ctx, deviceGroupId, profileId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseInspectionProfilesGetProfileScorecardResponse(rsp)
 }
 
 // InspectionProfilesUploadTrainingCaptureWithBodyWithResponse request with arbitrary body returning *InspectionProfilesUploadTrainingCaptureResponse
@@ -64067,6 +64218,39 @@ func ParseInspectionProfilesInspectCaptureResponse(rsp *http.Response) (*Inspect
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest CameraImagePublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseInspectionProfilesGetProfileScorecardResponse parses an HTTP response from a InspectionProfilesGetProfileScorecardWithResponse call
+func ParseInspectionProfilesGetProfileScorecardResponse(rsp *http.Response) (*InspectionProfilesGetProfileScorecardResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &InspectionProfilesGetProfileScorecardResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest InspectionScorecard
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
