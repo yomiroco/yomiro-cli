@@ -1882,6 +1882,32 @@ type AnnotationProjectUpdate struct {
 	Version     *string `json:"version,omitempty"`
 }
 
+// AnnotationProjectWithStats Project with summary statistics.
+type AnnotationProjectWithStats struct {
+	AnnotationCount *int                `json:"annotation_count,omitempty"`
+	CreatedAt       string              `json:"created_at"`
+	CreatedById     *openapi_types.UUID `json:"created_by_id"`
+
+	// Description Project description
+	Description     *string            `json:"description,omitempty"`
+	DeviceLinkCount *int               `json:"device_link_count,omitempty"`
+	Id              openapi_types.UUID `json:"id"`
+
+	// IsActive Whether project is active
+	IsActive   *bool `json:"is_active,omitempty"`
+	LabelCount *int  `json:"label_count,omitempty"`
+	MediaCount *int  `json:"media_count,omitempty"`
+
+	// Name Project name
+	Name            string                  `json:"name"`
+	ProjectMetadata *map[string]interface{} `json:"project_metadata"`
+	TenantId        openapi_types.UUID      `json:"tenant_id"`
+	UpdatedAt       string                  `json:"updated_at"`
+
+	// Version Project version for tracking changes
+	Version *string `json:"version,omitempty"`
+}
+
 // AnnotationProjectsPublic Schema for listing annotation projects.
 type AnnotationProjectsPublic struct {
 	Count int                       `json:"count"`
@@ -45383,7 +45409,7 @@ func (r AnnotationSystemDuplicateProjectResponse) StatusCode() int {
 type AnnotationSystemGetProjectWithStatsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *interface{}
+	JSON200      *AnnotationProjectWithStats
 	JSON422      *HTTPValidationError
 }
 
@@ -60926,7 +60952,7 @@ func ParseAnnotationSystemGetProjectWithStatsResponse(rsp *http.Response) (*Anno
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest interface{}
+		var dest AnnotationProjectWithStats
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

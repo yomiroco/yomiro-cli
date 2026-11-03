@@ -3,11 +3,13 @@ name: yomiro-cli
 description: >-
   Use the Yomiro CLI (`yomiro`) to authenticate operators, run the customer-side
   gateway daemon that bridges a local network/database to the Yomiro platform, and
-  manage platform resources (dashboards, devices, captures, incidents). Use this
+  manage platform resources (dashboards, devices, captures, incidents, training
+  projects and their annotations). Use this
   skill whenever the user is working with the `yomiro` command — logging in,
   minting API tokens (`yomiro auth ...`), setting up or operating a gateway
   (`yomiro gw ...`, connecting a local Postgres through it), or scripting platform
-  operations like migrating a dashboard between environments — even if they don't
+  operations like migrating a dashboard between environments or adding, fixing
+  and pushing the boxes on a training project's photos — even if they don't
   name the skill explicitly. Also use it when a `yomiro` command errors (403s,
   "not in the gateway allowlist", audience mismatches) and the user needs the
   correct flow.
@@ -197,7 +199,7 @@ yomiro gw down              # stop the service and unregister the gateway
 Resource groups: `dashboard`, `device`, `capture`, `incident`, `ai-config`,
 `location`, `device-group`, `data-source`, `user`, `agent`, `team`, `alert`,
 `ai-provider`, `inspection-profile`, `model`, `ref-sheet`, `otel-endpoint`,
-`analytics`, `organization`, `entity-history` (plus a `skill` group). Each has
+`analytics`, `organization`, `entity-history`, `annotation` (plus a `skill` group). Each has
 `list`/`get`/etc. (run `yomiro <group> --help` for the verbs a group exposes).
 Write-style commands that take a request body use
 a consistent pattern: `--skeleton` prints a starter JSON template, and
@@ -272,6 +274,14 @@ The inner shape of `capture_config` is defined platform-side (it's a free-form o
 in the API). Use `--skeleton` and the web app's capture-rule editor as the source of
 truth for its keys rather than guessing. `ai-config get <deviceGroupId>` shows the
 current config for a device group.
+
+## Annotating a training project
+
+Training projects (labels, photos, and the boxes drawn on them) are under
+`yomiro annotation`, the same data as **Captures → Training** in the web app. Box points
+are `{x, y}` on a 0–1000 grid, **not pixels**, and a pixel-space box lands off the photo.
+For finding a photo's boxes, adding/fixing/removing them, and pushing the project to
+devices, read [`references/annotations.md`](references/annotations.md).
 
 ## Onboarding a new plant
 

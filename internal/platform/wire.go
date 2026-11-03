@@ -129,6 +129,7 @@ var publicGroups = []groupSpec{
 	{new: generated.NewOrganizationsCmd, use: "organization", why: "operators read/update their org settings (logo, mqtt config)"},
 	{new: generated.NewEntityHistoryCmd, use: "", why: "recent-entity history and soft-delete restore"},
 	{new: generated.NewJetsonNanoCmd, use: "jetson-nano", why: "operators configure a device's camera streams (which RTSP cameras it runs, and which one runs inference) and read its status"},
+	{new: generated.NewAnnotationSystemCmd, use: "annotation", why: "operators label training projects (photos, boxes) and push them to devices"},
 }
 
 // resolveCredentials chooses the API URL and bearer token for the next

@@ -16,6 +16,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )
@@ -102,6 +103,10 @@ func registerScalarFlag(fs *pflag.FlagSet, name, usage string, ptr any) *pflag.F
 	switch p := ptr.(type) {
 	case **string:
 		fs.Var(&nullableString{p: p}, name, usage)
+	case **uuid.UUID: // openapi_types.UUID is an alias, so `format: uuid` params land here
+		fs.Var(&nullableUUID{p: p}, name, usage)
+	case *uuid.UUID:
+		fs.Var(&uuidValue{p: p}, name, usage)
 	case **int:
 		fs.Var(&nullableInt{p: p}, name, usage)
 	case **int32:
@@ -146,6 +151,42 @@ func (n *nullableString) String() string {
 }
 func (n *nullableString) Set(v string) error { *n.p = &v; return nil }
 func (n *nullableString) Type() string       { return "string" }
+
+type nullableUUID struct{ p **uuid.UUID }
+
+func (n *nullableUUID) String() string {
+	if n.p == nil || *n.p == nil {
+		return ""
+	}
+	return (**n.p).String()
+}
+func (n *nullableUUID) Set(v string) error {
+	x, err := uuid.Parse(v)
+	if err != nil {
+		return err
+	}
+	*n.p = &x
+	return nil
+}
+func (n *nullableUUID) Type() string { return "uuid" }
+
+type uuidValue struct{ p *uuid.UUID }
+
+func (u *uuidValue) String() string {
+	if u.p == nil || *u.p == uuid.Nil {
+		return ""
+	}
+	return u.p.String()
+}
+func (u *uuidValue) Set(v string) error {
+	x, err := uuid.Parse(v)
+	if err != nil {
+		return err
+	}
+	*u.p = x
+	return nil
+}
+func (u *uuidValue) Type() string { return "uuid" }
 
 type nullableInt struct{ p **int }
 

@@ -5,17 +5,20 @@ import (
 	"path/filepath"
 	"testing"
 
+	openapi_types "github.com/oapi-codegen/runtime/types"
 	"github.com/spf13/cobra"
 )
 
 // sampleParams mirrors the shape oapi-codegen emits for query-only params:
 // all pointer-of-scalar, with json+form tags.
 type sampleParams struct {
-	Skip        *int    `form:"skip,omitempty" json:"skip,omitempty"`
-	Limit       *int64  `form:"limit,omitempty" json:"limit,omitempty"`
-	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
-	NameFilter  *string `json:"name_filter,omitempty"`
-	Active      *bool   `json:"active,omitempty"`
+	Skip        *int                `form:"skip,omitempty" json:"skip,omitempty"`
+	Limit       *int64              `form:"limit,omitempty" json:"limit,omitempty"`
+	AccessToken *string             `form:"access_token,omitempty" json:"access_token,omitempty"`
+	NameFilter  *string             `json:"name_filter,omitempty"`
+	Active      *bool               `json:"active,omitempty"`
+	ProjectId   *openapi_types.UUID `form:"project_id,omitempty" json:"project_id,omitempty"`
+	DeviceId    openapi_types.UUID  `form:"device_id" json:"device_id"` // required params are not pointers
 }
 
 func TestDefineQueryFlags_kebabFromJSONTag(t *testing.T) {
@@ -66,6 +69,27 @@ func TestDefineQueryFlags_setNullableBool(t *testing.T) {
 	}
 	if p.Active == nil || !*p.Active {
 		t.Errorf("Active = %v, want pointer to true", p.Active)
+	}
+}
+
+// Optional UUID filters (project_id, device_id, ...) are how list commands
+// scope to one parent; without them a list returns the whole tenant.
+func TestDefineQueryFlags_setNullableUUID(t *testing.T) {
+	const id = "01a1a039-627e-7673-a3ea-9a53bae6a23b"
+	cmd := &cobra.Command{}
+	var p sampleParams
+	DefineQueryFlags(cmd, &p)
+	if err := cmd.Flags().Parse([]string{"--project-id", id, "--device-id", id}); err != nil {
+		t.Fatalf("parse: %v", err)
+	}
+	if p.ProjectId == nil || p.ProjectId.String() != id {
+		t.Errorf("ProjectId = %v, want pointer to %s", p.ProjectId, id)
+	}
+	if p.DeviceId.String() != id {
+		t.Errorf("DeviceId = %v, want %s", p.DeviceId, id)
+	}
+	if err := cmd.Flags().Parse([]string{"--project-id", "not-a-uuid"}); err == nil {
+		t.Error("expected an invalid UUID to be rejected at parse time")
 	}
 }
 
