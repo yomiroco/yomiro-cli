@@ -58,6 +58,24 @@ func (e AIProviderType) Valid() bool {
 	}
 }
 
+// Defines values for ActiveTrackModality.
+const (
+	Audio ActiveTrackModality = "audio"
+	Video ActiveTrackModality = "video"
+)
+
+// Valid indicates whether the value is a known member of the ActiveTrackModality enum.
+func (e ActiveTrackModality) Valid() bool {
+	switch e {
+	case Audio:
+		return true
+	case Video:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for AgentPersistence.
 const (
 	Memory    AgentPersistence = "memory"
@@ -1191,15 +1209,19 @@ type AcceptDriftRequest struct {
 
 // ActiveTrack A tracked object in the detection digest.
 type ActiveTrack struct {
-	Confidence      float32    `json:"confidence"`
-	DurationSeconds float32    `json:"duration_seconds"`
-	FirstBbox       *[]float32 `json:"first_bbox,omitempty"`
-	FirstSeen       float32    `json:"first_seen"`
-	Label           string     `json:"label"`
-	LastBbox        *[]float32 `json:"last_bbox,omitempty"`
-	LastSeen        float32    `json:"last_seen"`
-	TrackId         int        `json:"track_id"`
+	Confidence      float32              `json:"confidence"`
+	DurationSeconds float32              `json:"duration_seconds"`
+	FirstBbox       *[]float32           `json:"first_bbox,omitempty"`
+	FirstSeen       float32              `json:"first_seen"`
+	Label           string               `json:"label"`
+	LastBbox        *[]float32           `json:"last_bbox,omitempty"`
+	LastSeen        float32              `json:"last_seen"`
+	Modality        *ActiveTrackModality `json:"modality,omitempty"`
+	TrackId         int                  `json:"track_id"`
 }
+
+// ActiveTrackModality defines model for ActiveTrack.Modality.
+type ActiveTrackModality string
 
 // ActivityLogPublic Public schema for activity log responses.
 type ActivityLogPublic struct {
@@ -2796,6 +2818,7 @@ type Detection struct {
 // DetectionDigest Detection digest from a device.
 type DetectionDigest struct {
 	ActiveTracks []ActiveTrack `json:"active_tracks"`
+	CameraId     *string       `json:"camera_id,omitempty"`
 
 	// Counts Aggregated detection counts.
 	Counts    DetectionDigestCounts `json:"counts"`
@@ -3460,6 +3483,9 @@ type InstantiateResponse struct {
 
 // JetsonNanoConfigPublic Public schema for Jetson Nano config responses.
 type JetsonNanoConfigPublic struct {
+	// AudioCameras Cameras whose stream carries audio, from the heartbeat. Null: the device hasn't said.
+	AudioCameras *[]string `json:"audio_cameras,omitempty"`
+
 	// CameraIndex Camera index on the Jetson device
 	CameraIndex *int `json:"camera_index,omitempty"`
 
@@ -4203,6 +4229,12 @@ type SkillScope string
 
 // SkillStatus defines model for SkillStatus.
 type SkillStatus string
+
+// SoundOption defines model for SoundOption.
+type SoundOption struct {
+	DisplayName string `json:"display_name"`
+	Id          string `json:"id"`
+}
 
 // StarCreate defines model for StarCreate.
 type StarCreate struct {
@@ -5683,6 +5715,11 @@ type ArtifactsDownloadSnapshotParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
+// AudioListSoundsParams defines parameters for AudioListSounds.
+type AudioListSoundsParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
 // AuthListApiKeysParams defines parameters for AuthListApiKeys.
 type AuthListApiKeysParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
@@ -6543,6 +6580,7 @@ type JetsonNanoSendJetsonControlParams struct {
 
 // JetsonNanoGetDetectionDigestParams defines parameters for JetsonNanoGetDetectionDigest.
 type JetsonNanoGetDetectionDigestParams struct {
+	CameraId    *string `form:"camera_id,omitempty" json:"camera_id,omitempty"`
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
@@ -8120,6 +8158,9 @@ type ClientInterface interface {
 
 	// ArtifactsDownloadSnapshot request
 	ArtifactsDownloadSnapshot(ctx context.Context, artifactId openapi_types.UUID, snapshotId openapi_types.UUID, params *ArtifactsDownloadSnapshotParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AudioListSounds request
+	AudioListSounds(ctx context.Context, params *AudioListSoundsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// AuthListApiKeys request
 	AuthListApiKeys(ctx context.Context, params *AuthListApiKeysParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -11308,6 +11349,18 @@ func (c *Client) ArtifactsCreateSnapshot(ctx context.Context, artifactId openapi
 
 func (c *Client) ArtifactsDownloadSnapshot(ctx context.Context, artifactId openapi_types.UUID, snapshotId openapi_types.UUID, params *ArtifactsDownloadSnapshotParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewArtifactsDownloadSnapshotRequest(c.Server, artifactId, snapshotId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AudioListSounds(ctx context.Context, params *AudioListSoundsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAudioListSoundsRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -25251,6 +25304,50 @@ func NewArtifactsDownloadSnapshotRequest(server string, artifactId openapi_types
 	return req, nil
 }
 
+// NewAudioListSoundsRequest generates requests for AudioListSounds
+func NewAudioListSoundsRequest(server string, params *AudioListSoundsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/audio/sounds")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
 // NewAuthListApiKeysRequest generates requests for AuthListApiKeys
 func NewAuthListApiKeysRequest(server string, params *AuthListApiKeysParams) (*http.Request, error) {
 	var err error
@@ -34717,6 +34814,28 @@ func NewJetsonNanoGetDetectionDigestRequest(server string, deviceId string, para
 		return nil, err
 	}
 
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.CameraId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "camera_id", *params.CameraId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
@@ -41461,6 +41580,9 @@ type ClientWithResponsesInterface interface {
 	// ArtifactsDownloadSnapshotWithResponse request
 	ArtifactsDownloadSnapshotWithResponse(ctx context.Context, artifactId openapi_types.UUID, snapshotId openapi_types.UUID, params *ArtifactsDownloadSnapshotParams, reqEditors ...RequestEditorFn) (*ArtifactsDownloadSnapshotResponse, error)
 
+	// AudioListSoundsWithResponse request
+	AudioListSoundsWithResponse(ctx context.Context, params *AudioListSoundsParams, reqEditors ...RequestEditorFn) (*AudioListSoundsResponse, error)
+
 	// AuthListApiKeysWithResponse request
 	AuthListApiKeysWithResponse(ctx context.Context, params *AuthListApiKeysParams, reqEditors ...RequestEditorFn) (*AuthListApiKeysResponse, error)
 
@@ -45893,6 +46015,29 @@ func (r ArtifactsDownloadSnapshotResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ArtifactsDownloadSnapshotResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AudioListSoundsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]SoundOption
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AudioListSoundsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AudioListSoundsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -53703,6 +53848,15 @@ func (c *ClientWithResponses) ArtifactsDownloadSnapshotWithResponse(ctx context.
 		return nil, err
 	}
 	return ParseArtifactsDownloadSnapshotResponse(rsp)
+}
+
+// AudioListSoundsWithResponse request returning *AudioListSoundsResponse
+func (c *ClientWithResponses) AudioListSoundsWithResponse(ctx context.Context, params *AudioListSoundsParams, reqEditors ...RequestEditorFn) (*AudioListSoundsResponse, error) {
+	rsp, err := c.AudioListSounds(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAudioListSoundsResponse(rsp)
 }
 
 // AuthListApiKeysWithResponse request returning *AuthListApiKeysResponse
@@ -61648,6 +61802,39 @@ func ParseArtifactsDownloadSnapshotResponse(rsp *http.Response) (*ArtifactsDownl
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAudioListSoundsResponse parses an HTTP response from a AudioListSoundsWithResponse call
+func ParseAudioListSoundsResponse(rsp *http.Response) (*AudioListSoundsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AudioListSoundsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []SoundOption
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest HTTPValidationError
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
