@@ -265,6 +265,24 @@ func (e EffectiveServerPublicScope) Valid() bool {
 	}
 }
 
+// Defines values for EvalKind.
+const (
+	EvalKindDetection  EvalKind = "detection"
+	EvalKindInspection EvalKind = "inspection"
+)
+
+// Valid indicates whether the value is a known member of the EvalKind enum.
+func (e EvalKind) Valid() bool {
+	switch e {
+	case EvalKindDetection:
+		return true
+	case EvalKindInspection:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for EvalRunStatus.
 const (
 	EvalRunStatusCompleted EvalRunStatus = "completed"
@@ -283,6 +301,30 @@ func (e EvalRunStatus) Valid() bool {
 	case EvalRunStatusPending:
 		return true
 	case EvalRunStatusRunning:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for EvalStatus.
+const (
+	EvalStatusFailed    EvalStatus = "failed"
+	EvalStatusQueued    EvalStatus = "queued"
+	EvalStatusRunning   EvalStatus = "running"
+	EvalStatusSucceeded EvalStatus = "succeeded"
+)
+
+// Valid indicates whether the value is a known member of the EvalStatus enum.
+func (e EvalStatus) Valid() bool {
+	switch e {
+	case EvalStatusFailed:
+		return true
+	case EvalStatusQueued:
+		return true
+	case EvalStatusRunning:
+		return true
+	case EvalStatusSucceeded:
 		return true
 	default:
 		return false
@@ -852,25 +894,25 @@ func (e ServerToolPublicClass) Valid() bool {
 
 // Defines values for SessionStatus.
 const (
-	Active            SessionStatus = "active"
-	Completed         SessionStatus = "completed"
-	Failed            SessionStatus = "failed"
-	PausedForApproval SessionStatus = "paused_for_approval"
-	Stopped           SessionStatus = "stopped"
+	SessionStatusActive            SessionStatus = "active"
+	SessionStatusCompleted         SessionStatus = "completed"
+	SessionStatusFailed            SessionStatus = "failed"
+	SessionStatusPausedForApproval SessionStatus = "paused_for_approval"
+	SessionStatusStopped           SessionStatus = "stopped"
 )
 
 // Valid indicates whether the value is a known member of the SessionStatus enum.
 func (e SessionStatus) Valid() bool {
 	switch e {
-	case Active:
+	case SessionStatusActive:
 		return true
-	case Completed:
+	case SessionStatusCompleted:
 		return true
-	case Failed:
+	case SessionStatusFailed:
 		return true
-	case PausedForApproval:
+	case SessionStatusPausedForApproval:
 		return true
-	case Stopped:
+	case SessionStatusStopped:
 		return true
 	default:
 		return false
@@ -1774,6 +1816,9 @@ type AnnotationMediaCreate struct {
 	// Height Media height in pixels
 	Height *int `json:"height,omitempty"`
 
+	// IsEval Held out for evaluation: never used as a prompt or pushed to devices
+	IsEval *bool `json:"is_eval,omitempty"`
+
 	// MediaType Type of media (image/video)
 	MediaType *string `json:"media_type,omitempty"`
 
@@ -1785,6 +1830,12 @@ type AnnotationMediaCreate struct {
 
 	// Width Media width in pixels
 	Width *int `json:"width,omitempty"`
+}
+
+// AnnotationMediaEvalUpdate defines model for AnnotationMediaEvalUpdate.
+type AnnotationMediaEvalUpdate struct {
+	IsEval   bool                 `json:"is_eval"`
+	MediaIds []openapi_types.UUID `json:"media_ids"`
 }
 
 // AnnotationMediaPublic Public schema for annotation media responses.
@@ -1802,9 +1853,12 @@ type AnnotationMediaPublic struct {
 	FrameCount *int `json:"frame_count,omitempty"`
 
 	// Height Media height in pixels
-	Height        *int                    `json:"height,omitempty"`
-	Id            openapi_types.UUID      `json:"id"`
-	ImagePath     *string                 `json:"image_path"`
+	Height    *int               `json:"height,omitempty"`
+	Id        openapi_types.UUID `json:"id"`
+	ImagePath *string            `json:"image_path"`
+
+	// IsEval Held out for evaluation: never used as a prompt or pushed to devices
+	IsEval        *bool                   `json:"is_eval,omitempty"`
 	MediaMetadata *map[string]interface{} `json:"media_metadata"`
 
 	// MediaType Type of media (image/video)
@@ -1827,6 +1881,7 @@ type AnnotationMediaUpdate struct {
 	Fps         *float32 `json:"fps,omitempty"`
 	FrameCount  *int     `json:"frame_count,omitempty"`
 	Height      *int     `json:"height,omitempty"`
+	IsEval      *bool    `json:"is_eval,omitempty"`
 	Title       *string  `json:"title,omitempty"`
 	Width       *int     `json:"width,omitempty"`
 }
@@ -3132,8 +3187,69 @@ type EffectiveSettingsPublic struct {
 	Servers []EffectiveServerPublic `json:"servers"`
 }
 
+// EvalKind defines model for EvalKind.
+type EvalKind string
+
+// EvalRunCreate defines model for EvalRunCreate.
+type EvalRunCreate struct {
+	AnnotationProjectId *openapi_types.UUID `json:"annotation_project_id,omitempty"`
+	InspectionProfileId *openapi_types.UUID `json:"inspection_profile_id,omitempty"`
+	IouThreshold        *float32            `json:"iou_threshold,omitempty"`
+	Kind                EvalKind            `json:"kind"`
+	ScoreThreshold      *float32            `json:"score_threshold,omitempty"`
+	Since               *time.Time          `json:"since,omitempty"`
+}
+
+// EvalRunPublic defines model for EvalRunPublic.
+type EvalRunPublic struct {
+	AnnotationProjectId *openapi_types.UUID       `json:"annotation_project_id"`
+	ConfigSnapshot      map[string]interface{}    `json:"config_snapshot"`
+	CreatedAt           string                    `json:"created_at"`
+	Error               *string                   `json:"error"`
+	EvalSetHash         *string                   `json:"eval_set_hash"`
+	FinishedAt          *string                   `json:"finished_at"`
+	Id                  openapi_types.UUID        `json:"id"`
+	InspectionProfileId *openapi_types.UUID       `json:"inspection_profile_id"`
+	Kind                EvalKind                  `json:"kind"`
+	Metrics             *map[string]interface{}   `json:"metrics"`
+	ModelFingerprint    *string                   `json:"model_fingerprint"`
+	PerItem             *[]map[string]interface{} `json:"per_item"`
+	ProgressDone        int                       `json:"progress_done"`
+	ProgressTotal       int                       `json:"progress_total"`
+	StartedAt           *string                   `json:"started_at"`
+	Status              EvalStatus                `json:"status"`
+}
+
 // EvalRunStatus defines model for EvalRunStatus.
 type EvalRunStatus string
+
+// EvalRunSummary defines model for EvalRunSummary.
+type EvalRunSummary struct {
+	AnnotationProjectId *openapi_types.UUID     `json:"annotation_project_id"`
+	ConfigSnapshot      map[string]interface{}  `json:"config_snapshot"`
+	CreatedAt           string                  `json:"created_at"`
+	Error               *string                 `json:"error"`
+	EvalSetHash         *string                 `json:"eval_set_hash"`
+	FinishedAt          *string                 `json:"finished_at"`
+	Id                  openapi_types.UUID      `json:"id"`
+	InspectionProfileId *openapi_types.UUID     `json:"inspection_profile_id"`
+	Kind                EvalKind                `json:"kind"`
+	Metrics             *map[string]interface{} `json:"metrics"`
+	ModelFingerprint    *string                 `json:"model_fingerprint"`
+	ProgressDone        int                     `json:"progress_done"`
+	ProgressTotal       int                     `json:"progress_total"`
+	StartedAt           *string                 `json:"started_at"`
+	Status              EvalStatus              `json:"status"`
+}
+
+// EvalRunsPublic defines model for EvalRunsPublic.
+type EvalRunsPublic struct {
+	Count int              `json:"count"`
+	Data  []EvalRunSummary `json:"data"`
+}
+
+// EvalStatus defines model for EvalStatus.
+type EvalStatus string
 
 // EventType defines model for EventType.
 type EventType string
@@ -5461,6 +5577,11 @@ type AnnotationSystemBulkAddMediaToProjectParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
+// AnnotationSystemBulkSetEvalParams defines parameters for AnnotationSystemBulkSetEval.
+type AnnotationSystemBulkSetEvalParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
 // AnnotationSystemUploadMediaParams defines parameters for AnnotationSystemUploadMedia.
 type AnnotationSystemUploadMediaParams struct {
 	ProjectId   openapi_types.UUID `form:"project_id" json:"project_id"`
@@ -6244,6 +6365,24 @@ type EntityHistoryListRecentParams struct {
 
 // EntityHistoryRestoreParams defines parameters for EntityHistoryRestore.
 type EntityHistoryRestoreParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// EvalsListRunsParams defines parameters for EvalsListRuns.
+type EvalsListRunsParams struct {
+	InspectionProfileId *openapi_types.UUID `form:"inspection_profile_id,omitempty" json:"inspection_profile_id,omitempty"`
+	AnnotationProjectId *openapi_types.UUID `form:"annotation_project_id,omitempty" json:"annotation_project_id,omitempty"`
+	Limit               *int                `form:"limit,omitempty" json:"limit,omitempty"`
+	AccessToken         *string             `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// EvalsCreateRunParams defines parameters for EvalsCreateRun.
+type EvalsCreateRunParams struct {
+	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
+}
+
+// EvalsGetRunParams defines parameters for EvalsGetRun.
+type EvalsGetRunParams struct {
 	AccessToken *string `form:"access_token,omitempty" json:"access_token,omitempty"`
 }
 
@@ -7258,6 +7397,9 @@ type AnnotationSystemCreateMediaJSONRequestBody = AnnotationMediaCreate
 // AnnotationSystemBulkAddMediaToProjectJSONRequestBody defines body for AnnotationSystemBulkAddMediaToProject for application/json ContentType.
 type AnnotationSystemBulkAddMediaToProjectJSONRequestBody = BodyAnnotationSystemBulkAddMediaToProject
 
+// AnnotationSystemBulkSetEvalJSONRequestBody defines body for AnnotationSystemBulkSetEval for application/json ContentType.
+type AnnotationSystemBulkSetEvalJSONRequestBody = AnnotationMediaEvalUpdate
+
 // AnnotationSystemUploadMediaMultipartRequestBody defines body for AnnotationSystemUploadMedia for multipart/form-data ContentType.
 type AnnotationSystemUploadMediaMultipartRequestBody = BodyAnnotationSystemUploadMedia
 
@@ -7374,6 +7516,9 @@ type DevicesCreateDeviceJSONRequestBody = DeviceCreate
 
 // DevicesUpdateDeviceJSONRequestBody defines body for DevicesUpdateDevice for application/json ContentType.
 type DevicesUpdateDeviceJSONRequestBody = DeviceUpdate
+
+// EvalsCreateRunJSONRequestBody defines body for EvalsCreateRun for application/json ContentType.
+type EvalsCreateRunJSONRequestBody = EvalRunCreate
 
 // ExploreRunRawQueryJSONRequestBody defines body for ExploreRunRawQuery for application/json ContentType.
 type ExploreRunRawQueryJSONRequestBody = RawQueryRequest
@@ -8030,6 +8175,11 @@ type ClientInterface interface {
 
 	AnnotationSystemBulkAddMediaToProject(ctx context.Context, projectId openapi_types.UUID, params *AnnotationSystemBulkAddMediaToProjectParams, body AnnotationSystemBulkAddMediaToProjectJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// AnnotationSystemBulkSetEvalWithBody request with any body
+	AnnotationSystemBulkSetEvalWithBody(ctx context.Context, projectId openapi_types.UUID, params *AnnotationSystemBulkSetEvalParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AnnotationSystemBulkSetEval(ctx context.Context, projectId openapi_types.UUID, params *AnnotationSystemBulkSetEvalParams, body AnnotationSystemBulkSetEvalJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// AnnotationSystemUploadMediaWithBody request with any body
 	AnnotationSystemUploadMediaWithBody(ctx context.Context, params *AnnotationSystemUploadMediaParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -8524,6 +8674,17 @@ type ClientInterface interface {
 
 	// EntityHistoryRestore request
 	EntityHistoryRestore(ctx context.Context, groupId openapi_types.UUID, params *EntityHistoryRestoreParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// EvalsListRuns request
+	EvalsListRuns(ctx context.Context, params *EvalsListRunsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// EvalsCreateRunWithBody request with any body
+	EvalsCreateRunWithBody(ctx context.Context, params *EvalsCreateRunParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	EvalsCreateRun(ctx context.Context, params *EvalsCreateRunParams, body EvalsCreateRunJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// EvalsGetRun request
+	EvalsGetRun(ctx context.Context, runId openapi_types.UUID, params *EvalsGetRunParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ExploreGetDataSources request
 	ExploreGetDataSources(ctx context.Context, params *ExploreGetDataSourcesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -10653,6 +10814,30 @@ func (c *Client) AnnotationSystemBulkAddMediaToProject(ctx context.Context, proj
 	return c.Client.Do(req)
 }
 
+func (c *Client) AnnotationSystemBulkSetEvalWithBody(ctx context.Context, projectId openapi_types.UUID, params *AnnotationSystemBulkSetEvalParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAnnotationSystemBulkSetEvalRequestWithBody(c.Server, projectId, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AnnotationSystemBulkSetEval(ctx context.Context, projectId openapi_types.UUID, params *AnnotationSystemBulkSetEvalParams, body AnnotationSystemBulkSetEvalJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAnnotationSystemBulkSetEvalRequest(c.Server, projectId, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) AnnotationSystemUploadMediaWithBody(ctx context.Context, params *AnnotationSystemUploadMediaParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAnnotationSystemUploadMediaRequestWithBody(c.Server, params, contentType, body)
 	if err != nil {
@@ -12767,6 +12952,54 @@ func (c *Client) EntityHistoryListRecent(ctx context.Context, params *EntityHist
 
 func (c *Client) EntityHistoryRestore(ctx context.Context, groupId openapi_types.UUID, params *EntityHistoryRestoreParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewEntityHistoryRestoreRequest(c.Server, groupId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EvalsListRuns(ctx context.Context, params *EvalsListRunsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEvalsListRunsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EvalsCreateRunWithBody(ctx context.Context, params *EvalsCreateRunParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEvalsCreateRunRequestWithBody(c.Server, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EvalsCreateRun(ctx context.Context, params *EvalsCreateRunParams, body EvalsCreateRunJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEvalsCreateRunRequest(c.Server, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EvalsGetRun(ctx context.Context, runId openapi_types.UUID, params *EvalsGetRunParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEvalsGetRunRequest(c.Server, runId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -21973,6 +22206,70 @@ func NewAnnotationSystemBulkAddMediaToProjectRequestWithBody(server string, proj
 	return req, nil
 }
 
+// NewAnnotationSystemBulkSetEvalRequest calls the generic AnnotationSystemBulkSetEval builder with application/json body
+func NewAnnotationSystemBulkSetEvalRequest(server string, projectId openapi_types.UUID, params *AnnotationSystemBulkSetEvalParams, body AnnotationSystemBulkSetEvalJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAnnotationSystemBulkSetEvalRequestWithBody(server, projectId, params, "application/json", bodyReader)
+}
+
+// NewAnnotationSystemBulkSetEvalRequestWithBody generates requests for AnnotationSystemBulkSetEval with any type of body
+func NewAnnotationSystemBulkSetEvalRequestWithBody(server string, projectId openapi_types.UUID, params *AnnotationSystemBulkSetEvalParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "project_id", projectId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/annotation-system/media/bulk-set-eval/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
 // NewAnnotationSystemUploadMediaRequestWithBody generates requests for AnnotationSystemUploadMedia with any type of body
 func NewAnnotationSystemUploadMediaRequestWithBody(server string, params *AnnotationSystemUploadMediaParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
@@ -30820,6 +31117,212 @@ func NewEntityHistoryRestoreRequest(server string, groupId openapi_types.UUID, p
 	}
 
 	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewEvalsListRunsRequest generates requests for EvalsListRuns
+func NewEvalsListRunsRequest(server string, params *EvalsListRunsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/evals/runs")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.InspectionProfileId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "inspection_profile_id", *params.InspectionProfileId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.AnnotationProjectId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "annotation_project_id", *params.AnnotationProjectId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewEvalsCreateRunRequest calls the generic EvalsCreateRun builder with application/json body
+func NewEvalsCreateRunRequest(server string, params *EvalsCreateRunParams, body EvalsCreateRunJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewEvalsCreateRunRequestWithBody(server, params, "application/json", bodyReader)
+}
+
+// NewEvalsCreateRunRequestWithBody generates requests for EvalsCreateRun with any type of body
+func NewEvalsCreateRunRequestWithBody(server string, params *EvalsCreateRunParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/evals/runs")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.AccessToken != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "access_token", *params.AccessToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "access_token",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
+	return req, nil
+}
+
+// NewEvalsGetRunRequest generates requests for EvalsGetRun
+func NewEvalsGetRunRequest(server string, runId openapi_types.UUID, params *EvalsGetRunParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "run_id", runId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: "uuid"})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/evals/runs/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -41546,6 +42049,11 @@ type ClientWithResponsesInterface interface {
 
 	AnnotationSystemBulkAddMediaToProjectWithResponse(ctx context.Context, projectId openapi_types.UUID, params *AnnotationSystemBulkAddMediaToProjectParams, body AnnotationSystemBulkAddMediaToProjectJSONRequestBody, reqEditors ...RequestEditorFn) (*AnnotationSystemBulkAddMediaToProjectResponse, error)
 
+	// AnnotationSystemBulkSetEvalWithBodyWithResponse request with any body
+	AnnotationSystemBulkSetEvalWithBodyWithResponse(ctx context.Context, projectId openapi_types.UUID, params *AnnotationSystemBulkSetEvalParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AnnotationSystemBulkSetEvalResponse, error)
+
+	AnnotationSystemBulkSetEvalWithResponse(ctx context.Context, projectId openapi_types.UUID, params *AnnotationSystemBulkSetEvalParams, body AnnotationSystemBulkSetEvalJSONRequestBody, reqEditors ...RequestEditorFn) (*AnnotationSystemBulkSetEvalResponse, error)
+
 	// AnnotationSystemUploadMediaWithBodyWithResponse request with any body
 	AnnotationSystemUploadMediaWithBodyWithResponse(ctx context.Context, params *AnnotationSystemUploadMediaParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AnnotationSystemUploadMediaResponse, error)
 
@@ -42040,6 +42548,17 @@ type ClientWithResponsesInterface interface {
 
 	// EntityHistoryRestoreWithResponse request
 	EntityHistoryRestoreWithResponse(ctx context.Context, groupId openapi_types.UUID, params *EntityHistoryRestoreParams, reqEditors ...RequestEditorFn) (*EntityHistoryRestoreResponse, error)
+
+	// EvalsListRunsWithResponse request
+	EvalsListRunsWithResponse(ctx context.Context, params *EvalsListRunsParams, reqEditors ...RequestEditorFn) (*EvalsListRunsResponse, error)
+
+	// EvalsCreateRunWithBodyWithResponse request with any body
+	EvalsCreateRunWithBodyWithResponse(ctx context.Context, params *EvalsCreateRunParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EvalsCreateRunResponse, error)
+
+	EvalsCreateRunWithResponse(ctx context.Context, params *EvalsCreateRunParams, body EvalsCreateRunJSONRequestBody, reqEditors ...RequestEditorFn) (*EvalsCreateRunResponse, error)
+
+	// EvalsGetRunWithResponse request
+	EvalsGetRunWithResponse(ctx context.Context, runId openapi_types.UUID, params *EvalsGetRunParams, reqEditors ...RequestEditorFn) (*EvalsGetRunResponse, error)
 
 	// ExploreGetDataSourcesWithResponse request
 	ExploreGetDataSourcesWithResponse(ctx context.Context, params *ExploreGetDataSourcesParams, reqEditors ...RequestEditorFn) (*ExploreGetDataSourcesResponse, error)
@@ -45013,6 +45532,29 @@ func (r AnnotationSystemBulkAddMediaToProjectResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r AnnotationSystemBulkAddMediaToProjectResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AnnotationSystemBulkSetEvalResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *map[string]int
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AnnotationSystemBulkSetEvalResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AnnotationSystemBulkSetEvalResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -48250,6 +48792,75 @@ func (r EntityHistoryRestoreResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r EntityHistoryRestoreResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type EvalsListRunsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *EvalRunsPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r EvalsListRunsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r EvalsListRunsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type EvalsCreateRunResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON202      *EvalRunPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r EvalsCreateRunResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r EvalsCreateRunResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type EvalsGetRunResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *EvalRunPublic
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r EvalsGetRunResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r EvalsGetRunResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -53464,6 +54075,23 @@ func (c *ClientWithResponses) AnnotationSystemBulkAddMediaToProjectWithResponse(
 	return ParseAnnotationSystemBulkAddMediaToProjectResponse(rsp)
 }
 
+// AnnotationSystemBulkSetEvalWithBodyWithResponse request with arbitrary body returning *AnnotationSystemBulkSetEvalResponse
+func (c *ClientWithResponses) AnnotationSystemBulkSetEvalWithBodyWithResponse(ctx context.Context, projectId openapi_types.UUID, params *AnnotationSystemBulkSetEvalParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AnnotationSystemBulkSetEvalResponse, error) {
+	rsp, err := c.AnnotationSystemBulkSetEvalWithBody(ctx, projectId, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAnnotationSystemBulkSetEvalResponse(rsp)
+}
+
+func (c *ClientWithResponses) AnnotationSystemBulkSetEvalWithResponse(ctx context.Context, projectId openapi_types.UUID, params *AnnotationSystemBulkSetEvalParams, body AnnotationSystemBulkSetEvalJSONRequestBody, reqEditors ...RequestEditorFn) (*AnnotationSystemBulkSetEvalResponse, error) {
+	rsp, err := c.AnnotationSystemBulkSetEval(ctx, projectId, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAnnotationSystemBulkSetEvalResponse(rsp)
+}
+
 // AnnotationSystemUploadMediaWithBodyWithResponse request with arbitrary body returning *AnnotationSystemUploadMediaResponse
 func (c *ClientWithResponses) AnnotationSystemUploadMediaWithBodyWithResponse(ctx context.Context, params *AnnotationSystemUploadMediaParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AnnotationSystemUploadMediaResponse, error) {
 	rsp, err := c.AnnotationSystemUploadMediaWithBody(ctx, params, contentType, body, reqEditors...)
@@ -55019,6 +55647,41 @@ func (c *ClientWithResponses) EntityHistoryRestoreWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseEntityHistoryRestoreResponse(rsp)
+}
+
+// EvalsListRunsWithResponse request returning *EvalsListRunsResponse
+func (c *ClientWithResponses) EvalsListRunsWithResponse(ctx context.Context, params *EvalsListRunsParams, reqEditors ...RequestEditorFn) (*EvalsListRunsResponse, error) {
+	rsp, err := c.EvalsListRuns(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEvalsListRunsResponse(rsp)
+}
+
+// EvalsCreateRunWithBodyWithResponse request with arbitrary body returning *EvalsCreateRunResponse
+func (c *ClientWithResponses) EvalsCreateRunWithBodyWithResponse(ctx context.Context, params *EvalsCreateRunParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EvalsCreateRunResponse, error) {
+	rsp, err := c.EvalsCreateRunWithBody(ctx, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEvalsCreateRunResponse(rsp)
+}
+
+func (c *ClientWithResponses) EvalsCreateRunWithResponse(ctx context.Context, params *EvalsCreateRunParams, body EvalsCreateRunJSONRequestBody, reqEditors ...RequestEditorFn) (*EvalsCreateRunResponse, error) {
+	rsp, err := c.EvalsCreateRun(ctx, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEvalsCreateRunResponse(rsp)
+}
+
+// EvalsGetRunWithResponse request returning *EvalsGetRunResponse
+func (c *ClientWithResponses) EvalsGetRunWithResponse(ctx context.Context, runId openapi_types.UUID, params *EvalsGetRunParams, reqEditors ...RequestEditorFn) (*EvalsGetRunResponse, error) {
+	rsp, err := c.EvalsGetRun(ctx, runId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEvalsGetRunResponse(rsp)
 }
 
 // ExploreGetDataSourcesWithResponse request returning *ExploreGetDataSourcesResponse
@@ -60362,6 +61025,39 @@ func ParseAnnotationSystemBulkAddMediaToProjectResponse(rsp *http.Response) (*An
 	return response, nil
 }
 
+// ParseAnnotationSystemBulkSetEvalResponse parses an HTTP response from a AnnotationSystemBulkSetEvalWithResponse call
+func ParseAnnotationSystemBulkSetEvalResponse(rsp *http.Response) (*AnnotationSystemBulkSetEvalResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AnnotationSystemBulkSetEvalResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest map[string]int
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseAnnotationSystemUploadMediaResponse parses an HTTP response from a AnnotationSystemUploadMediaWithResponse call
 func ParseAnnotationSystemUploadMediaResponse(rsp *http.Response) (*AnnotationSystemUploadMediaResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -64937,6 +65633,105 @@ func ParseEntityHistoryRestoreResponse(rsp *http.Response) (*EntityHistoryRestor
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest RestoreResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseEvalsListRunsResponse parses an HTTP response from a EvalsListRunsWithResponse call
+func ParseEvalsListRunsResponse(rsp *http.Response) (*EvalsListRunsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &EvalsListRunsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest EvalRunsPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseEvalsCreateRunResponse parses an HTTP response from a EvalsCreateRunWithResponse call
+func ParseEvalsCreateRunResponse(rsp *http.Response) (*EvalsCreateRunResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &EvalsCreateRunResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 202:
+		var dest EvalRunPublic
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON202 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseEvalsGetRunResponse parses an HTTP response from a EvalsGetRunWithResponse call
+func ParseEvalsGetRunResponse(rsp *http.Response) (*EvalsGetRunResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &EvalsGetRunResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest EvalRunPublic
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

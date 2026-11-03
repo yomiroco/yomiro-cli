@@ -62,6 +62,44 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 	}
 
 	{
+		var params client.AnnotationSystemBulkSetEvalParams
+		var bodyJSON string
+		var skeleton bool
+		cmd := &cobra.Command{
+			Use:   "bulk-set-eval <projectId>",
+			Short: "Bulk Set Eval",
+			Long:  "Bulk Set Eval.\n\nRequest body fields:\n  is_eval    boolean  required\n  media_ids  array    required\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Args:  cobra.ExactArgs(1),
+			RunE: func(cmd *cobra.Command, args []string) error {
+				if skeleton {
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"is_eval\": false,\n  \"media_ids\": []\n}")
+					return nil
+				}
+				ctx := cmd.Context()
+				_arg0, err := uuid.Parse(args[0])
+				if err != nil {
+					return fmt.Errorf("path arg <projectId>: %w", err)
+				}
+				var body client.AnnotationSystemBulkSetEvalJSONRequestBody
+				if err := bindings.LoadJSONBody(bodyJSON, &body); err != nil {
+					return err
+				}
+				resp, err := getClient().AnnotationSystemBulkSetEvalWithResponse(ctx, _arg0, &params, body)
+				if err != nil {
+					return err
+				}
+				return output.RenderResponse(cmd, resp)
+			},
+		}
+		bindings.DefineQueryFlags(cmd, &params)
+		cmd.Flags().StringVar(&bodyJSON, "json-body", "", "Request body as JSON (literal or @file)")
+		cmd.Flags().BoolVar(&skeleton, "skeleton", false, "Print a JSON skeleton of the request body and exit")
+		cmd.MarkFlagsOneRequired("json-body", "skeleton")
+		cmd.MarkFlagsMutuallyExclusive("json-body", "skeleton")
+		root.AddCommand(cmd)
+	}
+
+	{
 		var params client.AnnotationSystemCopyLabelsFromProjectParams
 		cmd := &cobra.Command{
 			Use:   "copy-labels-from-project <projectId> <sourceProjectId>",
@@ -128,10 +166,10 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 		cmd := &cobra.Command{
 			Use:   "create-media",
 			Short: "Create Media",
-			Long:  "Create Media.\n\nRequest body fields:\n  camera_image_id  uuid     optional  Reference to CameraImage\n  camera_video_id  uuid     optional  Reference to CameraVideo\n  description      string   optional\n  fps              number   optional  Frames per second (for videos)\n  frame_count      integer  optional  Number of frames (for videos)\n  height           integer  optional  Media height in pixels\n  media_type       string   optional  Type of media (image/video)\n  project_id       uuid     required  Annotation project this media belongs to\n  title            string   required  Title for this annotation media (defaults to filename)\n  width            integer  optional  Media width in pixels\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Create Media.\n\nRequest body fields:\n  camera_image_id  uuid     optional  Reference to CameraImage\n  camera_video_id  uuid     optional  Reference to CameraVideo\n  description      string   optional\n  fps              number   optional  Frames per second (for videos)\n  frame_count      integer  optional  Number of frames (for videos)\n  height           integer  optional  Media height in pixels\n  is_eval          boolean  optional  Held out for evaluation: never used as a prompt or pushed to devices\n  media_type       string   optional  Type of media (image/video)\n  project_id       uuid     required  Annotation project this media belongs to\n  title            string   required  Title for this annotation media (defaults to filename)\n  width            integer  optional  Media width in pixels\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
-					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"camera_image_id\": null,\n  \"camera_video_id\": null,\n  \"description\": null,\n  \"fps\": null,\n  \"frame_count\": null,\n  \"height\": null,\n  \"media_type\": null,\n  \"project_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"title\": \"\",\n  \"width\": null\n}")
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"camera_image_id\": null,\n  \"camera_video_id\": null,\n  \"description\": null,\n  \"fps\": null,\n  \"frame_count\": null,\n  \"height\": null,\n  \"is_eval\": null,\n  \"media_type\": null,\n  \"project_id\": \"00000000-0000-0000-0000-000000000000\",\n  \"title\": \"\",\n  \"width\": null\n}")
 					return nil
 				}
 				ctx := cmd.Context()
@@ -1114,11 +1152,11 @@ func NewAnnotationSystemCmd(getClient func() *client.ClientWithResponses) *cobra
 		cmd := &cobra.Command{
 			Use:   "update-media <mediaId>",
 			Short: "Update Media",
-			Long:  "Update Media.\n\nRequest body fields:\n  description  string   optional\n  fps          number   optional\n  frame_count  integer  optional\n  height       integer  optional\n  title        string   optional\n  width        integer  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
+			Long:  "Update Media.\n\nRequest body fields:\n  description  string   optional\n  fps          number   optional\n  frame_count  integer  optional\n  height       integer  optional\n  is_eval      boolean  optional\n  title        string   optional\n  width        integer  optional\n\nRun with --skeleton to print a starter JSON template you can edit\nand replay via --json-body @body.json.\n",
 			Args:  cobra.ExactArgs(1),
 			RunE: func(cmd *cobra.Command, args []string) error {
 				if skeleton {
-					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"fps\": null,\n  \"frame_count\": null,\n  \"height\": null,\n  \"title\": null,\n  \"width\": null\n}")
+					fmt.Fprintln(cmd.OutOrStdout(), "{\n  \"description\": null,\n  \"fps\": null,\n  \"frame_count\": null,\n  \"height\": null,\n  \"is_eval\": null,\n  \"title\": null,\n  \"width\": null\n}")
 					return nil
 				}
 				ctx := cmd.Context()
